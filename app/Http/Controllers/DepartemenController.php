@@ -7,21 +7,19 @@ use Illuminate\Http\Request;
 
 class DepartemenController extends Controller
 {
+    public function __construct (){
+        $this->middleware('auth');
+    }
 
     public function index()
     {
         $departemens = Departemen::all();
-        return view('administrator.departemen.index', compact('departemens'));
+        return view('master-data.departemen.index', compact('departemens'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+        return view('master-data.departemen.create');
     }
 
     /**

@@ -93,6 +93,19 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'sunplus_db' => [
+            'driver'    => env('DB_CONNECTION_SUNPLUS'),
+            'host'      => env('DB_HOST_SUNPLUS'),
+            'port'      => env('DB_PORT_SUNPLUS'),
+            'database'  => env('DB_DATABASE_SUNPLUS'),
+            'username'  => env('DB_USERNAME_SUNPLUS'),
+            'password'  => env('DB_PASSWORD_SUNPLUS'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+        ],
+
+
     ],
 
     /*

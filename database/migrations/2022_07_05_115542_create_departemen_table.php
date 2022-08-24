@@ -17,6 +17,12 @@ return new class extends Migration
             $table->id();
             $table->string('nama_departemen');
             $table->foreignId('kepala_departemen')->nullable();
+            $table->foreignId('wilayah_id')->nullable();
+            $table->string('department_code')->nullable();
+            $table->string('travel_expense_code')->nullable();
+            $table->string('travel_special_code')->nullable();
+            $table->string('strategic_plan_code')->nullable();
+            $table->string('office_expense_code')->nullable();
             $table->timestamps();
         });
     }

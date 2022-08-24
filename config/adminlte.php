@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'SIPEKAN | UIKB',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -45,12 +45,12 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3',
+    'logo' => '<b>SIPekan UIKB</b>',
+    'logo_img' => 'vendor/adminlte/dist/img/adventist-symbol-circle-ming.png',
+    'logo_img_class' => 'brand-image',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'AdminLTE',
+    'logo_img_alt' => 'GMAHK',
 
     /*
     |--------------------------------------------------------------------------
@@ -188,7 +188,7 @@ return [
     */
 
     'use_route_url' => false,
-    'dashboard_url' => 'home',
+    'dashboard_url' => 'dashboard',
     'logout_url' => 'logout',
     'login_url' => 'login',
     'register_url' => 'register',
@@ -246,21 +246,37 @@ return [
             'url'  => 'admin/blog',
             'can'  => 'manage-blog',
         ],
-        ['header' => 'account_settings'],
         [
-            'text' => 'profile',
-            'url'  => '/profile',
-            'icon' => 'fas fa-fw fa-user',
+            'header' => 'personal',
+            'classes' => 'text-bold text-uppercase',
+            'can' => ['user'],
         ],
         [
-            'text' => 'Personal Financial',
-            'url'  => '/keuangan',
-            'icon' => 'fas fa-fw fa-money-bill',
+            'text' => 'profile',
+            'url'  => 'personal/profile',
+            'icon' => 'fas fa-fw fa-user',
+            'can' => ['user'],
+        ],
+        [
+          'text' => 'Financial',
+          'icon' => 'fas fa-fw fa-money-bill',
+          'submenu' => [
+              [
+                  'text' => 'Personal Finance',
+                  'url'  => '/personal/keuangan',
+              ],
+              [
+                  'text' => 'Travel Finance',
+                  'url'  => '/personal/travel',
+              ],
+          ],
+            'can' => ['user'],
         ],
         [
             'text' => 'change_password',
-            'url'  => 'admin/settings',
+            'route'  => 'personal.change-password.index',
             'icon' => 'fas fa-fw fa-lock',
+            'can' => ['user'],
         ],
 //        [
 //            'text'    => 'multilevel',
@@ -302,24 +318,37 @@ return [
 //        ],
         [   'header' => 'Department',
             'classes' => 'text-bold text-uppercase',
+            'can' => ['head_dept'],
         ],
         [
             'text' => 'Departments Members',
-            'url'  => '/departemens',
+            'url'  => '/departemen/pegawai',
             'icon' => 'fas fa-fw fa-users',
+            'can' => ['head_dept'],
         ],
         [
             'text' => 'Departments Financial',
-            'url'  => '/departemens',
+            'url'  => '/departemen/keuangan',
             'icon' => 'fas fa-fw fa-building',
+            'can' => ['head_dept'],
         ],
         [   'header' => 'Master Data',
             'classes' => 'text-bold text-uppercase',
+            'can' => ['administrator'],
+        ],
+        [
+            'text' => 'Wilayah',
+            'url'  => '/wilayah',
+            'icon' => 'fas fa-fw fa-map',
+            'active' => ['wilayah*','regex:@^wilayah/[0-9]+$@'],
+            'can' => ['administrator'],
         ],
         [
             'text' => 'Departmens',
             'url'  => '/departemens',
             'icon' => 'fas fa-fw fa-building',
+            'active' => ['departemens*','regex:@^departemens/[0-9]+$@'],
+            'can' => ['administrator'],
         ],
     ],
 
@@ -379,17 +408,22 @@ return [
             ],
         ],
         'Select2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
+                    'asset' => true,
+                    'location' => 'vendor/select2/js/select2.full.min.js',
                 ],
                 [
                     'type' => 'css',
-                    'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css',
+                    'asset' => true,
+                    'location' => 'vendor/select2/css/select2.min.css',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css',
                 ],
             ],
         ],
@@ -409,7 +443,7 @@ return [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@8',
+                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@11',
                 ],
             ],
         ],
@@ -425,6 +459,26 @@ return [
                     'type' => 'js',
                     'asset' => false,
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js',
+                ],
+            ],
+        ],
+        'DateRangePicker' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/moment/moment.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/daterangepicker/daterangepicker.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/daterangepicker/daterangepicker.css',
                 ],
             ],
         ],
@@ -475,5 +529,5 @@ return [
     |
     */
 
-    'livewire' => false,
+    'livewire' => true,
 ];

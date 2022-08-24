@@ -19,8 +19,17 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'type',
         'email',
         'password',
+        'alamat',
+        'jenis_kelamin',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'no_hp',
+        'wilayah_id',
+        'ACCNT_CODE',
+        'travel_account'
     ];
 
     /**
@@ -55,5 +64,13 @@ class User extends Authenticatable
     public function adminlte_profile_url()
     {
         return 'profile/username';
+    }
+
+    public function kepala_departemen (){
+        return $this->hasOne(Departemen::class, 'kepala_departemen', 'id');
+    }
+
+    public function wilayah (){
+        return $this->belongsTo(Wilayah::class);
     }
 }

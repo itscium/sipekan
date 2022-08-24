@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Wilayah;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -28,6 +29,8 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
+//    protected $username;
+
     /**
      * Create a new controller instance.
      *
@@ -36,5 +39,11 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+//        $this->username = 'username';
     }
+
+//    public function username()
+//    {
+//        return $this->username;
+//    }
 }

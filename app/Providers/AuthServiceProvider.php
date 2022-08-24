@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Departemen;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
@@ -26,5 +28,16 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         //
+        Gate::define('administrator', static function ($user){
+            return $user->type === 'admin';
+        });
+
+        Gate::define('user', static function ($user){
+            return $user->type === 'user';
+        });
+
+        Gate::define('head_dept', static function ($user){
+            return $user->kepala_departemen->kepala_departemen ?? '';
+        });
     }
 }

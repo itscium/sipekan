@@ -26,12 +26,12 @@
 
         {{-- Email field --}}
         <div class="input-group mb-3">
-            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-                   value="{{ old('email') }}" placeholder="{{ __('adminlte::adminlte.email') }}" autofocus>
+            <input type="email" name="email" class="form-control @error('username') is-invalid @enderror"
+                   value="{{ old('email') }}" placeholder="Email" autofocus>
 
             <div class="input-group-append">
                 <div class="input-group-text">
-                    <span class="fas fa-envelope {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                    <span class="fas fa-envelope"></span>
                 </div>
             </div>
 
@@ -94,11 +94,11 @@
     @endif
 
     {{-- Register link --}}
-    @if($register_url)
-        <p class="my-0">
-            <a href="{{ $register_url }}">
-                {{ __('adminlte::adminlte.register_a_new_membership') }}
-            </a>
-        </p>
-    @endif
+{{--    @if($register_url)--}}
+{{--        <p class="my-0">--}}
+{{--            <a href="{{ $register_url }}">--}}
+{{--                {{ __('adminlte::adminlte.register_a_new_membership') }}--}}
+{{--            </a>--}}
+{{--        </p>--}}
+{{--    @endif--}}
 @stop
