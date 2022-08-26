@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'AdminLTE')
+@section('title', 'SIPEKAN | Travel Personal')
 
 @section('content_header')
     <h1 class="m-0 text-dark">Keuangan Personal</h1>

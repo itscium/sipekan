@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'AdminLTE')
+@section('title', 'SIPEKAN | Keuangan Departemen')
 
 @section('content_header')
     <h1 class="m-0 text-dark">Keuangan Departemen {{$departemen->nama_departemen}}</h1>

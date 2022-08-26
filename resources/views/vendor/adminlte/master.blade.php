@@ -5,6 +5,9 @@
 
     {{-- Base Meta Tags --}}
     <meta charset="utf-8">
+    <meta name="description" content="Sistem Informasi Pelaporan dan Keuangan Uni Indonesia Kawasan Barat">
+    <meta name="keywords" content="Sistem Informasi, Pelaporan, Keuangan, Sistem Keuangan, Sistem Pelaporan, GMAHK, UNI, Advent">
+    <meta name="author" content="Raminson Siregar">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">

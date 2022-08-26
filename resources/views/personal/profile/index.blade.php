@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'SIPEKAN-UIKB | Profile')
+@section('title', 'SIPEKAN | Profile')
 
 @section('content_header')
     <h1 class="m-0 text-dark">PROFILE</h1>

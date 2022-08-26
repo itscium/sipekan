@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'AdminLTE')
+@section('title', 'SIPEKAN | Change Password')
 
 @section('content_header')
 {{--    <h1 class="m-0 text-dark">Change Password</h1>--}}
