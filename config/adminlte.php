@@ -272,12 +272,6 @@ return [
           ],
             'can' => ['user'],
         ],
-        [
-            'text' => 'change_password',
-            'route'  => 'personal.change-password.index',
-            'icon' => 'fas fa-fw fa-lock',
-            'can' => ['user'],
-        ],
 //        [
 //            'text'    => 'multilevel',
 //            'icon'    => 'fas fa-fw fa-share',
@@ -349,6 +343,12 @@ return [
             'icon' => 'fas fa-fw fa-building',
             'active' => ['departemens*','regex:@^departemens/[0-9]+$@'],
             'can' => ['administrator'],
+        ],
+        [
+            'text' => 'change_password',
+            'route'  => 'personal.change-password.index',
+            'icon' => 'fas fa-fw fa-lock',
+            'can' => ['user', 'administrator'],
         ],
     ],
 
