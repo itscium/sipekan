@@ -18,7 +18,7 @@
                         <h3 class="card-title">Detail Keuangan Personal</h3>
                     </div>
                     <!-- /.card-header -->
-                    <div class="card-body p-0">
+                    <div class="card-body table-responsive p-0">
                         <table class="table table-striped">
                             <thead>
                             <tr>

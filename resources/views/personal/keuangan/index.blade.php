@@ -19,7 +19,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body table-responsive p-0" style="height: 700px;">
-                    <table class="table table-striped table-head-fixed text-nowrap">
+                    <table class="table table-striped table-head-fixed">
                         <thead>
                         <tr>
                             <th>Date</th>

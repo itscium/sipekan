@@ -13,7 +13,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Tabel Departemen</h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body table-responsive">
                     <a href="{{route('wilayah.departemen.tambah', $wilayah->id)}}" class="btn btn-primary mb-2">
                         Tambah Departemen
                     </a>
@@ -39,7 +39,7 @@
                             <tr>
                                 <td>{{$key+1}}</td>
                                 <td>{{$departemen->nama_departemen}}</td>
-                                <td>{{$departemen->user->name}}</td>
+                                <td>{{$departemen->user->name ?? ''}}</td>
                                 <td>{{$departemen->department_code}}</td>
                                 <td>{{$departemen->travel_expense_code}}</td>
                                 <td>{{$departemen->travel_special_code}}</td>

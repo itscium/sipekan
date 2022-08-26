@@ -13,7 +13,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Tabel User</h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body table-responsive">
                     <a href="{{route('wilayah.pengguna.tambah', $wilayah->id)}}" class="btn btn-primary mb-2">
                         Tambah Users
                     </a>
@@ -37,6 +37,9 @@
                                 <td class="text-center">
                                     <a href="{{route('wilayah.pengguna.edit', $user->id)}}" class="btn btn-primary btn-xs">
                                         Edit
+                                    </a>
+                                    <a href="{{route('impersonate', $user->id)}}" class="btn btn-primary btn-xs">
+                                        <i class="fas fa-user-secret"></i>
                                     </a>
                                 </td>
                             </tr>

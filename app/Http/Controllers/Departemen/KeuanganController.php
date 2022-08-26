@@ -30,7 +30,10 @@ class KeuanganController extends Controller
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, date('Y'.'012')])
             ->sum('dbo.ADV_B_SALFLDG.AMOUNT');
-        $sisa_travel = $travel_budget - $travel_actual;
+        $travel_advance = (new A_SALFLDG)->setTable('dbo.ADV_A_SALFLDG')->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $departemen->user->travel_account)->where('TRANS_DATETIME', '<=', date('Y-m-d'))->sum('dbo.ADV_A_SALFLDG.AMOUNT');
+
+        $temp = $travel_advance + $travel_actual;
+        $sisa_travel = $travel_budget - $temp;
 
         //get Special Travel
         $special_travel_actual = (new A_SALFLDG)->setTable('dbo.ADV_A_SALFLDG')->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $departemen->travel_special_code)->where('ANAL_T3', $departemen->department_code)->whereBetween('PERIOD', [$per_awal, $per_akhir])->sum('dbo.ADV_A_SALFLDG.AMOUNT');
@@ -51,6 +54,7 @@ class KeuanganController extends Controller
         $travel_actual = number_format($travel_actual*-1);
         $travel_budget = number_format($travel_budget*-1);
         $sisa_travel = number_format($sisa_travel*-1);
+        $travel_advance = number_format($travel_advance*-1);
 
         //change special travel
         $special_travel_actual = number_format($special_travel_actual*-1);
@@ -80,6 +84,7 @@ class KeuanganController extends Controller
             'office_budget' => $office_budget,
             'office_actual' => $office_actual,
             'sisa_office' => $sisa_office,
+            'travel_advance' => $travel_advance,
         ];
     }
 

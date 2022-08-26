@@ -17,7 +17,7 @@
                         <h3 class="card-title">Tabel Keuangan Departemen </h3>
                     </div>
                     <!-- /.card-header -->
-                    <div class="card-body p-0">
+                    <div class="card-body table-responsive p-0">
                         <table class="table table-striped">
                             <thead>
                             <tr>
@@ -26,6 +26,7 @@
                                 <th>{{strtoupper('Account Code')}}</th>
                                 <th>{{strtoupper('Budget')}}</th>
                                 <th>{{strtoupper('Actual')}}</th>
+                                <th>{{strtoupper('cash/Travel advance')}}</th>
                                 <th>{{strtoupper('Sisa Budget')}}</th>
                                 <th class="text-center">Action</th>
                             </tr>
@@ -37,6 +38,7 @@
                                 <td>{{$departemen->travel_expense_code ?? ''}}</td>
                                 <td class="text-right">{{$keuangan['travel_budget']}}</td>
                                 <td class="text-right">{{$keuangan['travel_actual']}}</td>
+                                <td class="text-right">{{$keuangan['travel_advance']}}</td>
                                 <td class="text-right">{{$keuangan['sisa_travel']}}</td>
                                 <td class="text-center">
                                     <a href="{{route('departemen.keuangan.detail', ['jenis' => 'travel'])}}" class="btn btn-outline-info btn-sm">Details</a>
@@ -48,6 +50,7 @@
                                 <td>{{$departemen->travel_special_code}}</td>
                                 <td class="text-right">{{$keuangan['special_travel_budget']}}</td>
                                 <td class="text-right">{{$keuangan['special_travel_actual']}}</td>
+                                <td class="text-right">-</td>
                                 <td class="text-right">{{$keuangan['sisa_special_travel']}}</td>
                                 <td class="text-center">
                                     <a href="{{route('departemen.keuangan.detail', ['jenis' => 'special'])}}" class="btn btn-outline-info btn-sm">Details</a>
@@ -59,6 +62,7 @@
                                 <td>{{$departemen->strategic_plan_code}}</td>
                                 <td class="text-right">{{$keuangan['strategic_budget']}}</td>
                                 <td class="text-right">{{$keuangan['strategic_actual']}}</td>
+                                <td class="text-right">-</td>
                                 <td class="text-right">{{$keuangan['sisa_strategic']}}</td>
                                 <td class="text-center">
                                     <a href="{{route('departemen.keuangan.detail', ['jenis' => 'strategic'])}}" class="btn btn-outline-info btn-sm">Details</a>
@@ -70,6 +74,7 @@
                                 <td>{{$departemen->office_expense_code}}</td>
                                 <td class="text-right">{{$keuangan['office_budget']}}</td>
                                 <td class="text-right">{{$keuangan['office_actual']}}</td>
+                                <td class="text-right">-</td>
                                 <td class="text-right">{{$keuangan['sisa_office']}}</td>
                                 <td class="text-center">
                                     <a href="{{route('departemen.keuangan.detail', ['jenis' => 'office'])}}" class="btn btn-outline-info btn-sm">Details</a>

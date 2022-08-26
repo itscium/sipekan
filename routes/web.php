@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('auth.login');
+//    return view('welcome');
 });
 
 Auth::routes(['register'=>false]);
@@ -54,6 +55,8 @@ Route::middleware('auth')->group(function (){
         Route::get('/keuangan', [App\Http\Controllers\Departemen\KeuanganController::class, 'index'])->name('departemen.keuangan.index');
         Route::get('/keuangan/{jenis}/detail', [App\Http\Controllers\Departemen\KeuanganController::class, 'detail_keuangan'])->name('departemen.keuangan.detail');
     });
+    Route::get('/impersonate/{id}', [\App\Http\Controllers\ImpersonateController::class, 'impersonate'])->name('impersonate');
+    Route::delete('/impersonate/destroy', [\App\Http\Controllers\ImpersonateController::class, 'destroy'])->name('impersonate.destroy');
 });
 
 //Auth::routes();

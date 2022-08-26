@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body table-responsive">
 {{--                    <a href="{{route('departemens.create')}}" class="btn btn-primary mb-2">--}}
 {{--                        Tambah Departemen--}}
 {{--                    </a>--}}

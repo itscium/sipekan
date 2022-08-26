@@ -9,6 +9,18 @@
 
         {{-- Configured left links --}}
         @each('adminlte::partials.navbar.menu-item', $adminlte->menu('navbar-left'), 'item')
+        @if(session()->exists('impersonate'))
+            <li class="ml-4">
+                <a class="btn btn-warning" href="#" onclick="event.preventDefault();document.getElementById('impersonate').submit();">
+                    <i class="fas fa-user-ninja mr-2"></i>Kembali ke Panel Admin
+                </a>
+            </li>
+
+            <form method="POST" action="{{ route('impersonate.destroy') }}" id="impersonate" >
+                {{ csrf_field() }}
+                {{ method_field('DELETE') }}
+            </form>
+        @endif
 
         {{-- Custom left links --}}
         @yield('content_top_nav_left')
