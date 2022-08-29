@@ -91,22 +91,13 @@ class KeuanganController extends Controller
     function get_detail_keuangan ($per_awal, $per_akhir, $jenis){
         $departemen = Departemen::where('kepala_departemen', Auth::id())->first();
 //        $code = '';
-        switch ($jenis) {
-            case 'travel';
-            $code = $departemen->travel_expense_code;
-            break;
-            case 'special';
-            $code = $departemen->travel_special_code;
-            break;
-            case 'strategic';
-            $code = $departemen->strategic_plan_code;
-            break;
-            case 'office';
-            $code = $departemen->office_expense_code;
-            break;
-            default:
-                $code = '';
-        }
+        $code = match ($jenis) {
+            'travel' => $departemen->travel_expense_code,
+            'special' => $departemen->travel_special_code,
+            'strategic' => $departemen->strategic_plan_code,
+            'office' => $departemen->office_expense_code,
+            default => '',
+        };
         $detail = [];
         $keuangan = (new A_SALFLDG)->setTable('dbo.ADV_A_SALFLDG')->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $code)
@@ -158,7 +149,15 @@ class KeuanganController extends Controller
             $periode = date('Y-m');
         }
         $detail = $this->get_detail_keuangan($per_awal, $per_akhir, $jenis);
+        $temp = $this->get_keuangan($per_awal, $per_akhir);
+        $saldo = match ($jenis) {
+            'travel' => $temp['sisa_travel'],
+            'special' => $temp['sisa_special_travel'],
+            'strategic' => $temp['sisa_strategic'],
+            'office' => $temp['sisa_office'],
+            default => '',
+        };
 
-        return view('departemen.Keuangan.detail', compact('per_akhir', 'per_awal', 'periode', 'detail'));
+        return view('departemen.Keuangan.detail', compact('per_akhir', 'per_awal', 'periode', 'detail', 'saldo'));
     }
 }

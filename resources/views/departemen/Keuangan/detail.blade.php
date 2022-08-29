@@ -71,19 +71,19 @@
                     </div>
                 </div>
                 <div class="row">
-{{--                    <div class="col-md-12">--}}
-{{--                        <!-- small card -->--}}
-{{--                        <div class="small-box bg-info">--}}
-{{--                            <div class="inner">--}}
-{{--                                <h3></h3>--}}
+                    <div class="col-md-12">
+                        <!-- small card -->
+                        <div class="small-box bg-info">
+                            <div class="inner">
+                                <h3>{{$saldo}}</h3>
 
-{{--                                <p>Saldo Akhir</p>--}}
-{{--                            </div>--}}
-{{--                            <div class="icon">--}}
-{{--                                <i class="fas fa-money-bill-wave"></i>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
+                                <p>Saldo Akhir</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- /.col -->
