@@ -151,10 +151,10 @@ class KeuanganController extends Controller
         $detail = $this->get_detail_keuangan($per_awal, $per_akhir, $jenis);
         $temp = $this->get_keuangan($per_awal, $per_akhir);
         $saldo = match ($jenis) {
-            'travel' => $temp['sisa_travel'],
-            'special' => $temp['sisa_special_travel'],
-            'strategic' => $temp['sisa_strategic'],
-            'office' => $temp['sisa_office'],
+            'travel' => $temp['travel_actual'],
+            'special' => $temp['special_travel_actual'],
+            'strategic' => $temp['strategic_actual'],
+            'office' => $temp['office_actual'],
             default => '',
         };
 

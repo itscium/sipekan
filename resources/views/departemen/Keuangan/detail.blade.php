@@ -77,7 +77,7 @@
                             <div class="inner">
                                 <h3>{{$saldo}}</h3>
 
-                                <p>Saldo Akhir</p>
+                                <p>Actual Expense</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-money-bill-wave"></i>
