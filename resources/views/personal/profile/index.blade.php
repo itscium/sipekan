@@ -27,6 +27,7 @@
 
                         <h3 class="profile-username text-center">{{ Auth::user()->name }}</h3>
 
+{{--                        <p class="text-muted text-center">{{ $user->roles->jabatan->role }}</p>--}}
                         <p class="text-muted text-center">Software Engineer</p>
 
                     </div>

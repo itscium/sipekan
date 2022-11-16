@@ -6,6 +6,7 @@ use App\Models\Departemen;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use phpDocumentor\Reflection\Utils;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -38,6 +39,10 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('head_dept', static function ($user){
             return $user->kepala_departemen->kepala_departemen ?? '';
+        });
+
+        Gate::define('finance', function ($user){
+           return $user->hasRole('finance');
         });
     }
 }

@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Departemen;
+namespace App\Http\Controllers\Report;
 
 use App\Http\Controllers\Controller;
 use App\Models\Departemen;
+use App\Models\Wilayah;
 use App\Models\WIUM\A_SALFLDG;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
-class KeuanganController extends Controller
+class DepartemenExpenseController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct (){
         $this->middleware('auth');
     }
+
     function table ($wilayah_id){
         $table = '';
         switch ($wilayah_id){
@@ -27,11 +28,11 @@ class KeuanganController extends Controller
         return $table;
     }
 
-    function get_keuangan ($per_awal, $per_akhir){
+    function get_keuangan ($per_awal, $per_akhir, $id){
         $wilayah_id = Auth::user()->wilayah_id;
         $table = $this->table($wilayah_id);
 
-        $departemen = Departemen::where('kepala_departemen', Auth::id())->first();
+        $departemen = Departemen::where('id', $id)->first();
         //get Travel Expense
         $travel_actual = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->travel_expense_code)
@@ -128,11 +129,11 @@ class KeuanganController extends Controller
         ];
     }
 
-    function get_detail_keuangan ($per_awal, $per_akhir, $jenis){
+    function get_detail_keuangan ($per_awal, $per_akhir, $jenis, $id){
         $wilayah_id = Auth::user()->wilayah_id;
         $table = $this->table($wilayah_id);
 
-        $departemen = Departemen::where('kepala_departemen', Auth::id())->first();
+        $departemen = Departemen::where('id', $id)->first();
 //        $code = '';
         $code = match ($jenis) {
             'travel' => $departemen->travel_expense_code,
@@ -160,27 +161,14 @@ class KeuanganController extends Controller
         return $detail;
     }
 
-    public function index(){
-        $per_awal = date('Y').'001';
-        if (isset($_GET['periode'])){
-//            $test = $_GET['periode'];
-            $periode = $_GET['periode'];
-            $per_akhir = date('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
-//            dd($per_akhir);
-        }else{
-            $per_akhir = date('Y').'0'.date('m');
-            $periode = date('Y-m');
-        }
-
-
-
-        $departemen = Departemen::where('kepala_departemen', Auth::id())->first();
-        $keuangan = $this->get_keuangan($per_awal, $per_akhir);
-//        dd($travel);
-        return view('departemen.Keuangan.index', compact('departemen', 'keuangan', 'periode'));
+    public function index () {
+        $user =
+        $departemens = Departemen::all();
+        $wilayah = Wilayah::where('id', Auth::user()->wilayah_id)->first();
+        return view('report.index', compact('departemens', 'wilayah'));
     }
 
-    public function detail_keuangan ($jenis) {
+    public function show ($id){
         $per_awal = date('Y').'001';
         if (isset($_GET['periode'])){
 //            $test = $_GET['periode'];
@@ -191,8 +179,29 @@ class KeuanganController extends Controller
             $per_akhir = date('Y').'0'.date('m');
             $periode = date('Y-m');
         }
-        $detail = $this->get_detail_keuangan($per_awal, $per_akhir, $jenis);
-        $temp = $this->get_keuangan($per_awal, $per_akhir);
+
+        $departemen = Departemen::where('id', $id)->first();
+        $keuangan = $this->get_keuangan($per_awal, $per_akhir, $id);
+        return view('report.show', compact('departemen', 'keuangan', 'periode'));
+    }
+
+    public function details($jenis, $id_departemen){
+
+        $per_awal = date('Y').'001';
+        if (isset($_GET['periode'])){
+//            $test = $_GET['periode'];
+            $periode = $_GET['periode'];
+            $per_akhir = date('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
+//            dd($per_akhir);
+        }else{
+            $per_akhir = date('Y').'0'.date('m');
+            $periode = date('Y-m');
+        }
+        $detail = $this->get_detail_keuangan($per_awal, $per_akhir, $jenis, $id_departemen);
+        $temp = $this->get_keuangan($per_awal, $per_akhir, $id_departemen);
+
+        $departemen = Departemen::where('id', $id_departemen)->first();
+//        dd($departemen)
         $saldo = match ($jenis) {
             'travel' => $temp['travel_actual'],
             'special' => $temp['special_travel_actual'],
@@ -200,7 +209,8 @@ class KeuanganController extends Controller
             'office' => $temp['office_actual'],
             default => '',
         };
+//        dd($departemen)
 
-        return view('departemen.Keuangan.detail', compact('per_akhir', 'per_awal', 'periode', 'detail', 'saldo'));
+        return view('report.details', compact('per_akhir', 'per_awal', 'periode', 'detail', 'saldo', 'departemen'));
     }
 }

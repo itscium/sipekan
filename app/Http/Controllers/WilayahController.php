@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Departemen;
+use App\Models\Role;
 use App\Models\User;
+use App\Models\UserRole;
 use App\Models\Wilayah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -91,25 +93,57 @@ class WilayahController extends Controller
         $user->wilayah_id = $request->wilayah_id;
         $user->ACCNT_CODE = $request->kode_akun_personal;
         $user->travel_account = $request->kode_akun_travel;
-        if ($user->save()){
-            return redirect(route('wilayah.pengguna', $user->wilayah_id));
-        }
+        $user->save();
+
+        return redirect(route('wilayah.pengguna', $user->wilayah_id));
     }
 
     public function edit_pengguna ($id) {
 //        $wilayah = Wilayah::find($id);
         $users = User::find($id);
-        return view('master-data.wilayah.wilayah-user-edit', compact('users'));
+        $role =  Role::where('wilayah_id', $users->wilayah_id)->get();
+//        dd($role);
+        return view('master-data.wilayah.wilayah-user-edit', compact('users', 'role'));
     }
 
     public function update_pengguna (Request $request) {
+//        dd($request->role[1]);
         $update_user = User::find($request->id);
         $update_user->name = $request->edit_nama;
         $update_user->email = $request->edit_email;
         $update_user->ACCNT_CODE = $request->edit_kode_akun_personal;
         $update_user->travel_account = $request->edit_kode_akun_travel;
         if ($update_user->save()){
-            return redirect(route('wilayah.pengguna', $update_user->wilayah_id))->with('alert', 'Data berhasil Diupdate');
+            UserRole::where('user_id', $request->id)->delete();
+            if ($request->role !== null){
+                foreach ($request->role as $iValue) {
+                    $roles = new UserRole();
+                    $roles->user_id = $request->id;
+                    $roles->role_id = $iValue;
+                    $roles->save();
+                }
+            }
+        }
+        return redirect(route('wilayah.pengguna', $update_user->wilayah_id))->with('alert', 'Data berhasil Diupdate');
+    }
+
+    public function role($id) {
+        $wilayah = Wilayah::find($id);
+        $roles = Role::where('wilayah_id', $id)->get();
+        return view('master-data.wilayah.wilayah-role', compact('roles', 'wilayah'));
+    }
+
+    public function tambah_role ($id) {
+        $wilayah = Wilayah::find($id);
+        return view('master-data.wilayah.wilayah-role-tambah', compact('wilayah'));
+    }
+
+    public function simpan_role (Request $request) {
+        $role = new Role();
+        $role->role = $request->nama_role;
+        $role->wilayah_id = $request->wilayah_id;
+        if ($role->save()){
+            return redirect(route('wilayah.roles', $role->wilayah_id));
         }
     }
 }

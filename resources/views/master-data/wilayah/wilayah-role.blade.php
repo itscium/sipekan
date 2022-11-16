@@ -1,46 +1,38 @@
 @extends('adminlte::page')
 
-@section('title', 'SIPEKAN | Manajemen Wilayah')
+@section('title', 'SIPEKAN | Manajemen Pengguna Wilayah')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Manajemen Wilayah</h1>
+    <h1 class="m-0 text-dark">Manajemen Roles Wilayah {{$wilayah->nama}}</h1>
 @stop
 
 @section('content')
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card card-cyan">
+                <div class="card-header">
+                    <h3 class="card-title">Tabel Roles</h3>
+                </div>
                 <div class="card-body table-responsive">
-{{--                    <a href="{{route('departemens.create')}}" class="btn btn-primary mb-2">--}}
-{{--                        Tambah Departemen--}}
-{{--                    </a>--}}
+                    <a href="{{route('wilayah.roles.tambah', $wilayah->id)}}" class="btn btn-primary mb-2">
+                        Tambah Roles
+                    </a>
                     <table class="table table-hover table-bordered table-stripped" id="example2">
                         <thead>
                         <tr>
                             <th>No.</th>
-                            <th>Kode Wilayah</th>
-                            <th>Nama Wilayah</th>
+                            <th>Nama</th>
                             <th class="text-center">Opsi</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($wilayah as $key => $item)
+                        @foreach($roles as $key => $item)
                             <tr>
                                 <td>{{$key+1}}</td>
-                                <td>{{$item->kode}}</td>
-                                <td>{{$item->nama}}</td>
+                                <td>{{$item->role}}</td>
                                 <td class="text-center">
-                                    <a href="{{route('wilayah.edit', $item->id)}}" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i>
+                                    <a href="#" class="btn btn-primary btn-xs">
                                         Edit
-                                    </a>
-                                    <a href="{{route('wilayah.departemen', $item->id)}}" class="btn btn-primary btn-sm"><i class="fa fa-plus-square"></i>
-                                        Departemen
-                                    </a>
-                                    <a href="{{route('wilayah.pengguna', $item->id)}}" class="btn btn-info btn-sm"><i class="fa fa-user-plus"></i>
-                                        User
-                                    </a>
-                                    <a href="{{route('wilayah.roles', $item->id)}}" class="btn btn-secondary btn-sm"><i class="fa fa-briefcase"></i>
-                                        Role
                                     </a>
                                 </td>
                             </tr>
@@ -58,6 +50,19 @@
         @method('delete')
         @csrf
     </form>
+    <script>
+        let msg = '{{Session::get('alert')}}';
+        let exist = '{{Session::has('alert')}}';
+        if(exist){
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: msg,
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    </script>
     <script>
         $('#example2').DataTable({
             "responsive": true,

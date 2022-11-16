@@ -35,6 +35,17 @@
                             <label for="edit_kode_akun_travel">Kode Akun Travel Personal</label>
                             <input type="text" class="form-control" id="edit_kode_akun_travel" name="edit_kode_akun_travel" value="{{$users->travel_account}}">
                         </div>
+                        <div class="form-group">
+                            <label for="">Pilih Roles</label>
+                            <ul>
+                                @foreach($role as $item)
+                                    <li>
+                                        <input type="checkbox" id="role" name="role[]" value="{{$item->id}}">
+                                        <label for="role">{{$item->role}}</label>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
                     <!-- /.card-body -->
 

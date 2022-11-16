@@ -73,4 +73,20 @@ class User extends Authenticatable
     public function wilayah (){
         return $this->belongsTo(Wilayah::class);
     }
+
+    public function roles () {
+        return $this->belongsToMany(Role::class, 'user_role', 'user_id', 'role_id');
+    }
+    public function hasRole($role)
+    {
+        return (bool)$this->roles()->where('role', $role)->first();
+    }
+
+//    public function hasAnyRole($roles) {
+//        $res = 0;
+//        foreach ($roles as $role)
+//            if ($this->hasRole(trim($role)))
+//                $res++;
+//        return $res > 0 ? true : false;
+//    }
 }

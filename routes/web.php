@@ -42,6 +42,9 @@ Route::middleware('auth')->group(function (){
         Route::post('/users/simpan', [WilayahController::class, 'simpan_pengguna'])->name('wilayah.pengguna.simpan');
         Route::get('/users/{id}/edit', [WilayahController::class, 'edit_pengguna'])->name('wilayah.pengguna.edit');
         Route::post('/users/update', [WilayahController::class, 'update_pengguna'])->name('wilayah.pengguna.update');
+        Route::get('/{id}/roles', [WilayahController::class, 'role'])->name('wilayah.roles');
+        Route::get('/{id}/roles/tambah', [WilayahController::class, 'tambah_role'])->name('wilayah.roles.tambah');
+        Route::post('/roles/simpan', [WilayahController::class, 'simpan_role'])->name('wilayah.roles.simpan');
     });
     Route::prefix('personal')->group( function (){
         Route::get('/keuangan', [KeuanganController::class, 'index'])->name('personal.keuangan.index');
@@ -55,6 +58,12 @@ Route::middleware('auth')->group(function (){
         Route::get('/keuangan', [App\Http\Controllers\Departemen\KeuanganController::class, 'index'])->name('departemen.keuangan.index');
         Route::get('/keuangan/{jenis}/detail', [App\Http\Controllers\Departemen\KeuanganController::class, 'detail_keuangan'])->name('departemen.keuangan.detail');
     });
+    Route::prefix('report')->group( function (){
+        Route::get('/departemen', [\App\Http\Controllers\Report\DepartemenExpenseController::class, 'index'])->name('report.departemen');
+        Route::get('/departemen/{id}/show', [\App\Http\Controllers\Report\DepartemenExpenseController::class, 'show'])->name('report.departemen.show');
+        Route::get('/{jenis}/departemen/{id_departemen}/details', [\App\Http\Controllers\Report\DepartemenExpenseController::class, 'details'])->name('report.departemen.show.detail');
+    });
+
     Route::get('/impersonate/{id}', [\App\Http\Controllers\ImpersonateController::class, 'impersonate'])->name('impersonate');
     Route::delete('/impersonate/destroy', [\App\Http\Controllers\ImpersonateController::class, 'destroy'])->name('impersonate.destroy');
 });

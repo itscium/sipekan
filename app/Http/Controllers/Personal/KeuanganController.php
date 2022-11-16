@@ -12,13 +12,27 @@ class KeuanganController extends Controller
     public function __construct (){
         $this->middleware('auth');
     }
+    function table ($wilayah_id){
+        $table = '';
+        switch ($wilayah_id){
+            case 1:
+                $table = 'dbo.ADV_A_SALFLDG';
+                break;
+            case 2:
+                $table = 'dbo.JLC_A_SALFLDG';
+        }
+        return $table;
+    }
     function get_detail_keuangan ($account, $tgl_awal, $tgl_akhir)
     {
+        $wilayah_id = Auth::user()->wilayah_id;
+        $table = $this->table($wilayah_id);
+//        dd($table);
         $saldo_akhir ='';
         $list_keuangan = [];
-        $keuangan = (new A_SALFLDG)->setTable('dbo.ADV_A_SALFLDG')->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->whereBetween('TRANS_DATETIME', [$tgl_awal,$tgl_akhir])->orderBy('TRANS_DATETIME', 'ASC')->get();
-        $opening_balance = (new A_SALFLDG)->setTable('dbo.ADV_A_SALFLDG')->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('TRANS_DATETIME', '<=', date('Y-m-d', strtotime('-1 day', strtotime($tgl_awal))))->sum('dbo.ADV_A_SALFLDG.AMOUNT');
-        $balance = (new A_SALFLDG)->setTable('dbo.ADV_A_SALFLDG')->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('TRANS_DATETIME', '<', $tgl_awal)->sum('dbo.ADV_A_SALFLDG.AMOUNT');
+        $keuangan = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->whereBetween('TRANS_DATETIME', [$tgl_awal,$tgl_akhir])->orderBy('TRANS_DATETIME', 'ASC')->get();
+        $opening_balance = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('TRANS_DATETIME', '<=', date('Y-m-d', strtotime('-1 day', strtotime($tgl_awal))))->sum($table.'.AMOUNT');
+        $balance = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('TRANS_DATETIME', '<', $tgl_awal)->sum($table.'.AMOUNT');
         $saldo_awal = $this->number_to_credit(-$opening_balance);
 
 
