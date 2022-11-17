@@ -20,6 +20,10 @@ class KeuanganController extends Controller
                 break;
             case 2:
                 $table = 'dbo.JLC_A_SALFLDG';
+                break;
+            case 3:
+                $table = 'dbo.NSM_A_SALFLDG';
+                break;
         }
         return $table;
     }

@@ -331,11 +331,34 @@ return [
             'can' => ['finance'],
         ],
         [
-            'text' => 'Departments Expense',
-            'url'  => '/report/departemen',
+            'text' => 'Departemen Expense',
             'icon' => 'fas fa-fw fa-briefcase',
+            'submenu' => [
+                [
+                    'text' => 'Travel Expense',
+                    'url'  => '/report/departemen/travel-expense',
+                ],
+                [
+                    'text' => 'Special Travel',
+                    'url'  => '/report/departemen/special-travel',
+                ],
+                [
+                    'text' => 'Strategic Plan',
+                    'url'  => '/report/departemen/strategic-plan',
+                ],
+                [
+                    'text' => 'Office Expense',
+                    'url'  => '/report/departemen/office-expense',
+                ],
+            ],
             'can' => ['finance'],
         ],
+//        [
+//            'text' => 'Departments Expense',
+//            'url'  => '/report/departemen',
+//            'icon' => 'fas fa-fw fa-briefcase',
+//            'can' => ['finance'],
+//        ],
         [   'header' => 'Master Data',
             'classes' => 'text-bold text-uppercase',
             'can' => ['administrator'],

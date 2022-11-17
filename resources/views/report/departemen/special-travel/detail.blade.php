@@ -3,7 +3,7 @@
 @section('title', 'SIPEKAN | Detail Keuangan Departemen')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Detail Keuangan Departemen {{$departemen->nama_departemen}}</h1>
+    <h1 class="m-0 text-dark">Detail Special Travel Departemen {{$departemen->nama_departemen}}</h1>
 @stop
 
 @section('content')
@@ -14,9 +14,9 @@
             <div class="col-md-9">
                 <!-- /.card -->
                 <div class="card">
-                    <div class="card-header-">
-                        <h3 class="card-title">Detail Travel Expense</h3>
-                    </div>
+                    {{--                    <div class="card-header-">--}}
+                    {{--                        <h3 class="card-title">Detail Travel Expense</h3>--}}
+                    {{--                    </div>--}}
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0" style="height: 700px;">
                         <table class="table table-striped table-head-fixed">

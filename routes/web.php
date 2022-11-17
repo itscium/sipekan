@@ -62,6 +62,14 @@ Route::middleware('auth')->group(function (){
         Route::get('/departemen', [\App\Http\Controllers\Report\DepartemenExpenseController::class, 'index'])->name('report.departemen');
         Route::get('/departemen/{id}/show', [\App\Http\Controllers\Report\DepartemenExpenseController::class, 'show'])->name('report.departemen.show');
         Route::get('/{jenis}/departemen/{id_departemen}/details', [\App\Http\Controllers\Report\DepartemenExpenseController::class, 'details'])->name('report.departemen.show.detail');
+        Route::get('/departemen/travel-expense', [\App\Http\Controllers\Report\Departemen\Expense\TravelController::class, 'index'])->name('report.departemen.travel.index');
+        Route::get('/departemen/{id_departemen}/travel-expense/details', [\App\Http\Controllers\Report\Departemen\Expense\TravelController::class, 'detail_travel'])->name('report.departemen.travel.detail');
+        Route::get('/departemen/special-travel', [\App\Http\Controllers\Report\Departemen\Expense\SpecialController::class, 'index'])->name('report.departemen.special.index');
+        Route::get('/departemen/{id_departemen}/special-travel/details', [\App\Http\Controllers\Report\Departemen\Expense\SpecialController::class, 'detail_special'])->name('report.departemen.special.detail');
+        Route::get('/departemen/strategic-plan', [\App\Http\Controllers\Report\Departemen\Expense\StrategicController::class, 'index'])->name('report.departemen.strategic.index');
+        Route::get('/departemen/{id_departemen}/strategic-plan/details', [\App\Http\Controllers\Report\Departemen\Expense\StrategicController::class, 'detail_strategic'])->name('report.departemen.strategic.detail');
+        Route::get('/departemen/office-expense', [\App\Http\Controllers\Report\Departemen\Expense\OfficeController::class, 'index'])->name('report.departemen.office.index');
+        Route::get('/departemen/{id_departemen}/office-expense/details', [\App\Http\Controllers\Report\Departemen\Expense\OfficeController::class, 'detail_office'])->name('report.departemen.office.detail');
     });
 
     Route::get('/impersonate/{id}', [\App\Http\Controllers\ImpersonateController::class, 'impersonate'])->name('impersonate');
