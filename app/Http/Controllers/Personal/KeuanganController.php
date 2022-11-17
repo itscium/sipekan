@@ -34,7 +34,7 @@ class KeuanganController extends Controller
 //        dd($table);
         $saldo_akhir ='';
         $list_keuangan = [];
-        $keuangan = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->whereBetween('TRANS_DATETIME', [$tgl_awal,$tgl_akhir])->orderBy('TRANS_DATETIME', 'ASC')->get();
+        $keuangan = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->whereBetween('TRANS_DATETIME', [$tgl_awal,$tgl_akhir])->get();
         $opening_balance = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('TRANS_DATETIME', '<=', date('Y-m-d', strtotime('-1 day', strtotime($tgl_awal))))->sum($table.'.AMOUNT');
         $balance = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('TRANS_DATETIME', '<', $tgl_awal)->sum($table.'.AMOUNT');
         $saldo_awal = $this->number_to_credit(-$opening_balance);
@@ -55,7 +55,7 @@ class KeuanganController extends Controller
                 $balance += $item['AMOUNT'];
             }
             $list_keuangan[$index]['balance'] = $this->number_to_credit(-$balance);
-            $saldo = (new A_SALFLDG)->setTable('dbo.ADV_A_SALFLDG')->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('TRANS_DATETIME', '<=', date($tgl_akhir))->sum('dbo.ADV_A_SALFLDG.AMOUNT');
+            $saldo = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('TRANS_DATETIME', '<=', date($tgl_akhir))->sum($table.'.AMOUNT');
             $saldo_akhir = $this->number_to_credit(-$saldo);
         }
             return [$saldo_awal, $saldo_akhir, $list_keuangan, $keuangan];
@@ -68,7 +68,6 @@ class KeuanganController extends Controller
 
         return number_format($number);
     }
-
 
     public function index()
     {
