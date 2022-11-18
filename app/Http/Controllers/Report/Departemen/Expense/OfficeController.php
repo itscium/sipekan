@@ -16,7 +16,7 @@ class OfficeController extends Controller
         $this->middleware('auth');
     }
 
-    function table ($wilayah_id){
+    function table_a ($wilayah_id){
         $table = '';
         switch ($wilayah_id){
             case 1:
@@ -24,26 +24,47 @@ class OfficeController extends Controller
                 break;
             case 2:
                 $table = 'dbo.JLC_A_SALFLDG';
+                break;
+            case 3:
+                $table = 'dbo.NSM_A_SALFLDG';
+                break;
+        }
+        return $table;
+    }
+    function table_b ($wilayah_id){
+        $table = '';
+        switch ($wilayah_id){
+            case 1:
+                $table = 'dbo.ADV_B_SALFLDG';
+                break;
+            case 2:
+                $table = 'dbo.JLC_B_SALFLDG';
+                break;
+            case 3:
+                $table = 'dbo.NSM_B_SALFLDG';
+                break;
         }
         return $table;
     }
 
     function get_keuangan ($per_awal, $per_akhir, $id){
         $wilayah_id = Auth::user()->wilayah_id;
-        $table = $this->table($wilayah_id);
+//        $table = $this->table($wilayah_id);
+        $table_a = $this->table_a($wilayah_id);
+        $table_b = $this->table_b($wilayah_id);
 
         $departemen = Departemen::where('id', $id)->first();
         //get Office Expense
-        $office_actual = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+        $office_actual = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->office_expense_code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, $per_akhir])
-            ->sum($table.'.AMOUNT');
-        $office_budget = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+            ->sum($table_a.'.AMOUNT');
+        $office_budget = (new A_SALFLDG)->setTable($table_b)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->office_expense_code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, date('Y'.'012')])
-            ->sum($table.'.AMOUNT');
+            ->sum($table_b.'.AMOUNT');
         $sisa_office = $office_budget - $office_actual;
 
         //change office expense
@@ -52,15 +73,15 @@ class OfficeController extends Controller
         $sisa_office = number_format($sisa_office*-1);
 
         return [
-            'travel_budget' => $office_actual,
-            'travel_actual' => $office_budget,
+            'travel_budget' => $office_budget,
+            'travel_actual' => $office_actual,
             'sisa_travel' => $sisa_office
         ];
     }
 
     function get_detail_keuangan ($per_awal, $per_akhir, $jenis, $id){
         $wilayah_id = Auth::user()->wilayah_id;
-        $table = $this->table($wilayah_id);
+        $table = $this->table_a($wilayah_id);
 
         $departemen = Departemen::where('id', $id)->first();
 //        $code = '';

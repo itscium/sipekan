@@ -19,7 +19,7 @@
 {{--                    </div>--}}
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0" style="height: 700px;">
-                        <table class="table table-striped table-head-fixed">
+                        <table class="table table-sm table-striped table-head-fixed">
                             <thead>
                             <tr>
                                 <th>No</th>
@@ -39,9 +39,9 @@
                                     <td>{{$item['budget']}}</td>
                                     <td>{{$item['actual']}}</td>
                                     <td>{{$item['advance']}}</td>
-                                    <td>{{$item['sisa']}}</td>
+                                    <td class="{{$item['sisa'] < 0 ? 'text-danger font-weight-bold' : ''}}">{{$item['sisa']}}</td>
                                     <td>
-                                        <a href="{{ route('report.departemen.travel.detail', ['id_departemen' => $item['id']]) }}" class="btn btn-success btn-sm"><i class="fas fa-eye"></i> Details</a>
+                                        <a href="{{ route('report.departemen.travel.detail', ['id_departemen' => $item['id']]) }}" class="btn btn-success btn-xs"><i class="fas fa-eye"></i> Details</a>
                                     </td>
                                 </tr>
                             @endforeach

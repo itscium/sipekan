@@ -15,7 +15,7 @@ class KeuanganController extends Controller
     {
         $this->middleware('auth');
     }
-    function table ($wilayah_id){
+    function table_a ($wilayah_id){
         $table = '';
         switch ($wilayah_id){
             case 1:
@@ -23,71 +23,91 @@ class KeuanganController extends Controller
                 break;
             case 2:
                 $table = 'dbo.JLC_A_SALFLDG';
+                break;
+            case 3:
+                $table = 'dbo.NSM_A_SALFLDG';
+                break;
+        }
+        return $table;
+    }
+    function table_b ($wilayah_id){
+        $table = '';
+        switch ($wilayah_id){
+            case 1:
+                $table = 'dbo.ADV_B_SALFLDG';
+                break;
+            case 2:
+                $table = 'dbo.JLC_B_SALFLDG';
+                break;
+            case 3:
+                $table = 'dbo.NSM_B_SALFLDG';
+                break;
         }
         return $table;
     }
 
     function get_keuangan ($per_awal, $per_akhir){
         $wilayah_id = Auth::user()->wilayah_id;
-        $table = $this->table($wilayah_id);
+        $table_a = $this->table_a($wilayah_id);
+        $table_b = $this->table_b($wilayah_id);
 
         $departemen = Departemen::where('kepala_departemen', Auth::id())->first();
         //get Travel Expense
-        $travel_actual = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+        $travel_actual = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->travel_expense_code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, $per_akhir])
-            ->sum($table.'.AMOUNT');
-        $travel_budget = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+            ->sum($table_a.'.AMOUNT');
+        $travel_budget = (new A_SALFLDG)->setTable($table_b)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->travel_expense_code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, date('Y'.'012')])
-            ->sum($table.'.AMOUNT');
-        $travel_advance = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+            ->sum($table_b.'.AMOUNT');
+        $travel_advance = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->user->travel_account)
             ->where('TRANS_DATETIME', '<=', date('Y-m-d'))
-            ->sum($table.'.AMOUNT');
+            ->sum($table_a.'.AMOUNT');
 
         $temp = $travel_advance + $travel_actual;
         $sisa_travel = $travel_budget - $temp;
 
         //get Special Travel
-        $special_travel_actual = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+        $special_travel_actual = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->travel_special_code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, $per_akhir])
-            ->sum($table.'.AMOUNT');
-        $special_travel_budget = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+            ->sum($table_a.'.AMOUNT');
+        $special_travel_budget = (new A_SALFLDG)->setTable($table_b)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->travel_special_code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, date('Y'.'012')])
-            ->sum($table.'.AMOUNT');
+            ->sum($table_b.'.AMOUNT');
         $sisa_special_travel = $special_travel_budget - $special_travel_actual;
 
         //get Strategic Plan
-        $strategic_actual = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+        $strategic_actual = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->strategic_plan_code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, $per_akhir])
-            ->sum($table.'.AMOUNT');
-        $strategic_budget = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+            ->sum($table_a.'.AMOUNT');
+        $strategic_budget = (new A_SALFLDG)->setTable($table_b)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->strategic_plan_code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, date('Y'.'012')])
-            ->sum($table.'.AMOUNT');
+            ->sum($table_b.'.AMOUNT');
         $sisa_strategic = $strategic_budget - $strategic_actual;
 
         //get Office Expense
-        $office_actual = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+        $office_actual = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->office_expense_code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, $per_akhir])
-            ->sum($table.'.AMOUNT');
-        $office_budget = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+            ->sum($table_a.'.AMOUNT');
+        $office_budget = (new A_SALFLDG)->setTable($table_b)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->office_expense_code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, date('Y'.'012')])
-            ->sum($table.'.AMOUNT');
+            ->sum($table_b.'.AMOUNT');
         $sisa_office = $office_budget - $office_actual;
 
         //change into number format and remove (-)
@@ -130,7 +150,7 @@ class KeuanganController extends Controller
 
     function get_detail_keuangan ($per_awal, $per_akhir, $jenis){
         $wilayah_id = Auth::user()->wilayah_id;
-        $table = $this->table($wilayah_id);
+        $table = $this->table_a($wilayah_id);
 
         $departemen = Departemen::where('kepala_departemen', Auth::id())->first();
 //        $code = '';
