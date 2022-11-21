@@ -28,6 +28,30 @@ class OfficeController extends Controller
             case 3:
                 $table = 'dbo.NSM_A_SALFLDG';
                 break;
+            case 4:
+                $table = 'dbo.CSM_A_SALFLDG';
+                break;
+            case 5:
+                $table = 'dbo.SSM_A_SALFLDG';
+                break;
+            case 6:
+                $table = 'dbo.WJC_A_SALFLDG';
+                break;
+            case 7:
+                $table = 'dbo.CJM_A_SALFLDG';
+                break;
+            case 8:
+                $table = 'dbo.EJC_A_SALFLDG';
+                break;
+            case 9:
+                $table = 'dbo.WKD_A_SALFLDG';
+                break;
+            case 10:
+                $table = 'dbo.EKM_A_SALFLDG';
+                break;
+            case 11:
+                $table = 'dbo.NTM_A_SALFLDG';
+                break;
         }
         return $table;
     }
@@ -42,6 +66,30 @@ class OfficeController extends Controller
                 break;
             case 3:
                 $table = 'dbo.NSM_B_SALFLDG';
+                break;
+            case 4:
+                $table = 'dbo.CSM_B_SALFLDG';
+                break;
+            case 5:
+                $table = 'dbo.SSM_B_SALFLDG';
+                break;
+            case 6:
+                $table = 'dbo.WJC_B_SALFLDG';
+                break;
+            case 7:
+                $table = 'dbo.CJM_B_SALFLDG';
+                break;
+            case 8:
+                $table = 'dbo.EJC_B_SALFLDG';
+                break;
+            case 9:
+                $table = 'dbo.WKD_B_SALFLDG';
+                break;
+            case 10:
+                $table = 'dbo.EKM_B_SALFLDG';
+                break;
+            case 11:
+                $table = 'dbo.NTM_B_SALFLDG';
                 break;
         }
         return $table;
