@@ -24,6 +24,9 @@ class KeuanganController extends Controller
             case 3:
                 $table = 'dbo.NSM_A_SALFLDG';
                 break;
+            case 10:
+                $table = 'dbo.EKM_A_SALFLDG';
+                break;
         }
         return $table;
     }
