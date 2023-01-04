@@ -240,8 +240,6 @@ class KeuanganController extends Controller
             $periode = date('Y-m');
         }
 
-
-
         $departemen = Departemen::where('kepala_departemen', Auth::id())->first();
         $keuangan = $this->get_keuangan($per_awal, $per_akhir);
 //        dd($travel);

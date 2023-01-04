@@ -44,5 +44,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('finance', function ($user){
            return $user->hasRole('finance');
         });
+        Gate::define('ada_travel', function ($user){
+           return $user->travel_account !== null;
+        });
     }
 }

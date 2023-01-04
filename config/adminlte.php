@@ -268,6 +268,7 @@ return [
               [
                   'text' => 'Travel Finance',
                   'url'  => '/personal/travel',
+                  'can' => ['ada_travel'],
               ],
           ],
             'can' => ['user'],

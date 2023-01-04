@@ -18,6 +18,13 @@
     </div>
 @stop
 
+@section('footer')
+    <div class="float-right d-none d-sm-block">
+        Created by Raminson Siregar
+    </div>
+    <strong>Copyright &copy; <script>document.write(new Date().getFullYear())</script> <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+@stop
+
 @push('js')
     <script>
         let msg = '{{Session::get('alert')}}';
