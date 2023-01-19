@@ -45,6 +45,12 @@ Route::middleware('auth')->group(function (){
         Route::get('/{id}/roles', [WilayahController::class, 'role'])->name('wilayah.roles');
         Route::get('/{id}/roles/tambah', [WilayahController::class, 'tambah_role'])->name('wilayah.roles.tambah');
         Route::post('/roles/simpan', [WilayahController::class, 'simpan_role'])->name('wilayah.roles.simpan');
+        Route::get('/{id}/salary-allowances', [WilayahController::class, 'salary_allowances'])->name('wilayah.salary');
+        Route::get('/{id}/salary-allowances/tambah', [WilayahController::class, 'tambah_salary'])->name('wilayah.salary.tambah');
+        Route::post('/salary-allowances/simpan', [WilayahController::class, 'simpan_salary'])->name('wilayah.salary.simpan');
+        Route::post('/salary-allowances/import', [WilayahController::class, 'import_salary'])->name('wilayah.salary.import');
+        Route::post('/user-salary/import', [WilayahController::class, 'import_user_salary'])->name('wilayah.user.salary.import');
+
     });
     Route::prefix('personal')->group( function (){
         Route::get('/keuangan', [KeuanganController::class, 'index'])->name('personal.keuangan.index');

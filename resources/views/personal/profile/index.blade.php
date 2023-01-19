@@ -28,7 +28,7 @@
                         <h3 class="profile-username text-center">{{ Auth::user()->name }}</h3>
 
 {{--                        <p class="text-muted text-center">{{ $user->roles->jabatan->role }}</p>--}}
-                        <p class="text-muted text-center">{{ Auth::user()->kepala_departemen->nama_departemen }}</p>
+                        <p class="text-muted text-center">{{ Auth::user()->kepala_departemen->nama_departemen ?? '' }}</p>
 
                     </div>
                     <!-- /.card-body -->
@@ -82,7 +82,12 @@
                     <div class="card-header p-2">
                         <ul class="nav nav-pills">
                             <li class="nav-item"><a class="nav-link active" href="#settings" data-toggle="tab">Settings</a></li>
+                            @if($cek !== null)
                             <li class="nav-item"><a class="nav-link" href="#salary" data-toggle="tab">Salary & Allowances</a></li>
+                            @can('head_dept')
+                                <li class="nav-item"><a class="nav-link" href="#departemen" data-toggle="tab">Departement Budget</a></li>
+                            @endcan
+                            @endif
                         </ul>
                     </div><!-- /.card-header -->
                     <div class="card-body">
@@ -136,19 +141,123 @@
                                 </form>
                             </div>
                             <div class="tab-pane" id="salary">
-                                <dl class="row">
-                                        <dt class="col-sm-4">Description lists</dt>
-                                        <dd class="col-sm-8">A description list is perfect for defining terms.</dd>
-                                        <dt class="col-sm-4">Euismod</dt>
-                                        <dd class="col-sm-8">Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.</dd>
-                                        <dd class="col-sm-8 offset-sm-4">Donec id elit non mi porta gravida at eget metus.</dd>
-                                        <dt class="col-sm-4">Malesuada porta</dt>
-                                        <dd class="col-sm-8">Etiam porta sem malesuada magna mollis euismod.</dd>
-                                        <dt class="col-sm-4">Felis euismod semper eget lacinia</dt>
-                                        <dd class="col-sm-8">Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
-                                        </dd>
-                                    </dl>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <fieldset class="border p-2 mb-2">
+                                            <legend class="w-auto">By Report</legend>
+                                            <table class="table table-sm">
+                                                @foreach($salary as $item)
+                                                    <tr>
+                                                        <th>{{strtoupper($item->allowances->nama)}}</th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <td class="text-right">{{number_format($item->jumlah)}}{{$item->satuan ?? ''}}</td>
+                                                        <td>{{$item->keterangan}}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </table>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <fieldset class="border p-2 mb-2">
+                                            <legend class="w-auto">Monthly Allowances</legend>
+                                            <table class="table table-sm">
+                                                @foreach($monthly as $item)
+                                                    <tr>
+                                                        <th>{{strtoupper($item->allowances->nama)}}</th>
+                                                        <td class="text-right">{{number_format($item->jumlah)}}{{$item->satuan ?? ''}}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </table>
+                                            <dl class="row" style="display: none">
+                                                <dt class="col-sm-2">Wagefactor</dt>
+                                                <dd class="col-sm-1 text-right">67.500</dd>
+                                                <dd class="col-sm-8"></dd>
+                                                <dt class="col-sm-2">Optical Allowances</dt>
+                                                <dd class="col-sm-1 text-right">After 75%</dd>
+                                                <dd class="col-sm-8">Max 2.500.000 for Reinbursment</dd>
+                                                <dt class="col-sm-12">Medical Allowances</dt>
+                                                <dt class="col-sm-2">&nbsp;&nbsp; - OPD</dt>
+                                                <dd class="col-sm-1 text-right">75%</dd>
+                                                <dd class="col-sm-8"></dd>
+                                                <dt class="col-sm-2">&nbsp;&nbsp; - IPD</dt>
+                                                <dd class="col-sm-1 text-right">90%</dd>
+                                                <dd class="col-sm-8"></dd>
+                                                <dt class="col-sm-2">&nbsp;&nbsp; - Tarif Kamar</dt>
+                                                <dd class="col-sm-1 text-right">1.200.000</dd>
+                                                <dd class="col-sm-8">Officers</dd>
+                                                <dd class="col-sm-1 offset-sm-2 text-right">900.000</dd>
+                                                <dd class="col-sm-8">Dept., Assc., Asst.,Contr., HRD,Chief</dd>
+                                                <dd class="col-sm-1 offset-sm-2 text-right">750.000</dd>
+                                                <dd class="col-sm-8">Staff</dd>
+                                                <dt class="col-sm-2">Educational Allowances</dt>
+                                                <dd class="col-sm-1 text-right">60%</dd>
+                                                <dd class="col-sm-8"></dd>
+                                                <dt class="col-sm-2">Road Tax</dt>
+                                                <dd class="col-sm-1 text-right">3.000.000</dd>
+                                                <dd class="col-sm-8">Max</dd>
+                                                <dt class="col-sm-2">Car Insurance</dt>
+                                                <dd class="col-sm-1 text-right">5.000.000</dd>
+                                                <dd class="col-sm-8">Max</dd>
+                                                <dt class="col-sm-2">Perdiem</dt>
+                                                <dd class="col-sm-1 text-right">350.000</dd>
+                                                <dd class="col-sm-8"></dd>
+                                                <dt class="col-sm-2">Single Meal</dt>
+                                                <dd class="col-sm-1 text-right">87.500</dd>
+                                                <dd class="col-sm-8"></dd>
+                                                <dt class="col-sm-12">Milage/km - Pertalite/liter (Base Market)</dt>
+                                                <dt class="col-sm-2">&nbsp;&nbsp; - Car Authorized</dt>
+                                                <dd class="col-sm-1 text-right">2.460</dd>
+                                                <dd class="col-sm-8"></dd>
+                                                <dt class="col-sm-2">&nbsp;&nbsp; - Car Unauthorized</dt>
+                                                <dd class="col-sm-1 text-right">3.040</dd>
+                                                <dd class="col-sm-8"></dd>
+                                                <dt class="col-sm-2">&nbsp;&nbsp; - Scooter Authorized</dt>
+                                                <dd class="col-sm-1 text-right">775</dd>
+                                                <dd class="col-sm-8"></dd>
+                                                <dt class="col-sm-2">&nbsp;&nbsp; - Scooter Unauthorized</dt>
+                                                <dd class="col-sm-1 text-right">1.000</dd>
+                                                <dd class="col-sm-8"></dd>
+                                                <dt class="col-sm-2">Hotel</dt>
+                                                <dd class="col-sm-1 text-right">600.000</dd>
+                                                <dd class="col-sm-8">Max/night</dd>
+                                                <dt class="col-sm-2">Milage</dt>
+                                                <dd class="col-sm-1 text-right">800 KM</dd>
+                                                <dd class="col-sm-8">PP Max</dd>
+                                            </dl>
+                                        </fieldset>
+                                    </div>
+                                </div>
                             </div>
+                            <div class="tab-pane" id="departemen">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <fieldset class="border p-2 mb-2">
+                                            <legend class="w-auto">Budget Departemen</legend>
+                                            <table class="table table-sm">
+                                                @foreach($dept as $item)
+                                                    <tr>
+                                                        <th>{{strtoupper($item->allowances->nama)}}</th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <td class="text-right">{{number_format($item->jumlah)}}{{$item->satuan ?? ''}}</td>
+                                                        <td>{{$item->keterangan}}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </table>
+                                        </fieldset>
+                                    </div>
+                                </div>
                             </div>
                             <!-- /.tab-pane -->
                         </div>

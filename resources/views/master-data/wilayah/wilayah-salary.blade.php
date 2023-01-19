@@ -3,7 +3,7 @@
 @section('title', 'SIPEKAN | Manajemen Pengguna Wilayah')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Manajemen Users Wilayah {{$wilayah->nama}}</h1>
+    <h1 class="m-0 text-dark">Manajemen Salary & Allowances Wilayah {{$wilayah->nama}}</h1>
 @stop
 
 @section('content')
@@ -11,24 +11,22 @@
         <div class="col-12">
             <div class="card card-cyan">
                 <div class="card-header">
-                    <h3 class="card-title">Tabel User</h3>
+                    <h3 class="card-title">Tabel Salary & Allowances</h3>
                 </div>
                 <div class="card-body table-responsive">
                     <div class="row">
                         <div class="col-md-8">
-                            <a href="{{route('wilayah.pengguna.tambah', $wilayah->id)}}" class="btn btn-primary mb-2">
-                                Tambah Users
+                            <a href="{{route('wilayah.salary.tambah', $wilayah->id)}}" class="btn btn-primary mb-2">
+                                Tambah Salary & Allowances
                             </a>
                         </div>
                         <div class="col-md-4">
-                            <form action="{{ route('wilayah.user.salary.import') }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('wilayah.salary.import') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group">
-{{--                                    <label for="exampleInputFile">File input</label>--}}
-                                    <div class="input-group">
-                                        <div>
-                                            <input type="file" name="file">
-                                        </div>
+                                    <div class="custom-file text-left">
+                                        <input type="file" name="file" class="custom-file-input" id="customFile">
+                                        <label class="custom-file-label" for="customFile">Choose file</label>
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary text-right">Import data</button>
@@ -40,24 +38,19 @@
                         <tr>
                             <th>No.</th>
                             <th>Nama</th>
-                            <th>Email</th>
-                            <th>Wilayah</th>
+                            <th>Tipe</th>
                             <th class="text-center">Opsi</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($users as $key => $user)
+                        @foreach($salary as $key => $item)
                             <tr>
                                 <td>{{$key+1}}</td>
-                                <td>{{$user->name}}</td>
-                                <td>{{$user->email}}</td>
-                                <td>{{$user->wilayah->nama}}</td>
+                                <td>{{ucfirst($item->nama)}}</td>
+                                <td>{{ucfirst($item->tipe)}}</td>
                                 <td class="text-center">
-                                    <a href="{{route('wilayah.pengguna.edit', $user->id)}}" class="btn btn-primary btn-xs">
+                                    <a href="#" class="btn btn-warning btn-xs">
                                         Edit
-                                    </a>
-                                    <a href="{{route('impersonate', $user->id)}}" class="btn btn-primary btn-xs">
-                                        <i class="fas fa-user-secret"></i>
                                     </a>
                                 </td>
                             </tr>

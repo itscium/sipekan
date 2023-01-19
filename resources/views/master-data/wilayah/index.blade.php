@@ -42,6 +42,9 @@
                                     <a href="{{route('wilayah.roles', $item->id)}}" class="btn btn-secondary btn-sm"><i class="fa fa-briefcase"></i>
                                         Role
                                     </a>
+                                    <a href="{{route('wilayah.salary', $item->id)}}" class="btn btn-success btn-sm"><i class="fa fa-money-bill"></i>
+                                        Salary & Allowances
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach

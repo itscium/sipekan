@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\SalaryAllowancesImport;
+use App\Imports\UserSalaryImport;
 use App\Models\Departemen;
 use App\Models\Role;
+use App\Models\SalaryAllowances;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Models\Wilayah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 
 class WilayahController extends Controller
 {
@@ -145,5 +149,39 @@ class WilayahController extends Controller
         if ($role->save()){
             return redirect(route('wilayah.roles', $role->wilayah_id));
         }
+    }
+
+    public function salary_allowances ($id){
+        $wilayah = Wilayah::find($id);
+        $salary = SalaryAllowances::where('wilayah_id', $id)->get();
+        return view('master-data.wilayah.wilayah-salary', compact('salary', 'wilayah'));
+    }
+
+    public function tambah_salary ($id){
+        $wilayah = Wilayah::find($id);
+        return view('master-data.wilayah.wilayah-salary-tambah', compact('wilayah'));
+    }
+
+    public function import_salary (Request $request){
+        Excel::import(new SalaryAllowancesImport(), $request->file('file'));
+        return back();
+    }
+    public function import_user_salary (Request $request){
+//        $file = $request->file('file');
+//        (new UserSalaryImport)->import($file);
+        Excel::import(new UserSalaryImport(), request()->file('file'));
+        return redirect()->back()->with('alert', 'User Salary & Allowances Berhasil Di-Import');
+    }
+
+    public function simpan_salary (Request $request){
+        $salary = new SalaryAllowances();
+        $salary->wilayah_id = $request->wilayah_id;
+        $salary->nama = strtolower($request->nama);
+        $salary->tipe = strtolower($request->tipe);
+        $salary->jenis = strtolower($request->jenis);
+        $salary->kategori = strtolower($request->kategori);
+        $salary->keterangan = $request->keterangan;
+        $salary->save();
+        return redirect(route('wilayah.salary', $salary->wilayah_id));
     }
 }
