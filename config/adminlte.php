@@ -265,6 +265,11 @@ return [
                   'text' => 'Personal Finance',
                   'url'  => '/personal/keuangan',
               ],
+//              [
+//                  'text' => 'Payrol',
+//                  'url'  => '/personal/keuangan/payrol',
+//                  'can' => ['wium']
+//              ],
               [
                   'text' => 'Travel Finance',
                   'url'  => '/personal/travel',

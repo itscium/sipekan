@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Personal;
 
 use App\Http\Controllers\Controller;
 use App\Models\WIUM\A_SALFLDG;
+use App\Models\WIUM\Payrol;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class KeuanganController extends Controller
@@ -103,6 +105,7 @@ class KeuanganController extends Controller
 //        dd(date('Y-m-d', strtotime('-1 day', strtotime($tgl_awal))));
             $tgl_akhir = date('Y-m-t');
         }
+//        dd(Auth::user()->wilayah_id);
         $account = Auth::user()->ACCNT_CODE;
         [$saldo_awal, $saldo_akhir, $list_keuangan, $keuangan] = $this->get_detail_keuangan($account, $tgl_awal, $tgl_akhir);
         return view('personal.keuangan.index', compact('keuangan', 'saldo_akhir', 'list_keuangan', 'saldo_awal', 'tgl_akhir', 'tgl_awal'));
@@ -120,5 +123,25 @@ class KeuanganController extends Controller
         $account_travel = Auth::user()->travel_account;
         [$saldo_awal, $saldo_akhir, $list_keuangan, $keuangan] = $this->get_detail_keuangan($account_travel, $tgl_awal, $tgl_akhir);
         return view('personal.keuangan.travel', compact('keuangan', 'saldo_akhir', 'list_keuangan', 'saldo_awal', 'tgl_akhir', 'tgl_awal'));
+    }
+
+    public function payrol(){
+
+//        $period = '';
+        if (isset($_GET['periode'])){
+            $per_akhir = Carbon::parse($_GET['periode'])->format('m');
+            $year = Carbon::parse($_GET['periode'])->format('Y');
+            $period = Carbon::parse($_GET['periode'])->format('Y-m');
+        }else{
+            $per_akhir = date('m');
+            $period = date('Y-m');
+            $year = date('Y');
+        }
+//        $period = $_GET['periode'] ?? date('m');
+//        dd($period);
+//        dd($_GET['periode']);
+        $payrol = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 1)->get();
+        $net = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 0)->first();
+        return view('personal.keuangan.payrol', compact('payrol', 'period', 'net'));
     }
 }

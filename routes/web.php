@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function (){
     Route::prefix('personal')->group( function (){
         Route::get('/keuangan', [KeuanganController::class, 'index'])->name('personal.keuangan.index');
         Route::get('/travel', [KeuanganController::class, 'travel'])->name('personal.keuangan.travel');
+        Route::get('/keuangan/payrol', [KeuanganController::class, 'payrol'])->name('personal.keuangan.payrol');
         Route::get('/profile', [ProfileController::class, 'index'])->name('personal.profile.index');
         Route::get('/change-password', [\App\Http\Controllers\Personal\ChangePasswordController::class, 'index'])->name('personal.change-password.index');
         Route::post('/change-password', [\App\Http\Controllers\Personal\ChangePasswordController::class, 'update_password'])->name('personal.change-password.update');

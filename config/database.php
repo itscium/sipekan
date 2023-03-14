@@ -104,6 +104,17 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
         ],
+        'aps_db' => [
+            'driver'    => env('DB_CONNECTION_APS'),
+            'host'      => env('DB_HOST_APS'),
+            'port'      => env('DB_PORT_APS'),
+            'database'  => env('DB_DATABASE_APS'),
+            'username'  => env('DB_USERNAME_APS'),
+            'password'  => env('DB_PASSWORD_APS'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+        ],
 
 
     ],

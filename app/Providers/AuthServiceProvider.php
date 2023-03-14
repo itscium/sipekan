@@ -48,5 +48,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('ada_travel', function ($user){
            return $user->travel_account !== null;
         });
+        Gate::define('wium', function ($user){
+           return $user->wilayah_id !== 1;
+        });
     }
 }
