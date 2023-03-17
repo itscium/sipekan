@@ -3,7 +3,7 @@
 @section('title', 'SIPEKAN | Payrol')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Detail Payrol</h1>
+    <h1 class="m-0 text-dark">Detail Payroll</h1>
 @stop
 
 @section('content')
@@ -94,4 +94,27 @@
     </div>
 @stop
 
-@push('js')<script>$(() => $("#drPlaceholder").val(''))</script>@endpush
+{{--@push('js')<script>$(() => $("#drPlaceholder").val(''))</script>@endpush--}}
+@push('js')
+    {{--    <script>$(() => $("#drPlaceholder").val(''))</script>--}}
+    <script>
+        let msg = '{{Session::get('alert')}}';
+        let exist = "{{Session::has('alert')}}";
+        if(exist){
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: msg,
+                showConfirmButton: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Wokeeeh <i class="fa fa-thumbs-up"></i>',
+            }).then((result) => {
+                if (result.isConfirmed){
+                    setTimeout(function(){ window.close();},300);
+                }
+            })
+        }
+    </script>
+@endpush

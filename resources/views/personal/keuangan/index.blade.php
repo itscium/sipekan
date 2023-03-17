@@ -17,7 +17,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Detail Keuangan Personal</h3>
                         @if(Auth::user()->wilayah_id === '1')
-                            <a href="{{url('personal/keuangan/payrol')}}" class="btn btn-success float-right">Payrol
+                            <a href="{{url('personal/keuangan/payrol')}}" class="btn btn-success float-right">Payroll
                                 Information</a>
                         @endif
                     </div>
@@ -106,6 +106,3 @@
     </div>
 @stop
 
-@push('js')
-    <script>$(() => $("#drPlaceholder").val(''))</script>
-@endpush

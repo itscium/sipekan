@@ -156,7 +156,10 @@ class KeuanganController extends Controller
         $profile = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 0)->first();
         $earning = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('signal', '+')->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 1)->get();
         $deduction = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('signal', '-')->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 1)->get();
-//        dd($earning);
+//        dd($profile);
+        if ($profile === null){
+            return back()->with("alert", "Payroll belum Diposting oleh Keuangan!");
+        }
         return view('personal.keuangan.wium.pdf-payrol', compact('earning', 'deduction', 'profile'));
 //        $pdf = PDF::loadView('personal.keuangan.wium.pdf-payrol')
 //            ->setPaper('a4');
