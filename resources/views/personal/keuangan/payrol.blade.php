@@ -3,7 +3,7 @@
 @section('title', 'SIPEKAN | Payrol')
 
 @section('content_header')
-    <h1 class="m-0 text-dark"><a href="{{url('personal/keuangan')}}" class="text-danger"><i class="fa fa-backward"></i> </a>Detail Payrol</h1>
+    <h1 class="m-0 text-dark">Detail Payrol</h1>
 @stop
 
 @section('content')
@@ -14,9 +14,10 @@
             <div class="col-md-9">
                 <!-- /.card -->
                 <div class="card">
-{{--                    <div class="card-header">--}}
-{{--                        <h3 class="card-title">Detail Payrol</h3>--}}
-{{--                    </div>--}}
+                    <div class="card-header">
+                        <a href="{{url('personal/keuangan')}}" class="btn btn-danger"><i class="fa fa-backward"></i> Back</a>
+                        <a href="{{route('personal.keuangan.payrol.pdf', $period)}}" target="_blank" class="btn btn-outline-success float-right"><i class="fa fa-print"></i> Print</a>
+                    </div>
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0">
                         <table class="table table-striped table-head-fixed">

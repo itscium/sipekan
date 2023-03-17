@@ -144,4 +144,23 @@ class KeuanganController extends Controller
         $net = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 0)->first();
         return view('personal.keuangan.payrol', compact('payrol', 'period', 'net'));
     }
+
+    public function payrol_pdf($tgl){
+
+            $per_akhir = Carbon::parse($tgl)->format('m');
+            $year = Carbon::parse($tgl)->format('Y');
+//            $period = Carbon::parse($_GET['periode'])->format('Y-m');
+
+//        dd($per_akhir);
+
+        $profile = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 0)->first();
+        $earning = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('signal', '+')->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 1)->get();
+        $deduction = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('signal', '-')->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 1)->get();
+//        dd($earning);
+        return view('personal.keuangan.wium.pdf-payrol', compact('earning', 'deduction', 'profile'));
+//        $pdf = PDF::loadView('personal.keuangan.wium.pdf-payrol')
+//            ->setPaper('a4');
+//
+//        return $pdf->stream();
+    }
 }
