@@ -170,7 +170,7 @@ class StrategicController extends Controller
             $per_akhir = date('Y').'0'.date('m');
             $periode = date('Y-m');
         }
-        $departemens = Departemen::all();
+        $departemens = Departemen::where('wilayah_id', Auth::user()->wilayah_id)->get();
 //dd($departemens);
         $data = [];
         foreach ($departemens as $index=> $item){
