@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function (){
         Route::get('/keuangan', [KeuanganController::class, 'index'])->name('personal.keuangan.index');
         Route::get('/travel', [KeuanganController::class, 'travel'])->name('personal.keuangan.travel');
         Route::get('/keuangan/payrol', [KeuanganController::class, 'payrol'])->name('personal.keuangan.payrol');
+        Route::get('/keuangan/payrol/{tgl}/print', [KeuanganController::class, 'payrol_print'])->name('personal.keuangan.payrol.print');
         Route::get('/keuangan/payrol/{tgl}/pdf', [KeuanganController::class, 'payrol_pdf'])->name('personal.keuangan.payrol.pdf');
         Route::get('/profile', [ProfileController::class, 'index'])->name('personal.profile.index');
         Route::get('/change-password', [\App\Http\Controllers\Personal\ChangePasswordController::class, 'index'])->name('personal.change-password.index');

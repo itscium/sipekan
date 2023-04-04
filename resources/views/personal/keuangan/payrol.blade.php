@@ -16,7 +16,8 @@
                 <div class="card">
                     <div class="card-header">
                         <a href="{{url('personal/keuangan')}}" class="btn btn-danger"><i class="fa fa-backward"></i> Back</a>
-                        <a href="{{route('personal.keuangan.payrol.pdf', $period)}}" target="_blank" class="btn btn-outline-success float-right"><i class="fa fa-print"></i> Print</a>
+                        <a href="{{route('personal.keuangan.payrol.pdf', $period)}}" target="_blank" class="btn btn-outline-warning float-right ml-2"><i class="fa fa-file-pdf"></i> PDF</a>
+                        <a href="{{route('personal.keuangan.payrol.print', $period)}}" target="_blank" class="btn btn-outline-success float-right"><i class="fa fa-print"></i> Print</a>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0">
