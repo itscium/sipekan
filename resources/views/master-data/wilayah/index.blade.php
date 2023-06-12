@@ -20,6 +20,7 @@
                             <th>No.</th>
                             <th>Kode Wilayah</th>
                             <th>Nama Wilayah</th>
+                            <th>Account on WIUM</th>
                             <th class="text-center">Opsi</th>
                         </tr>
                         </thead>
@@ -29,6 +30,7 @@
                                 <td>{{$key+1}}</td>
                                 <td>{{$item->kode}}</td>
                                 <td>{{$item->nama}}</td>
+                                <td>{{$item->account_on_wium}}</td>
                                 <td class="text-center">
                                     <a href="{{route('wilayah.edit', $item->id)}}" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i>
                                         Edit

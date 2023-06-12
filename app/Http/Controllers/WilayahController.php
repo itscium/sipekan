@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\SalaryAllowancesImport;
+use App\Imports\UserImport;
 use App\Imports\UserSalaryImport;
 use App\Models\Departemen;
 use App\Models\Role;
@@ -27,7 +28,17 @@ class WilayahController extends Controller
     }
 
     public function edit($id){
-        return null;
+        $wilayah = Wilayah::findorFail($id);
+        return view('master-data.wilayah.edit', compact('wilayah'));
+    }
+
+    public function update(Request $request){
+        $update = Wilayah::find($request->id);
+        $update->nama = $request->edit_nama;
+        $update->kode = $request->edit_kode;
+        $update->account_on_wium = $request->edit_account_on_wium;
+        $update->save();
+        return redirect(route('wilayah.index'));
     }
 
     public function departemen($id){
@@ -59,7 +70,9 @@ class WilayahController extends Controller
 
     public function edit_departemen($id){
         $departemen = Departemen::find($id);
-        $users = User::where('wilayah_id', $id)->get();
+//        dd($departemen->id);
+        $users = User::where('wilayah_id', '=', $departemen->wilayah_id)->get();
+//        dd($users->id);
         return view('master-data.wilayah.wilayah-departemen-edit', compact('departemen', 'users'));
     }
 
@@ -105,9 +118,15 @@ class WilayahController extends Controller
     public function edit_pengguna ($id) {
 //        $wilayah = Wilayah::find($id);
         $users = User::find($id);
+        $get_user_role = UserRole::where('user_id', $id)->get();
+        $user_role = [];
+        foreach ($get_user_role as $index=>$item){
+            $user_role[$index] = $item->role_id;
+        }
+
         $role =  Role::where('wilayah_id', $users->wilayah_id)->get();
-//        dd($role);
-        return view('master-data.wilayah.wilayah-user-edit', compact('users', 'role'));
+//        dd($user_role);
+        return view('master-data.wilayah.wilayah-user-edit', compact('users', 'role', 'user_role'));
     }
 
     public function update_pengguna (Request $request) {
@@ -171,6 +190,11 @@ class WilayahController extends Controller
 //        (new UserSalaryImport)->import($file);
         Excel::import(new UserSalaryImport(), request()->file('file'));
         return redirect()->back()->with('alert', 'User Salary & Allowances Berhasil Di-Import');
+    }
+
+    public function import_user(Request $request){
+        Excel::import(new UserImport(), request()->file('file'));
+        return redirect()->back()->with('alert', 'User Berhasil Di-Import');
     }
 
     public function simpan_salary (Request $request){

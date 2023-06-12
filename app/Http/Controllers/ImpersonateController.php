@@ -18,6 +18,8 @@ class ImpersonateController extends Controller
     }
     public function destroy(){
 //        Auth::logout();
+//        $id = session('impersonate');
+//        dd($id);
         session()->forget('impersonate');
         Auth::loginUsingId(1);
 

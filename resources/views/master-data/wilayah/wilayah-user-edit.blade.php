@@ -40,7 +40,7 @@
                             <ul>
                                 @foreach($role as $item)
                                     <li>
-                                        <input type="checkbox" id="role" name="role[]" value="{{$item->id}}">
+                                        <input type="checkbox" id="role" name="role[]" {{ in_array($item->id, $user_role) ? 'checked' : '' }} value="{{$item->id}}">
                                         <label for="role">{{$item->role}}</label>
                                     </li>
                                 @endforeach

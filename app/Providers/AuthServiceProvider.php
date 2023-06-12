@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Departemen;
+use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -30,11 +31,11 @@ class AuthServiceProvider extends ServiceProvider
 
         //
         Gate::define('administrator', static function ($user){
-            return $user->type === 'admin';
+            return $user->type == 'admin';
         });
 
         Gate::define('user', static function ($user){
-            return $user->type === 'user';
+            return $user->type == 'user';
         });
 
         Gate::define('head_dept', static function ($user){
@@ -46,10 +47,14 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('ada_travel', function ($user){
-           return $user->travel_account !== null;
+           return $user->travel_account;
         });
-        Gate::define('wium', function ($user){
-           return $user->wilayah_id !== 1;
+        Gate::define('conference_finance', function ($user){
+            $conference = false;
+            if ($user->type == 'user' && $user->wilayah_id != 1 && $user->hasRole('finance')){
+                $conference = true;
+            }
+           return $conference;
         });
     }
 }

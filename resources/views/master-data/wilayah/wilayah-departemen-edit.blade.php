@@ -28,7 +28,7 @@
                             <select name="edit_kepala_departemen" class="form-control" id="kepala_departemen">
                                 <option selected disabled value="">Pilih Kepala Departemen</option>
                                 @foreach($users as $item)
-                                    <option value="{{$item->id}}" {{$departemen->kepala_departemen === $item->id ? 'Selected' : ''}}>{{$item->name}}</option>
+                                    <option value="{{$item->id}}" {{$item->id == $departemen->kepala_departemen ? 'selected' : ''}}>{{$item->name}}</option>
                                 @endforeach
                             </select>
                         </div>

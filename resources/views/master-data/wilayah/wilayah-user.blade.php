@@ -21,18 +21,12 @@
                             </a>
                         </div>
                         <div class="col-md-4">
-                            <form action="{{ route('wilayah.user.salary.import') }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <div class="form-group">
-{{--                                    <label for="exampleInputFile">File input</label>--}}
-                                    <div class="input-group">
-                                        <div>
-                                            <input type="file" name="file">
-                                        </div>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary text-right">Import data</button>
-                            </form>
+                            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#user_salary_import">
+                                Import User Salary
+                            </button>
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#user_import">
+                                Import User
+                            </button>
                         </div>
                     </div>
                     <table class="table table-hover table-bordered table-stripped" id="example2">
@@ -64,6 +58,46 @@
                         @endforeach
                         </tbody>
                     </table>
+                    <form class="modal fade" id="user_salary_import" action="{{ route('wilayah.user.salary.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">User Salary Import</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="file" name="file">
+                                </div>
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Import Data</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <form class="modal fade" id="user_import" action="{{ route('wilayah.user.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">User Import</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="file" name="file">
+                                </div>
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Import User</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'SIPEKAN | Detail Keuangan Departemen')
+@section('title', 'SIPEKAN | Keuangan Personal')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Detail Keuangan Departemen</h1>
+    <h1 class="m-0 text-dark">Ledger Conf./Mission on WIUM</h1>
 @stop
 
 @section('content')
@@ -15,29 +15,38 @@
                 <!-- /.card -->
                 <div class="card">
                     <div class="card-header">
-                        <a href="{{url()->previous()}}" class="btn btn-danger btn-xs float-right"><i class="fa fa-backward"></i> Back</a>
-                        <h3 class="card-title">Detail Travel Expense</h3>
+                        <h3 class="card-title">Detail Ledgers</h3>
+                        @if(Auth::user()->wilayah_id === '1')
+                            <a href="{{url('personal/keuangan/payrol')}}" class="btn btn-success float-right">Payroll
+                                Information</a>
+                        @endif
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0" style="height: 700px;">
                         <table class="table table-striped table-head-fixed">
                             <thead>
                             <tr>
-                                <th>Period</th>
-                                <th>Journal No</th>
-                                <th>Reference</th>
+                                <th>Date</th>
+                                <th>Jurnal No</th>
                                 <th>Description</th>
-                                <th>Base Amount</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                                <th>Balance</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($detail as $item)
+                            <tr>
+                                <td colspan="5" class="text-center"><strong>Opening Balance</strong></td>
+                                <td class="text-right"><strong>{{$saldo_awal}}</strong></td>
+                            </tr>
+                            @foreach($list_keuangan as $item)
                                 <tr>
-                                    <td>{{$item['period']}}</td>
+                                    <td>{{$item['tanggal']}}</td>
                                     <td>{{$item['nomor_jurnal']}}</td>
-                                    <td>{{$item['reference']}}</td>
                                     <td>{{$item['description']}}</td>
-                                    <td class="text-right">{{$item['amount']}}</td>
+                                    <td class="text-right">{{$item['debit']}}    </td>
+                                    <td class="text-right">{{$item['credit']}}</td>
+                                    <td class="text-right">{{$item['balance']}}    </td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -53,18 +62,23 @@
                         <!-- /.card -->
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">FILTER</h3>
+                                <h3 class="card-title"><strong>FILTER</strong></h3>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <form method="GET">
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">PERIODE</label>
-                                        <input type="month" name="periode" onchange="this.form.submit()" value="{{$periode}}" class="form-control" id="exampleInputEmail1">
-                                        {{--                                        value="{{$tgl_akhir}}"--}}
+                                        <label for="exampleInputEmail1">Tanggal Awal</label>
+                                        <input type="date" name="tgl_awal" value="{{$tgl_awal}}" class="form-control"
+                                               id="exampleInputEmail1">
                                     </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Tanggal Akhir</label>
+                                        <input type="date" name="tgl_akhir" value="{{$tgl_akhir}}" class="form-control"
+                                               id="exampleInputPassword1">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary float-right">Pilih Tanggal</button>
                                 </form>
-
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -76,9 +90,9 @@
                         <!-- small card -->
                         <div class="small-box bg-info">
                             <div class="inner">
-                                <h3>{{$saldo}}</h3>
+                                <h3>{{$saldo_akhir}},-</h3>
 
-                                <p>Actual Expense</p>
+                                <p>Saldo Akhir</p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-money-bill-wave"></i>
@@ -92,4 +106,3 @@
     </div>
 @stop
 
-@push('js')<script>$(() => $("#drPlaceholder").val(''))</script>@endpush

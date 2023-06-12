@@ -10,4 +10,5 @@ class Wilayah extends Model
     use HasFactory;
 
     protected $table = 'wilayah';
+    protected $fillable = ['nama', 'kode', 'account_on_wium'];
 }

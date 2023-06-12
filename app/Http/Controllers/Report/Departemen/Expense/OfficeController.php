@@ -146,6 +146,7 @@ class OfficeController extends Controller
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal,$per_akhir])
             ->orderBy('PERIOD', 'DESC')
+            ->orderBy('JRNAL_NO', 'DESC')
             ->get();
         foreach ($keuangan as $index=> $item){
             $detail[$index]['period'] = $item['PERIOD'];
@@ -174,9 +175,9 @@ class OfficeController extends Controller
 //dd($departemens);
         $data = [];
         foreach ($departemens as $index=> $item){
-            $keuangan = $this->get_keuangan($per_awal, $per_akhir, $departemens[$index]['id']);
-            $data[$index]['id'] = $departemens[$index]['id'];
-            $data[$index]['nama_departemen'] = $departemens[$index]['nama_departemen'];
+            $keuangan = $this->get_keuangan($per_awal, $per_akhir, $item['id']);
+            $data[$index]['id'] = $item['id'];
+            $data[$index]['nama_departemen'] = $item['nama_departemen'];
             $data[$index]['budget'] = $keuangan['travel_budget'];
             $data[$index]['actual'] = $keuangan['travel_actual'];
             $data[$index]['sisa'] = $keuangan['sisa_travel'];
