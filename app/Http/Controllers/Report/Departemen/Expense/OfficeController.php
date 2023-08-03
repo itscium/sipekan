@@ -187,7 +187,7 @@ class OfficeController extends Controller
     }
 
     public function detail_office ($id_departemen){
-        $jenis = 'strategic';
+        $jenis = 'office';
 
         $per_awal = date('Y').'001';
         if (isset($_GET['periode'])){
