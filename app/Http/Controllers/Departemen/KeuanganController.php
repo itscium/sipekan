@@ -229,13 +229,16 @@ class KeuanganController extends Controller
     }
 
     public function index(){
-        $per_awal = date('Y').'001';
         if (isset($_GET['periode'])){
+            $per_awal = Carbon::parse($_GET['periode'])->format('Y').'001';
 //            $test = $_GET['periode'];
             $periode = $_GET['periode'];
-            $per_akhir = date('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
+//            dd($_GET['periode']);
+//            $per_akhir = date('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
+            $per_akhir = Carbon::parse($_GET['periode'])->format('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
 //            dd($per_akhir);
         }else{
+            $per_awal = date('Y').'001';
             $per_akhir = date('Y').'0'.date('m');
             $periode = date('Y-m');
         }
@@ -247,13 +250,14 @@ class KeuanganController extends Controller
     }
 
     public function detail_keuangan ($jenis) {
-        $per_awal = date('Y').'001';
         if (isset($_GET['periode'])){
+            $per_awal = Carbon::parse($_GET['periode'])->format('Y').'001';
 //            $test = $_GET['periode'];
             $periode = $_GET['periode'];
-            $per_akhir = date('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
+            $per_akhir = Carbon::parse($_GET['periode'])->format('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
 //            dd($per_akhir);
         }else{
+            $per_awal = date('Y').'001';
             $per_akhir = date('Y').'0'.date('m');
             $periode = date('Y-m');
         }
