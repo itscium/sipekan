@@ -113,7 +113,7 @@ class KeuanganController extends Controller
             ->sum($table_b.'.AMOUNT');
         $travel_advance = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->user->travel_account)
-            ->where('TRANS_DATETIME', '<=', date('Y-m-d'))
+            ->where('PERIOD', '<=', $per_akhir)
             ->sum($table_a.'.AMOUNT');
 
         $temp = $travel_advance + $travel_actual;
