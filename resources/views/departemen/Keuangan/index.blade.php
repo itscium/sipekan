@@ -32,54 +32,24 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <th>1.</th>
-                                <th>Travel Expense</th>
-                                <td>{{$departemen->travel_expense_code ?? ''}}</td>
-                                <td class="text-right">{{$keuangan['travel_budget']}}</td>
-                                <td class="text-right">{{$keuangan['travel_actual']}}</td>
-                                <td class="text-right">{{$keuangan['travel_advance']}}</td>
-                                <td class="text-right">{{$keuangan['sisa_travel']}}</td>
-                                <td class="text-center">
-                                    <a href="{{route('departemen.keuangan.detail', ['jenis' => 'travel'])}}" class="btn btn-outline-info btn-sm">Details</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>2.</th>
-                                <th>Special Travel</th>
-                                <td>{{$departemen->travel_special_code}}</td>
-                                <td class="text-right">{{$keuangan['special_travel_budget']}}</td>
-                                <td class="text-right">{{$keuangan['special_travel_actual']}}</td>
-                                <td class="text-right">-</td>
-                                <td class="text-right">{{$keuangan['sisa_special_travel']}}</td>
-                                <td class="text-center">
-                                    <a href="{{route('departemen.keuangan.detail', ['jenis' => 'special'])}}" class="btn btn-outline-info btn-sm">Details</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>3.</th>
-                                <th>Strategic Plan</th>
-                                <td>{{$departemen->strategic_plan_code}}</td>
-                                <td class="text-right">{{$keuangan['strategic_budget']}}</td>
-                                <td class="text-right">{{$keuangan['strategic_actual']}}</td>
-                                <td class="text-right">-</td>
-                                <td class="text-right">{{$keuangan['sisa_strategic']}}</td>
-                                <td class="text-center">
-                                    <a href="{{route('departemen.keuangan.detail', ['jenis' => 'strategic'])}}" class="btn btn-outline-info btn-sm">Details</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>4.</th>
-                                <th>Office Expense</th>
-                                <td>{{$departemen->office_expense_code}}</td>
-                                <td class="text-right">{{$keuangan['office_budget']}}</td>
-                                <td class="text-right">{{$keuangan['office_actual']}}</td>
-                                <td class="text-right">-</td>
-                                <td class="text-right">{{$keuangan['sisa_office']}}</td>
-                                <td class="text-center">
-                                    <a href="{{route('departemen.keuangan.detail', ['jenis' => 'office'])}}" class="btn btn-outline-info btn-sm">Details</a>
-                                </td>
-                            </tr>
+                            @foreach($data_allowance as $index=>$item)
+                                <tr>
+                                    <th>{{$index+1}}</th>
+                                    <th>{{ucwords($item['account_name'])}}</th>
+                                    <td>{{$item['account_code']}}</td>
+                                    <td class="text-right">{{$item['budget']}}</td>
+                                    <td class="text-right">{{$item['actual']}}</td>
+                                    <td class="text-right">{{ $item['account_code'] === '822110' ? $item['travel_advance'] : '-'}}</td>
+                                    <td class="text-right">{{ $item['sisa']}}</td>
+                                    <td class="text-center">
+                                        <a href="{{route('departemen.keuangan.detail', ['id' => $item['id']])}}" class="btn btn-outline-info btn-sm">Details</a>
+                                    </td>
+                                </tr>
+{{--                            @empty--}}
+{{--                                <tr>--}}
+{{--                                    <td colspan="8" class="text-center">Tidak ada Department Expenses</td>--}}
+{{--                                </tr>--}}
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

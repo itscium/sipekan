@@ -11,4 +11,8 @@ class Wilayah extends Model
 
     protected $table = 'wilayah';
     protected $fillable = ['nama', 'kode', 'account_on_wium'];
+
+    public function users (){
+        return $this->hasMany(User::class, 'wilayah_id', 'id');
+    }
 }

@@ -21,6 +21,7 @@
                             <th>Kode Wilayah</th>
                             <th>Nama Wilayah</th>
                             <th>Account on WIUM</th>
+                            <th>Jumlah User</th>
                             <th class="text-center">Opsi</th>
                         </tr>
                         </thead>
@@ -31,6 +32,7 @@
                                 <td>{{$item->kode}}</td>
                                 <td>{{$item->nama}}</td>
                                 <td>{{$item->account_on_wium}}</td>
+                                <td>{{ $item->users->count() }}</td>
                                 <td class="text-center">
                                     <a href="{{route('wilayah.edit', $item->id)}}" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i>
                                         Edit
@@ -46,6 +48,9 @@
                                     </a>
                                     <a href="{{route('wilayah.salary', $item->id)}}" class="btn btn-success btn-sm"><i class="fa fa-money-bill"></i>
                                         Salary & Allowances
+                                    </a>
+                                    <a href="{{route('wilayah.department-expense', $item->id)}}" class="btn btn-dark btn-sm"><i class="fa fa-building"></i>
+                                        Department Expense
                                     </a>
                                 </td>
                             </tr>

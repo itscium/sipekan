@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Report;
 
 use App\Http\Controllers\Controller;
 use App\Models\Departemen;
+use App\Models\DepartmentExpense;
 use App\Models\Wilayah;
 use App\Models\WIUM\A_SALFLDG;
 use Illuminate\Http\Request;
@@ -28,68 +29,35 @@ class DepartemenExpenseController extends Controller
         return $table;
     }
 
-    function get_keuangan ($per_awal, $per_akhir, $id){
+    function get_keuangan ($per_awal, $per_akhir, $id_allowance, $id_department){
         $wilayah_id = Auth::user()->wilayah_id;
         $table = $this->table($wilayah_id);
+        $expense = DepartmentExpense::where('id', $id_allowance)->first();
 
-        $departemen = Departemen::where('id', $id)->first();
+        $departemen = Departemen::where('id', $id_department)->first();
         //get Travel Expense
         $travel_actual = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
-            ->where('ACCNT_CODE', $departemen->travel_expense_code)
+            ->where('ACCNT_CODE', $expense->account_code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, $per_akhir])
             ->sum($table.'.AMOUNT');
         $travel_budget = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
-            ->where('ACCNT_CODE', $departemen->travel_expense_code)
+            ->where('ACCNT_CODE', $expense->account_code)
             ->where('ANAL_T3', $departemen->department_code)
-            ->whereBetween('PERIOD', [$per_awal, date('Y'.'012')])
+            ->whereBetween('PERIOD', [$per_awal, $per_akhir])
             ->sum($table.'.AMOUNT');
         $travel_advance = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->user->travel_account)
-            ->where('TRANS_DATETIME', '<=', date('Y-m-d'))
+            ->where('PERIOD', '<=', $per_akhir)
             ->sum($table.'.AMOUNT');
-
-        $temp = $travel_advance + $travel_actual;
-        $sisa_travel = $travel_budget - $temp;
-
-        //get Special Travel
-        $special_travel_actual = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
-            ->where('ACCNT_CODE', $departemen->travel_special_code)
-            ->where('ANAL_T3', $departemen->department_code)
-            ->whereBetween('PERIOD', [$per_awal, $per_akhir])
-            ->sum($table.'.AMOUNT');
-        $special_travel_budget = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
-            ->where('ACCNT_CODE', $departemen->travel_special_code)
-            ->where('ANAL_T3', $departemen->department_code)
-            ->whereBetween('PERIOD', [$per_awal, date('Y'.'012')])
-            ->sum($table.'.AMOUNT');
-        $sisa_special_travel = $special_travel_budget - $special_travel_actual;
-
-        //get Strategic Plan
-        $strategic_actual = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
-            ->where('ACCNT_CODE', $departemen->strategic_plan_code)
-            ->where('ANAL_T3', $departemen->department_code)
-            ->whereBetween('PERIOD', [$per_awal, $per_akhir])
-            ->sum($table.'.AMOUNT');
-        $strategic_budget = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
-            ->where('ACCNT_CODE', $departemen->strategic_plan_code)
-            ->where('ANAL_T3', $departemen->department_code)
-            ->whereBetween('PERIOD', [$per_awal, date('Y'.'012')])
-            ->sum($table.'.AMOUNT');
-        $sisa_strategic = $strategic_budget - $strategic_actual;
-
-        //get Office Expense
-        $office_actual = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
-            ->where('ACCNT_CODE', $departemen->office_expense_code)
-            ->where('ANAL_T3', $departemen->department_code)
-            ->whereBetween('PERIOD', [$per_awal, $per_akhir])
-            ->sum($table.'.AMOUNT');
-        $office_budget = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
-            ->where('ACCNT_CODE', $departemen->office_expense_code)
-            ->where('ANAL_T3', $departemen->department_code)
-            ->whereBetween('PERIOD', [$per_awal, date('Y'.'012')])
-            ->sum($table.'.AMOUNT');
-        $sisa_office = $office_budget - $office_actual;
+        if ($expense->account_code === '822110'){
+            $temp = $travel_advance + $travel_actual;
+            $sisa_travel = $travel_budget - $temp;
+        }else{
+            $sisa_travel = $travel_budget - $travel_actual;
+        }
+//        $temp = $travel_advance + $travel_actual;
+//        $sisa_travel = $travel_budget - $temp;
 
         //change into number format and remove (-)
         $travel_actual = number_format($travel_actual*-1);
@@ -97,34 +65,10 @@ class DepartemenExpenseController extends Controller
         $sisa_travel = number_format($sisa_travel*-1);
         $travel_advance = number_format($travel_advance*-1);
 
-        //change special travel
-        $special_travel_actual = number_format($special_travel_actual*-1);
-        $special_travel_budget = number_format($special_travel_budget*-1);
-        $sisa_special_travel = number_format($sisa_special_travel*-1);
-
-        //change strategic plan
-        $strategic_actual = number_format($strategic_actual*-1);
-        $strategic_budget = number_format($strategic_budget*-1);
-        $sisa_strategic = number_format($sisa_strategic*-1);
-
-        //change office expense
-        $office_actual = number_format($office_actual*-1);
-        $office_budget = number_format($office_budget*-1);
-        $sisa_office = number_format($sisa_office*-1);
-
         return [
-            'travel_budget' => $travel_budget,
-            'travel_actual' => $travel_actual,
-            'sisa_travel' => $sisa_travel,
-            'special_travel_budget' => $special_travel_budget,
-            'special_travel_actual' => $special_travel_actual,
-            'sisa_special_travel' => $sisa_special_travel,
-            'strategic_budget' => $strategic_budget,
-            'strategic_actual' => $strategic_actual,
-            'sisa_strategic' => $sisa_strategic,
-            'office_budget' => $office_budget,
-            'office_actual' => $office_actual,
-            'sisa_office' => $sisa_office,
+            'budget' => $travel_budget,
+            'actual' => $travel_actual,
+            'sisa' => $sisa_travel,
             'travel_advance' => $travel_advance,
         ];
     }
@@ -162,27 +106,40 @@ class DepartemenExpenseController extends Controller
     }
 
     public function index () {
-        $user =
         $departemens = Departemen::all();
+        $expense = DepartmentExpense::where('wilayah_id', Auth::user()->wilayah_id)->get();
         $wilayah = Wilayah::where('id', Auth::user()->wilayah_id)->first();
-        return view('report.index', compact('departemens', 'wilayah'));
+        return view('report.index', compact('departemens', 'wilayah', 'expense'));
     }
 
     public function show ($id){
-        $per_awal = date('Y').'001';
         if (isset($_GET['periode'])){
 //            $test = $_GET['periode'];
+            $per_awal = Carbon::parse($_GET['periode'])->format('Y').'001';
             $periode = $_GET['periode'];
             $per_akhir = date('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
 //            dd($per_akhir);
         }else{
+            $per_awal = date('Y').'001';
             $per_akhir = date('Y').'0'.date('m');
             $periode = date('Y-m');
         }
 
-        $departemen = Departemen::where('id', $id)->first();
-        $keuangan = $this->get_keuangan($per_awal, $per_akhir, $id);
-        return view('report.show', compact('departemen', 'keuangan', 'periode'));
+        $departemen = Departemen::where('wilayah_id', Auth::user()->wilayah_id)->get();
+        $allowance = DepartmentExpense::find($id);
+//        dd($departemen);
+        $data_report = [];
+        foreach ($departemen as $index=>$item){
+            $keuangan = $this->get_keuangan($per_awal, $per_akhir, $id, $item['id']);
+            $data_report[$index]['id'] = $item['id'];
+            $data_report[$index]['nama_departemen'] = $item['nama_departemen'];
+            $data_report[$index]['budget'] = $keuangan['budget'];
+            $data_report[$index]['actual'] = $keuangan['actual'];
+            $data_report[$index]['travel_advance'] = $keuangan['travel_advance'];
+            $data_report[$index]['sisa'] = $keuangan['sisa'];
+        }
+//        $keuangan = $this->get_keuangan($per_awal, $per_akhir, $id);
+        return view('report.show', compact('departemen', 'periode', 'data_report', 'allowance'));
     }
 
     public function details($jenis, $id_departemen){

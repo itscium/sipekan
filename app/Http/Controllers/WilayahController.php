@@ -6,6 +6,7 @@ use App\Imports\SalaryAllowancesImport;
 use App\Imports\UserImport;
 use App\Imports\UserSalaryImport;
 use App\Models\Departemen;
+use App\Models\DepartmentExpense;
 use App\Models\Role;
 use App\Models\SalaryAllowances;
 use App\Models\User;
@@ -207,5 +208,37 @@ class WilayahController extends Controller
         $salary->keterangan = $request->keterangan;
         $salary->save();
         return redirect(route('wilayah.salary', $salary->wilayah_id));
+    }
+
+    public function department_expense($id){
+        $wilayah = Wilayah::find($id);
+        $expense = DepartmentExpense::where('wilayah_id', $id)->get();
+        return view('master-data.wilayah.wilayah-department-expense', compact('wilayah', 'expense'));
+    }
+
+    public function tambah_department_expense($id){
+        $wilayah = Wilayah::find($id);
+        return view('master-data.wilayah.wilayah-department-expense-tambah', compact('wilayah'));
+    }
+
+    public function simpan_department_expense(Request $request){
+        $department = new DepartmentExpense();
+        $department->wilayah_id = $request->wilayah_id;
+        $department->nama = $request->nama_department_expense;
+        $department->account_code = $request->account_code;
+        $department->save();
+        return redirect(route('wilayah.department-expense', $department->wilayah_id));
+    }
+    public function edit_department_expense($id){
+        $department = DepartmentExpense::find($id);
+        return view('master-data.wilayah.wilayah-department-expense-edit', compact('department'));
+    }
+
+    public function update_department_expense(Request $request){
+        $update = DepartmentExpense::find($request->id);
+        $update->nama = $request->edit_nama;
+        $update->account_code = $request->edit_account_code;
+        $update->save();
+        return redirect(route('wilayah.department-expense', $update->wilayah_id));
     }
 }

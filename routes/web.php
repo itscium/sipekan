@@ -52,6 +52,11 @@ Route::middleware('auth')->group(function (){
         Route::post('/salary-allowances/simpan', [WilayahController::class, 'simpan_salary'])->name('wilayah.salary.simpan');
         Route::post('/salary-allowances/import', [WilayahController::class, 'import_salary'])->name('wilayah.salary.import');
         Route::post('/user-salary/import', [WilayahController::class, 'import_user_salary'])->name('wilayah.user.salary.import');
+        Route::get('/{id}/department-expense', [WilayahController::class, 'department_expense'])->name('wilayah.department-expense');
+        Route::get('/department-expense/{id}/edit', [WilayahController::class, 'edit_department_expense'])->name('wilayah.department-expense.edit');
+        Route::get('/{id}/department-expense/tambah', [WilayahController::class, 'tambah_department_expense'])->name('wilayah.department-expense.tambah');
+        Route::post('/department-expense/simpan', [WilayahController::class, 'simpan_department_expense'])->name('wilayah.department-expense.simpan');
+        Route::post('/department-expense/update', [WilayahController::class, 'update_department_expense'])->name('wilayah.department-expense.update');
 
     });
     Route::prefix('personal')->group( function (){
@@ -67,7 +72,7 @@ Route::middleware('auth')->group(function (){
     Route::prefix('departemen')->group( function (){
         Route::get('/pegawai', [App\Http\Controllers\Departemen\DepartemenController::class, 'index'])->name('departemen.pegawai.index');
         Route::get('/keuangan', [App\Http\Controllers\Departemen\KeuanganController::class, 'index'])->name('departemen.keuangan.index');
-        Route::get('/keuangan/{jenis}/detail', [App\Http\Controllers\Departemen\KeuanganController::class, 'detail_keuangan'])->name('departemen.keuangan.detail');
+        Route::get('/keuangan/{id}/detail', [App\Http\Controllers\Departemen\KeuanganController::class, 'detail_keuangan'])->name('departemen.keuangan.detail');
     });
     Route::prefix('ledgers')->group( function (){
         Route::get('/conference-on-wium', [\App\Http\Controllers\Conference\LedgerController::class, 'index'])->name('ledger.conference_on_wium.index');

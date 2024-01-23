@@ -15,7 +15,7 @@
                 <!-- /.card -->
                 <div class="card">
                     <div class="card-header">
-                        <a href="{{url()->previous()}}" class="btn btn-danger btn-xs float-right"><i class="fa fa-backward"></i> Back</a>
+                        <a href="{{ route('departemen.keuangan.index') }}" class="btn btn-danger btn-xs float-right"><i class="fa fa-backward"></i> Back</a>
                         <h3 class="card-title">Detail Travel Expense</h3>
                     </div>
                     <!-- /.card-header -->

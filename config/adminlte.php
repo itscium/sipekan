@@ -349,33 +349,40 @@ return [
             'can' => ['finance'],
         ],
         [
-            'text' => 'Departemen Expense',
-            'icon' => 'fas fa-fw fa-briefcase',
-            'active' => ['report/departemen/*','regex:@^report/departemen/[0-9]+$@'],
-            'submenu' => [
-                [
-                    'text' => 'Travel Expense',
-                    'url'  => '/report/departemen/travel-expense',
-                    'active' => ['report/departemen/travel-expense/*','regex:@^report/departemen/travel-expense/[0-9]+$@'],
-                ],
-                [
-                    'text' => 'Special Travel',
-                    'url'  => '/report/departemen/special-travel',
-                    'active' => ['report/departemen/special-travel/*','regex:@^report/departemen/special-travel/[0-9]+$@'],
-                ],
-                [
-                    'text' => 'Strategic Plan',
-                    'url'  => '/report/departemen/strategic-plan',
-                    'active' => ['report/departemen/strategic-plan/*','regex:@^report/departemen/strategic-plan/[0-9]+$@'],
-                ],
-                [
-                    'text' => 'Office Expense',
-                    'url'  => '/report/departemen/office-expense',
-                    'active' => ['report/departemen/office-expense/*','regex:@^report/departemen/office-expense/[0-9]+$@'],
-                ],
-            ],
-            'can' => ['finance'],
+            'text' => 'Departments Expense',
+            'url'  => '/report/departemen',
+            'active' => ['report/departemen*','regex:@^report/departemen/[0-9]+$@'],
+            'icon' => 'fas fa-fw fa-building',
+            'can' => ['finance', 'officers'],
         ],
+//        [
+//            'text' => 'Departemen Expense',
+//            'icon' => 'fas fa-fw fa-briefcase',
+//            'active' => ['report/departemen/*','regex:@^report/departemen/[0-9]+$@'],
+//            'submenu' => [
+//                [
+//                    'text' => 'Travel Expense',
+//                    'url'  => '/report/departemen/travel-expense',
+//                    'active' => ['report/departemen/travel-expense/*','regex:@^report/departemen/travel-expense/[0-9]+$@'],
+//                ],
+//                [
+//                    'text' => 'Special Travel',
+//                    'url'  => '/report/departemen/special-travel',
+//                    'active' => ['report/departemen/special-travel/*','regex:@^report/departemen/special-travel/[0-9]+$@'],
+//                ],
+//                [
+//                    'text' => 'Strategic Plan',
+//                    'url'  => '/report/departemen/strategic-plan',
+//                    'active' => ['report/departemen/strategic-plan/*','regex:@^report/departemen/strategic-plan/[0-9]+$@'],
+//                ],
+//                [
+//                    'text' => 'Office Expense',
+//                    'url'  => '/report/departemen/office-expense',
+//                    'active' => ['report/departemen/office-expense/*','regex:@^report/departemen/office-expense/[0-9]+$@'],
+//                ],
+//            ],
+//            'can' => ['finance'],
+//        ],
 //        [
 //            'text' => 'Departments Expense',
 //            'url'  => '/report/departemen',
