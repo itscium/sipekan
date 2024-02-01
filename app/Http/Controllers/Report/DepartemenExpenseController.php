@@ -17,7 +17,7 @@ class DepartemenExpenseController extends Controller
         $this->middleware('auth');
     }
 
-    function table ($wilayah_id){
+    function table_a ($wilayah_id){
         $table = '';
         switch ($wilayah_id){
             case 1:
@@ -25,31 +25,99 @@ class DepartemenExpenseController extends Controller
                 break;
             case 2:
                 $table = 'dbo.JLC_A_SALFLDG';
+                break;
+            case 3:
+                $table = 'dbo.NSM_A_SALFLDG';
+                break;
+            case 4:
+                $table = 'dbo.CSM_A_SALFLDG';
+                break;
+            case 5:
+                $table = 'dbo.SSM_A_SALFLDG';
+                break;
+            case 6:
+                $table = 'dbo.WJC_A_SALFLDG';
+                break;
+            case 7:
+                $table = 'dbo.CJM_A_SALFLDG';
+                break;
+            case 8:
+                $table = 'dbo.EJC_A_SALFLDG';
+                break;
+            case 9:
+                $table = 'dbo.WKD_A_SALFLDG';
+                break;
+            case 10:
+                $table = 'dbo.EKM_A_SALFLDG';
+                break;
+            case 11:
+                $table = 'dbo.NTM_A_SALFLDG';
+                break;
+        }
+        return $table;
+    }
+    function table_b ($wilayah_id){
+        $table = '';
+        switch ($wilayah_id){
+            case 1:
+                $table = 'dbo.ADV_B_SALFLDG';
+                break;
+            case 2:
+                $table = 'dbo.JLC_B_SALFLDG';
+                break;
+            case 3:
+                $table = 'dbo.NSM_B_SALFLDG';
+                break;
+            case 4:
+                $table = 'dbo.CSM_B_SALFLDG';
+                break;
+            case 5:
+                $table = 'dbo.SSM_B_SALFLDG';
+                break;
+            case 6:
+                $table = 'dbo.WJC_B_SALFLDG';
+                break;
+            case 7:
+                $table = 'dbo.CJM_B_SALFLDG';
+                break;
+            case 8:
+                $table = 'dbo.EJC_B_SALFLDG';
+                break;
+            case 9:
+                $table = 'dbo.WKD_B_SALFLDG';
+                break;
+            case 10:
+                $table = 'dbo.EKM_B_SALFLDG';
+                break;
+            case 11:
+                $table = 'dbo.NTM_B_SALFLDG';
+                break;
         }
         return $table;
     }
 
     function get_keuangan ($per_awal, $per_akhir, $id_allowance, $id_department){
         $wilayah_id = Auth::user()->wilayah_id;
-        $table = $this->table($wilayah_id);
+        $table_a = $this->table_a($wilayah_id);
+        $table_b = $this->table_b($wilayah_id);
         $expense = DepartmentExpense::where('id', $id_allowance)->first();
 
         $departemen = Departemen::where('id', $id_department)->first();
         //get Travel Expense
-        $travel_actual = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+        $travel_actual = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $expense->account_code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, $per_akhir])
-            ->sum($table.'.AMOUNT');
-        $travel_budget = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+            ->sum($table_a.'.AMOUNT');
+        $travel_budget = (new A_SALFLDG)->setTable($table_b)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $expense->account_code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, $per_akhir])
-            ->sum($table.'.AMOUNT');
-        $travel_advance = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+            ->sum($table_b.'.AMOUNT');
+        $travel_advance = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $departemen->user->travel_account)
             ->where('PERIOD', '<=', $per_akhir)
-            ->sum($table.'.AMOUNT');
+            ->sum($table_a.'.AMOUNT');
         if ($expense->account_code === '822110'){
             $temp = $travel_advance + $travel_actual;
             $sisa_travel = $travel_budget - $temp;
@@ -75,7 +143,7 @@ class DepartemenExpenseController extends Controller
 
     function get_detail_keuangan ($per_awal, $per_akhir, $jenis, $id){
         $wilayah_id = Auth::user()->wilayah_id;
-        $table = $this->table($wilayah_id);
+        $table_a = $this->table_a($wilayah_id);
 
         $departemen = Departemen::where('id', $id)->first();
 //        $code = '';
@@ -87,7 +155,7 @@ class DepartemenExpenseController extends Controller
             default => '',
         };
         $detail = [];
-        $keuangan = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
+        $keuangan = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal,$per_akhir])
