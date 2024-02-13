@@ -18,16 +18,16 @@ class ProfileController extends Controller
         $user = User::where('id', Auth::id())->first();
         $cek = UserSalary::where('user_id', Auth::id())->first();
 //        dd($cek);
-        $salary = UserSalary::where('user_id', Auth::id())->where('jumlah', '!=', null)->
+        $salary = UserSalary::where('user_id', Auth::id())->where('jumlah', '!=', null)->where('year', date('Y'))->
             whereHas('allowances', function ($query){
                 $query->where('jenis', 'report')->where('tipe', 'personal');
             })->get();
 //        dd($salary);
-        $dept = UserSalary::where('user_id', Auth::id())->where('jumlah', '!=', null)->
+        $dept = UserSalary::where('user_id', Auth::id())->where('jumlah', '!=', null)->where('year', date('Y'))->
         whereHas('allowances', function ($query){
             $query->where('tipe', 'departemen');
         })->get();
-        $monthly = UserSalary::where('user_id', Auth::id())->where('jumlah', '!=', null)->
+        $monthly = UserSalary::where('user_id', Auth::id())->where('jumlah', '!=', null)->where('year', date('Y'))->
             whereHas('allowances', function ($query){
                 $query->where('tipe', 'personal')->where('kategori', 'monthly');
             })->get();
