@@ -19,7 +19,8 @@ class UserSalaryImport implements ToModel
             'gaji_tunjangan_id'    => $row[1],
             'jumlah'    => $row[2],
             'satuan'    => $row[3],
-            'keterangan'    => $row[4]
+            'keterangan'    => $row[4],
+            'year'    => $row[5]
         ]);
     }
 }

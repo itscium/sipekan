@@ -15,9 +15,14 @@ class UserSalary extends Model
         'jumlah',
         'satuan',
         'keterangan',
+        'year',
     ];
 
     public function allowances(){
         return $this->belongsTo(SalaryAllowances::class, 'gaji_tunjangan_id');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
