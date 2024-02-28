@@ -101,6 +101,7 @@ class DepartemenExpenseController extends Controller
         $table_a = $this->table_a($wilayah_id);
         $table_b = $this->table_b($wilayah_id);
         $expense = DepartmentExpense::where('id', $id_allowance)->first();
+//        dd($expense->account_code);
 
         $departemen = Departemen::where('id', $id_department)->first();
         //get Travel Expense
@@ -146,17 +147,11 @@ class DepartemenExpenseController extends Controller
         $table_a = $this->table_a($wilayah_id);
 
         $departemen = Departemen::where('id', $id)->first();
+        $allowance = DepartmentExpense::where('id', $jenis)->first();
 //        $code = '';
-        $code = match ($jenis) {
-            'travel' => $departemen->travel_expense_code,
-            'special' => $departemen->travel_special_code,
-            'strategic' => $departemen->strategic_plan_code,
-            'office' => $departemen->office_expense_code,
-            default => '',
-        };
         $detail = [];
         $keuangan = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
-            ->where('ACCNT_CODE', $code)
+            ->where('ACCNT_CODE', $allowance->account_code)
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal,$per_akhir])
             ->orderBy('PERIOD', 'DESC')
@@ -222,18 +217,13 @@ class DepartemenExpenseController extends Controller
             $per_akhir = date('Y').'0'.date('m');
             $periode = date('Y-m');
         }
+//        dd($jenis);
         $detail = $this->get_detail_keuangan($per_awal, $per_akhir, $jenis, $id_departemen);
-        $temp = $this->get_keuangan($per_awal, $per_akhir, $id_departemen);
+        $temp = $this->get_keuangan($per_awal, $per_akhir, $jenis, $id_departemen);
 
         $departemen = Departemen::where('id', $id_departemen)->first();
 //        dd($departemen)
-        $saldo = match ($jenis) {
-            'travel' => $temp['travel_actual'],
-            'special' => $temp['special_travel_actual'],
-            'strategic' => $temp['strategic_actual'],
-            'office' => $temp['office_actual'],
-            default => '',
-        };
+        $saldo = $temp['actual'];
 //        dd($departemen)
 
         return view('report.details', compact('per_akhir', 'per_awal', 'periode', 'detail', 'saldo', 'departemen'));
