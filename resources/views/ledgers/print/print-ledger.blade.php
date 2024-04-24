@@ -175,8 +175,7 @@
             <td></td>
             <td><strong>Total for Account</strong></td>
             <td></td>
-            <td></td>
-            <td class="underline"><strong>{{$saldo_akhir}}</strong></td>
+            <td style="text-align: center" colspan="2" class="underline"><strong>{{$saldo_akhir}}</strong></td>
         </tr>
         </tbody>
     </table>
