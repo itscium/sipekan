@@ -53,6 +53,9 @@ class KeuanganController extends Controller
             case 11:
                 $table = 'dbo.NTM_A_SALFLDG';
                 break;
+            case 10002:
+                $table = 'dbo.JBC_A_SALFLDG';
+                break;
         }
         return $table;
     }
@@ -91,6 +94,9 @@ class KeuanganController extends Controller
                 break;
             case 11:
                 $table = 'dbo.NTM_B_SALFLDG';
+                break;
+            case 10002:
+                $table = 'dbo.JBC_B_SALFLDG';
                 break;
         }
         return $table;
