@@ -63,9 +63,9 @@ class KeuanganController extends Controller
 //        dd($table);
         $saldo_akhir ='';
         $list_keuangan = [];
-        $keuangan = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->whereBetween('TRANS_DATETIME', [$tgl_awal,$tgl_akhir])->orderBy('TRANS_DATETIME')->get();
-        $opening_balance = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('TRANS_DATETIME', '<=', date('Y-m-d', strtotime('-1 day', strtotime($tgl_awal))))->sum($table.'.AMOUNT');
-        $balance = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('TRANS_DATETIME', '<', $tgl_awal)->sum($table.'.AMOUNT');
+        $keuangan = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->whereBetween('PERIOD', [$tgl_awal,$tgl_akhir])->orderBy('JRNAL_NO', 'ASC')->get();
+        $opening_balance = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('PERIOD', '<', $tgl_awal)->sum($table.'.AMOUNT');
+        $balance = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('PERIOD', '<', $tgl_awal)->sum($table.'.AMOUNT');
         $saldo_awal = $this->number_to_credit(-$opening_balance);
 
 
@@ -76,6 +76,7 @@ class KeuanganController extends Controller
             $list_keuangan[$index]['tanggal'] = date('M d, Y', strtotime($item['TRANS_DATETIME']));
             $list_keuangan[$index]['description'] = $item['DESCRIPTN'];
             $list_keuangan[$index]['nomor_jurnal'] = $item['JRNAL_NO'];
+            $list_keuangan[$index]['baris_jurnal'] = $item['JRNAL_LINE'];
             if ($item['D_C'] === 'D') {
                 $list_keuangan[$index]['debit'] = number_format($item['AMOUNT'] * -1);
                 $balance += $item['AMOUNT'];
@@ -84,7 +85,7 @@ class KeuanganController extends Controller
                 $balance += $item['AMOUNT'];
             }
             $list_keuangan[$index]['balance'] = $this->number_to_credit(-$balance);
-            $saldo = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('TRANS_DATETIME', '<=', date($tgl_akhir))->sum($table.'.AMOUNT');
+            $saldo = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('PERIOD', '<', $tgl_akhir)->sum($table.'.AMOUNT');
             $saldo_akhir = $this->number_to_credit(-$saldo);
         }
             return [$saldo_awal, $saldo_akhir, $list_keuangan, $keuangan];
@@ -101,31 +102,37 @@ class KeuanganController extends Controller
     public function index()
     {
         if (isset($_GET['tgl_awal']) || isset($_GET['tgl_akhir'])) {
-            $tgl_awal = $_GET['tgl_awal'];
-            $tgl_akhir = $_GET['tgl_akhir'];
+            $periode_awal = $_GET['tgl_awal'];
+            $tgl_awal = Carbon::parse($_GET['tgl_awal'])->format('Y').'0'.Carbon::parse($_GET['tgl_awal'])->format('m');
+            $periode_akhir = $_GET['tgl_akhir'];
+            $tgl_akhir = Carbon::parse($_GET['tgl_akhir'])->format('Y').'0'.Carbon::parse($_GET['tgl_akhir'])->format('m');
         }else{
-            $tgl_awal = date('Y-m-01');
-//        dd(date('Y-m-d', strtotime('-1 day', strtotime($tgl_awal))));
-            $tgl_akhir = date('Y-m-t');
+            $tgl_awal = date('Y').'0'.date('m');
+            $tgl_akhir = date('Y').'0'.date('m');
+            $periode_akhir = date('Y-m');
+            $periode_awal = date('Y-m');
         }
 //        dd(Auth::user()->wilayah_id);
         $account = Auth::user()->ACCNT_CODE;
         [$saldo_awal, $saldo_akhir, $list_keuangan, $keuangan] = $this->get_detail_keuangan($account, $tgl_awal, $tgl_akhir);
-        return view('personal.keuangan.index', compact('keuangan', 'saldo_akhir', 'list_keuangan', 'saldo_awal', 'tgl_akhir', 'tgl_awal'));
+        return view('personal.keuangan.index', compact('keuangan', 'saldo_akhir', 'list_keuangan', 'saldo_awal', 'periode_akhir', 'periode_awal'));
     }
 
     public function travel(){
         if (isset($_GET['tgl_awal']) || isset($_GET['tgl_akhir'])) {
-            $tgl_awal = $_GET['tgl_awal'];
-            $tgl_akhir = $_GET['tgl_akhir'];
+            $periode_awal = $_GET['tgl_awal'];
+            $tgl_awal = Carbon::parse($_GET['tgl_awal'])->format('Y').'0'.Carbon::parse($_GET['tgl_awal'])->format('m');
+            $periode_akhir = $_GET['tgl_akhir'];
+            $tgl_akhir = Carbon::parse($_GET['tgl_akhir'])->format('Y').'0'.Carbon::parse($_GET['tgl_akhir'])->format('m');
         }else{
-            $tgl_awal = date('Y-m-01');
-//        dd(date('Y-m-d', strtotime('-1 day', strtotime($tgl_awal))));
-            $tgl_akhir = date('Y-m-t');
+            $tgl_awal = date('Y').'0'.date('m');
+            $tgl_akhir = date('Y').'0'.date('m');
+            $periode_akhir = date('Y-m');
+            $periode_awal = date('Y-m');
         }
         $account_travel = Auth::user()->travel_account;
         [$saldo_awal, $saldo_akhir, $list_keuangan, $keuangan] = $this->get_detail_keuangan($account_travel, $tgl_awal, $tgl_akhir);
-        return view('personal.keuangan.travel', compact('keuangan', 'saldo_akhir', 'list_keuangan', 'saldo_awal', 'tgl_akhir', 'tgl_awal'));
+        return view('personal.keuangan.travel', compact('keuangan', 'saldo_akhir', 'list_keuangan', 'saldo_awal', 'periode_awal', 'periode_akhir'));
     }
 
     public function payrol(){

@@ -26,7 +26,7 @@
                         <table class="table table-striped table-head-fixed">
                             <thead>
                             <tr>
-                                <th>Date</th>
+                                <th>Date Transaction</th>
                                 <th>Jurnal No</th>
                                 <th>Description</th>
                                 <th>Debit</th>
@@ -42,7 +42,7 @@
                             @foreach($list_keuangan as $item)
                                 <tr>
                                     <td>{{$item['tanggal']}}</td>
-                                    <td>{{$item['nomor_jurnal']}}</td>
+                                    <td>{{$item['nomor_jurnal'] }}-{{ $item['baris_jurnal'] }}</td>
                                     <td>{{$item['description']}}</td>
                                     <td class="text-right">{{$item['debit']}}    </td>
                                     <td class="text-right">{{$item['credit']}}</td>
@@ -68,13 +68,13 @@
                             <div class="card-body">
                                 <form method="GET">
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Tanggal Awal</label>
-                                        <input type="date" name="tgl_awal" value="{{$tgl_awal}}" class="form-control"
+                                        <label for="exampleInputEmail1">Periode Awal</label>
+                                        <input type="month" name="tgl_awal" value="{{$periode_awal}}" class="form-control"
                                                id="exampleInputEmail1">
                                     </div>
                                     <div class="form-group">
-                                        <label for="exampleInputPassword1">Tanggal Akhir</label>
-                                        <input type="date" name="tgl_akhir" value="{{$tgl_akhir}}" class="form-control"
+                                        <label for="exampleInputPassword1">Periode Akhir</label>
+                                        <input type="month" name="tgl_akhir" value="{{$periode_akhir}}" class="form-control"
                                                id="exampleInputPassword1">
                                     </div>
                                     <button type="submit" class="btn btn-primary float-right">Pilih Tanggal</button>
