@@ -316,9 +316,23 @@ return [
 //                ],
 //            ],
 //        ],
-        [   'header' => 'Department',
+        [   'header' => 'Admins Area',
             'classes' => 'text-bold text-uppercase',
-            'can' => ['head_dept'],
+//            'can' => ['head_dept'],
+        ],
+        [
+            'text' => 'Employee Allowance',
+            'url'  => '/admins/employee-allowance',
+            'active' => ['admins/employee*','regex:@^admins/employee/[0-9]+$@'],
+            'icon' => 'fas fa-fw fa-users',
+//            'can' => ['head_dept'],
+        ],
+        [
+            'text' => 'Departemetal Allowance',
+            'url'  => '/departemen/keuangan',
+            'active' => ['departemen/keuangan*','regex:@^departemen/keuangan/[0-9]+$@'],
+            'icon' => 'fas fa-fw fa-cubes',
+//            'can' => ['head_dept'],
         ],
 //        [
 //            'text' => 'Departments Members',
@@ -326,6 +340,10 @@ return [
 //            'icon' => 'fas fa-fw fa-users',
 //            'can' => ['head_dept'],
 //        ],
+        [   'header' => 'Department',
+            'classes' => 'text-bold text-uppercase',
+            'can' => ['head_dept'],
+        ],
         [
             'text' => 'Departments Financial',
             'url'  => '/departemen/keuangan',
@@ -346,7 +364,7 @@ return [
         ],
         [   'header' => 'Report',
             'classes' => 'text-bold text-uppercase',
-            'can' => ['finance'],
+            'can' => ['finance', 'officers'],
         ],
         [
             'text' => 'Departments Expense',
@@ -410,6 +428,12 @@ return [
         [   'header' => 'Settings',
             'classes' => 'text-bold text-uppercase',
             'can' => ['user', 'administrator'],
+        ],
+        [
+            'text' => 'SOP',
+            'route'  => 'sop',
+            'icon' => 'fas fa-fw fa-book',
+            'can' => ['uni', 'administrator'],
         ],
         [
             'text' => 'change_password',
