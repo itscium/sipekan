@@ -96,7 +96,7 @@ class DepartemenExpenseController extends Controller
                 $table = 'dbo.NTM_B_SALFLDG';
                 break;
             case 10002:
-                $table = 'dbo.JBC_A_SALFLDG';
+                $table = 'dbo.JBC_B_SALFLDG';
                 break;
         }
         return $table;
