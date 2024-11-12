@@ -45,6 +45,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('finance', function ($user){
            return $user->hasRole('finance');
         });
+        Gate::define('officers', function ($user){
+           return $user->hasRole('officers');
+        });
 
         Gate::define('ada_travel', function ($user){
            return $user->travel_account;
@@ -55,6 +58,10 @@ class AuthServiceProvider extends ServiceProvider
                 $conference = true;
             }
            return $conference;
+        });
+
+        Gate::define('uni', static function ($user){
+            return $user->wilayah_id == 1;
         });
     }
 }
