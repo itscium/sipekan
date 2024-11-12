@@ -76,6 +76,8 @@ Route::middleware('auth')->group(function (){
     });
     Route::prefix('ledgers')->group( function (){
         Route::get('/conference-on-wium', [\App\Http\Controllers\Conference\LedgerController::class, 'index'])->name('ledger.conference_on_wium.index');
+        Route::get('/conference-on-wium-print', [\App\Http\Controllers\Conference\LedgerController::class, 'print_ledger'])->name('ledger.conference_on_wium.print');
+
     });
     Route::prefix('report')->group( function (){
         Route::get('/departemen', [\App\Http\Controllers\Report\DepartemenExpenseController::class, 'index'])->name('report.departemen');
@@ -90,9 +92,22 @@ Route::middleware('auth')->group(function (){
         Route::get('/departemen/office-expense', [\App\Http\Controllers\Report\Departemen\Expense\OfficeController::class, 'index'])->name('report.departemen.office.index');
         Route::get('/departemen/office-expense/details/{id_departemen}', [\App\Http\Controllers\Report\Departemen\Expense\OfficeController::class, 'detail_office'])->name('report.departemen.office.detail');
     });
+    Route::prefix('admins')->group( function (){
+        Route::get('employee-allowance', [\App\Http\Controllers\WIUM\Allowance\PersonalController::class, 'index'])->name('employee.allowance.index');
+    });
+
+    Route::get('/sop', [\App\Http\Controllers\WIUM\SopController::class, 'index'])->name('sop');
 
     Route::get('/impersonate/{id}', [\App\Http\Controllers\ImpersonateController::class, 'impersonate'])->name('impersonate');
     Route::delete('/impersonate/destroy', [\App\Http\Controllers\ImpersonateController::class, 'destroy'])->name('impersonate.destroy');
+    Route::get('users/non-aktif/{id}', function (string $id){
+       \App\Models\User::where('id', $id)->update(['status' => 0]);
+       return redirect()->back()->with('alert', 'User Non-aktif');
+    })->name('users.non-aktifkan');
+    Route::get('users/aktif/{id}', function (string $id){
+       \App\Models\User::where('id', $id)->update(['status' => 1]);
+        return redirect()->back()->with('alert', 'User Aktif');
+    })->name('users.aktifkan');
 });
 
 //Auth::routes();

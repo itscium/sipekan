@@ -29,7 +29,8 @@ class User extends Authenticatable
         'no_hp',
         'wilayah_id',
         'ACCNT_CODE',
-        'travel_account'
+        'travel_account',
+        'status'
     ];
 
     /**
@@ -80,6 +81,10 @@ class User extends Authenticatable
     public function hasRole($role)
     {
         return (bool)$this->roles()->where('role', $role)->first();
+    }
+
+    public function allowance(){
+        return $this->hasMany(UserSalary::class, 'user_id');
     }
 
 //    public function hasAnyRole($roles) {

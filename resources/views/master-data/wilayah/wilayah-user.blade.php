@@ -36,16 +36,18 @@
                             <th>Nama</th>
                             <th>Email</th>
                             <th>Wilayah</th>
+                            <th>Allowance</th>
                             <th class="text-center">Opsi</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($users as $key => $user)
-                            <tr>
+                            <tr class="{{ $user->status === '0' ? 'bg-danger':'' }}">
                                 <td>{{$key+1}}</td>
                                 <td>{{$user->name}}</td>
                                 <td>{{$user->email}}</td>
                                 <td>{{$user->wilayah->nama}}</td>
+                                <td>{{ \App\Models\UserSalary::where('user_id', $user->id)->where('year', date('Y'))->count() }}</td>
                                 <td class="text-center">
                                     <a href="{{route('wilayah.pengguna.edit', $user->id)}}" class="btn btn-primary btn-xs">
                                         Edit
@@ -53,6 +55,15 @@
                                     <a href="{{route('impersonate', $user->id)}}" class="btn btn-primary btn-xs">
                                         <i class="fas fa-user-secret"></i>
                                     </a>
+                                    @if($user->status === '0')
+                                        <a href="{{route('users.aktifkan', $user->id)}}" class="btn btn-success btn-xs" onclick="return confirm('Are you sure?')">
+                                            <i class="fas fa-check"></i> aktifkan
+                                        </a>
+                                    @else
+                                        <a href="{{route('users.non-aktifkan', $user->id)}}" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure?')">
+                                            <i class="fas fa-ban"></i> Non-aktifkan
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
