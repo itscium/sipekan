@@ -433,7 +433,8 @@ return [
             'text' => 'SOP',
             'route'  => 'sop',
             'icon' => 'fas fa-fw fa-book',
-            'can' => ['uni', 'administrator'],
+//            'can' => ['uni', 'administrator'],
+            'can' => ['administrator'],
         ],
         [
             'text' => 'change_password',
