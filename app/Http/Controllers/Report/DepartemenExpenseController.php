@@ -107,6 +107,8 @@ class DepartemenExpenseController extends Controller
         $table_a = $this->table_a($wilayah_id);
         $table_b = $this->table_b($wilayah_id);
         $expense = DepartmentExpense::where('id', $id_allowance)->first();
+        $sisa_travel = 0;
+        $travel_advance = 0;
 //        dd($expense->account_code);
 
         $departemen = Departemen::where('id', $id_department)->first();
@@ -121,10 +123,12 @@ class DepartemenExpenseController extends Controller
             ->where('ANAL_T3', $departemen->department_code)
             ->whereBetween('PERIOD', [$per_awal, $per_akhir])
             ->sum($table_b.'.AMOUNT');
-        $travel_advance = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
-            ->where('ACCNT_CODE', $departemen->user->travel_account)
-            ->where('PERIOD', '<=', $per_akhir)
-            ->sum($table_a.'.AMOUNT');
+        if (!empty($departemen->user->travel_account)){
+            $travel_advance = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
+                ->where('ACCNT_CODE', $departemen->user->travel_account)
+                ->where('PERIOD', '<=', $per_akhir)
+                ->sum($table_a.'.AMOUNT');
+        }
         if ($expense->account_code === '822110'){
             $temp = $travel_advance + $travel_actual;
             $sisa_travel = $travel_budget - $temp;
