@@ -3,7 +3,9 @@
 use App\Http\Controllers\DepartemenController;
 use App\Http\Controllers\Personal\KeuanganController;
 use App\Http\Controllers\Personal\ProfileController;
+use App\Http\Controllers\Report\Departemen\Expense\OfficeController;
 use App\Http\Controllers\WilayahController;
+use App\Http\Controllers\WIUM\SopController;
 use App\Models\Wilayah;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -89,14 +91,16 @@ Route::middleware('auth')->group(function (){
         Route::get('/departemen/special-travel/details/{id_departemen}', [\App\Http\Controllers\Report\Departemen\Expense\SpecialController::class, 'detail_special'])->name('report.departemen.special.detail');
         Route::get('/departemen/strategic-plan', [\App\Http\Controllers\Report\Departemen\Expense\StrategicController::class, 'index'])->name('report.departemen.strategic.index');
         Route::get('/departemen/strategic-plan/details/{id_departemen}', [\App\Http\Controllers\Report\Departemen\Expense\StrategicController::class, 'detail_strategic'])->name('report.departemen.strategic.detail');
-        Route::get('/departemen/office-expense', [\App\Http\Controllers\Report\Departemen\Expense\OfficeController::class, 'index'])->name('report.departemen.office.index');
-        Route::get('/departemen/office-expense/details/{id_departemen}', [\App\Http\Controllers\Report\Departemen\Expense\OfficeController::class, 'detail_office'])->name('report.departemen.office.detail');
+        Route::get('/departemen/office-expense', [OfficeController::class, 'index'])->name('report.departemen.office.index');
+        Route::get('/departemen/office-expense/details/{id_departemen}', [OfficeController::class, 'detail_office'])->name('report.departemen.office.detail');
     });
     Route::prefix('admins')->group( function (){
         Route::get('employee-allowance', [\App\Http\Controllers\WIUM\Allowance\PersonalController::class, 'index'])->name('employee.allowance.index');
     });
 
-    Route::get('/sop', [\App\Http\Controllers\WIUM\SopController::class, 'index'])->name('sop');
+    Route::get('/sop', [SopController::class, 'index'])->name('sop.index');
+    Route::get('/sop/create', [SopController::class, 'create'])->name('sop.create');
+    Route::post('/sop/store', [SopController::class, 'store'])->name('sop.store');
 
     Route::get('/impersonate/{id}', [\App\Http\Controllers\ImpersonateController::class, 'impersonate'])->name('impersonate');
     Route::delete('/impersonate/destroy', [\App\Http\Controllers\ImpersonateController::class, 'destroy'])->name('impersonate.destroy');
