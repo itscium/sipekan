@@ -103,6 +103,7 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
+            'trust_server_certificate' => 'true',
         ],
         'aps_db' => [
             'driver'    => env('DB_CONNECTION_APS'),
@@ -114,6 +115,7 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
+            'trust_server_certificate' => 'true',
         ],
 
 
