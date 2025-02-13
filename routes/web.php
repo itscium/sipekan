@@ -84,7 +84,7 @@ Route::middleware('auth')->group(function (){
     Route::prefix('report')->group( function (){
         Route::get('/departemen', [\App\Http\Controllers\Report\DepartemenExpenseController::class, 'index'])->name('report.departemen');
         Route::get('/departemen/{id}/show', [\App\Http\Controllers\Report\DepartemenExpenseController::class, 'show'])->name('report.departemen.show');
-        Route::get('/{jenis}/departemen/{id_departemen}/details', [\App\Http\Controllers\Report\DepartemenExpenseController::class, 'details'])->name('report.departemen.show.detail');
+        Route::get('/{jenis}/departemen/{id_departemen}/{periode}/details', [\App\Http\Controllers\Report\DepartemenExpenseController::class, 'details'])->name('report.departemen.show.detail');
         Route::get('/departemen/travel-expense', [\App\Http\Controllers\Report\Departemen\Expense\TravelController::class, 'index'])->name('report.departemen.travel.index');
         Route::get('/departemen/travel-expense/details/{id_departemen}', [\App\Http\Controllers\Report\Departemen\Expense\TravelController::class, 'detail_travel'])->name('report.departemen.travel.detail');
         Route::get('/departemen/special-travel', [\App\Http\Controllers\Report\Departemen\Expense\SpecialController::class, 'index'])->name('report.departemen.special.index');

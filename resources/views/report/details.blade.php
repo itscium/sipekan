@@ -44,7 +44,7 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer text-right">
-                        <a href="{{url()->previous()}}" class="btn btn-danger"><i class="fas fa-arrow-left"></i> Kembali</a>
+                        <a href="{{ url('report/departemen/'.$jenis.'/show?periode='.$periode) }}" class="btn btn-danger"><i class="fas fa-arrow-left"></i> Kembali</a>
                     </div>
                 </div>
                 <!-- /.card -->

@@ -46,7 +46,7 @@
                                     @endif
                                     <td>{{$item['sisa']}}</td>
                                     <td>
-                                        <a href="{{route('report.departemen.show.detail', ['jenis'=>$allowance->id ,'id_departemen'=>$item['id']])}}" class="btn btn-outline-info btn-sm">Details</a>
+                                        <a href="{{route('report.departemen.show.detail', ['jenis'=>$allowance->id ,'id_departemen'=>$item['id'], 'periode' => $periode])}}" class="btn btn-outline-info btn-sm">Details</a>
                                     </td>
                                 </tr>
                             @endforeach

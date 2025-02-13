@@ -159,6 +159,7 @@ class DepartemenExpenseController extends Controller
         $departemen = Departemen::where('id', $id)->first();
         $allowance = DepartmentExpense::where('id', $jenis)->first();
 //        $code = '';
+//        dd($per_awal, $per_akhir);
         $detail = [];
         $keuangan = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $allowance->account_code)
@@ -215,27 +216,32 @@ class DepartemenExpenseController extends Controller
         return view('report.show', compact('departemen', 'periode', 'data_report', 'allowance'));
     }
 
-    public function details($jenis, $id_departemen){
+    public function details($jenis, $id_departemen, $per){
+//        dd($per);
 
-        $per_awal = date('Y').'001';
+//        $per_awal = date('Y').'001';
+
+//        dd($per_awal);
         if (isset($_GET['periode'])){
 //            $test = $_GET['periode'];
             $periode = $_GET['periode'];
-            $per_akhir = date('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
+            $per_awal = Carbon::parse($_GET['periode'])->format('Y').'001';
+            $per_akhir = Carbon::parse($_GET['periode'])->format('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
 //            dd($per_akhir);
         }else{
-            $per_akhir = date('Y').'0'.date('m');
-            $periode = date('Y-m');
+            $per_awal = Carbon::parse($per)->format('Y').'001';
+            $per_akhir = Carbon::parse($per)->format('Y').'0'.Carbon::parse($per)->format('m');
+            $periode = Carbon::parse($per)->format('Y-m');
         }
 //        dd($jenis);
         $detail = $this->get_detail_keuangan($per_awal, $per_akhir, $jenis, $id_departemen);
         $temp = $this->get_keuangan($per_awal, $per_akhir, $jenis, $id_departemen);
 
         $departemen = Departemen::where('id', $id_departemen)->first();
-//        dd($departemen)
+//        dd($temp);
         $saldo = $temp['actual'];
 //        dd($departemen)
 
-        return view('report.details', compact('per_akhir', 'per_awal', 'periode', 'detail', 'saldo', 'departemen'));
+        return view('report.details', compact('per_akhir', 'per_awal', 'periode', 'detail', 'saldo', 'departemen', 'jenis'));
     }
 }
