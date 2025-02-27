@@ -69,17 +69,15 @@
         <meta name="msapplication-TileColor" content="#ffffff">
         <meta name="msapplication-TileImage" content="{{ asset('favicon/ms-icon-144x144.png') }}">
     @endif
-    <!-- Google Tag Manager -->
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-95PTX5VK0W"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NCWW6KV1T1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
 
-        gtag('config', 'G-95PTX5VK0W');
+        gtag('config', 'G-NCWW6KV1T1');
     </script>
-    <!-- End Google Tag Manager -->
 </head>
 
 <body class="@yield('classes_body')" @yield('body_data')>
