@@ -56,7 +56,7 @@
                             </div>
                         </div>
                         <div class="card-body p-lg-4">
-                            {!! $select->isi !!}
+                            {!! $select->isi?? '' !!}
                         </div>
                     </div>
                 </div>

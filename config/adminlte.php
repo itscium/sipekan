@@ -258,6 +258,12 @@ return [
             'can' => ['user'],
         ],
         [
+            'text' => 'attendance',
+            'url'  => 'personal/attendance',
+            'icon' => 'fas fa-fw fa-file-signature',
+            'can' => ['uni'],
+        ],
+        [
           'text' => 'Financial',
           'icon' => 'fas fa-fw fa-money-bill',
           'submenu' => [
@@ -526,16 +532,6 @@ return [
                     'type' => 'js',
                     'asset' => false,
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js',
-                ],
-            ],
-        ],
-        'Sweetalert2' => [
-            'active' => true,
-            'files' => [
-                [
-                    'type' => 'js',
-                    'asset' => false,
-                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@11',
                 ],
             ],
         ],

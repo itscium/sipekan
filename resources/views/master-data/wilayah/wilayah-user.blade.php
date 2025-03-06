@@ -121,19 +121,6 @@
         @csrf
     </form>
     <script>
-        let msg = '{{Session::get('alert')}}';
-        let exist = '{{Session::has('alert')}}';
-        if(exist){
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: msg,
-                showConfirmButton: false,
-                timer: 1500
-            })
-        }
-    </script>
-    <script>
         $('#example2').DataTable({
             "responsive": true,
         });

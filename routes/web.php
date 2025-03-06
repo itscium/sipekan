@@ -35,6 +35,13 @@ Route::middleware('auth')->group(function (){
         Route::get('/', [WilayahController::class, 'index'])->name('wilayah.index');
         Route::get('/edit/{id}', [WilayahController::class, 'edit'])->name('wilayah.edit');
         Route::post('/update', [WilayahController::class, 'update'])->name('wilayah.update');
+        Route::get('/{id}/fingerprint-machine', [\App\Http\Controllers\FPMachineController::class, 'index'])->name('wilayah.fingerprint-machine');
+        Route::get('/{id_wilayah}/fingerprint-machine/{id_machine}/list-user', [\App\Http\Controllers\FPMachineController::class, 'ListUser'])->name('wilayah.fingerprint-machine.list-user');
+        Route::get('/{id_user}/{id}/hubungkan-user', [\App\Http\Controllers\FPMachineController::class, 'HubungkanUser'])->name('wilayah.fingerprint-machine.hubungkan-user');
+        Route::post('/fingerprint/connet-user', [\App\Http\Controllers\FPMachineController::class, 'connectUser'])->name('wilayah.fingerprint-machine.connect-user');
+        Route::get('/fingerprint/get-user', [\App\Http\Controllers\FPMachineController::class, 'getUsersMachine'])->name('wilayah.fingerprint-machine.get-user');
+        Route::get('/fingerprint/get-log-attendance', [\App\Http\Controllers\FPMachineController::class, 'GetLogAttendance'])->name('wilayah.fingerprint-machine.get-log-attendance');
+        Route::get('/fingerprint/{id_wilayah}/{id_machine}/log-attendance', [\App\Http\Controllers\FPMachineController::class, 'LogAttendance'])->name('wilayah.fingerprint-machine.log-attendance');
         Route::get('/{id}/departemen', [WilayahController::class, 'departemen'])->name('wilayah.departemen');
         Route::get('/{id}/departemen/tambah', [WilayahController::class, 'tambah_departemen'])->name('wilayah.departemen.tambah');
         Route::post('/departemen/simpan', [WilayahController::class, 'simpan_departemen'])->name('wilayah.departemen.simpan');
@@ -68,6 +75,7 @@ Route::middleware('auth')->group(function (){
         Route::get('/keuangan/payrol/{tgl}/print', [KeuanganController::class, 'payrol_print'])->name('personal.keuangan.payrol.print');
         Route::get('/keuangan/payrol/{tgl}/pdf', [KeuanganController::class, 'payrol_pdf'])->name('personal.keuangan.payrol.pdf');
         Route::get('/profile', [ProfileController::class, 'index'])->name('personal.profile.index');
+        Route::get('/attendance', [\App\Http\Controllers\WIUM\AttendanceController::class, 'index'])->name('personal.attendance.index');
         Route::get('/change-password', [\App\Http\Controllers\Personal\ChangePasswordController::class, 'index'])->name('personal.change-password.index');
         Route::post('/change-password', [\App\Http\Controllers\Personal\ChangePasswordController::class, 'update_password'])->name('personal.change-password.update');
     });

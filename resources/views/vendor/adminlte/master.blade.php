@@ -81,6 +81,8 @@
 </head>
 
 <body class="@yield('classes_body')" @yield('body_data')>
+@include('sweetalert::alert')
+
     {{-- Body Content --}}
     @yield('body')
 

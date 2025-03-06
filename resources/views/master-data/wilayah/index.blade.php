@@ -52,6 +52,11 @@
                                     <a href="{{route('wilayah.department-expense', $item->id)}}" class="btn btn-dark btn-sm"><i class="fa fa-building"></i>
                                         Department Expense
                                     </a>
+                                    @if($item->kode == 'UNI')
+                                    <a href="{{ route('wilayah.fingerprint-machine', $item->id) }}" class="btn btn-danger btn-sm"><i class="fa fa-fingerprint"></i>
+                                        Manage FP
+                                    </a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

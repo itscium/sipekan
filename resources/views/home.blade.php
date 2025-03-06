@@ -26,17 +26,4 @@
 @stop
 
 @push('js')
-    <script>
-        let msg = '{{Session::get('alert')}}';
-        let exist = '{{Session::has('alert')}}';
-        if(exist){
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: msg,
-                showConfirmButton: false,
-                timer: 2000
-            })
-        }
-    </script>
 @endpush
