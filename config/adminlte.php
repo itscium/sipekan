@@ -258,9 +258,9 @@ return [
             'can' => ['user'],
         ],
         [
-            'text' => 'attendance',
+            'text' => 'Attendance',
             'url'  => 'personal/attendance',
-            'icon' => 'fas fa-fw fa-file-signature',
+            'icon' => 'fas fa-fw fa-fingerprint',
             'can' => ['uni'],
         ],
         [

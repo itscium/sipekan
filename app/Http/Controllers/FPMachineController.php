@@ -133,8 +133,8 @@ class FPMachineController extends Controller
     public function GetLogAttendance()
     {
         $machine = FPMachine::all();
-        $current_date = date('Y-m-d');
-//        $current_date = '2025-02-24';
+        $current_date1 = date('2025-03-09');
+        $current_date2 = date('Y-m-d');
         $ip = '';
         $location = '';
         $machine_id = '';
@@ -180,7 +180,7 @@ class FPMachineController extends Controller
                     $date = date('Y-m-d', strtotime($datetime));
                     $time = date('H:i:s', strtotime($datetime));
 
-                    if ($date == $current_date ) {
+                    if ($date >= $current_date1 && $date < $current_date2 ) {
                         $cek = FPMachineLog::where('fp_machine_id', $machine_id)
                             ->where('pin', $pin)
                             ->where('status', $status)

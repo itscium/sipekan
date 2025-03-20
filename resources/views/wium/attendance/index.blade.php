@@ -74,21 +74,22 @@
             <div class="col-3">
                 <!-- /.card -->
                 <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title"><strong>FILTER</strong></h3>
-                    </div>
+{{--                    <div class="card-header">--}}
+{{--                        <h3 class="card-title"><strong>FILTER</strong></h3>--}}
+{{--                    </div>--}}
                     <!-- /.card-header -->
                     <div class="card-body">
                         <form method="GET">
+                            @csrf
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Start Date</label>
-                                <input type="date" name="tgl_awal" class="form-control" id="exampleInputEmail1">
+                                <input type="date" name="tgl_awal" value="{{ $tgl_awal }}" class="form-control" id="exampleInputEmail1">
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1">End Date</label>
-                                <input type="date" name="tgl_akhir" class="form-control" id="exampleInputPassword1">
+                                <input type="date" name="tgl_akhir" value="{{ $tgl_akhir }}" class="form-control" id="exampleInputPassword1">
                             </div>
-                            <button type="submit" class="btn btn-primary float-right" disabled>Coming Soon!!</button>
+                            <button type="submit" class="btn btn-primary float-right">Filter Date</button>
                         </form>
                     </div>
                     <!-- /.card-body -->
