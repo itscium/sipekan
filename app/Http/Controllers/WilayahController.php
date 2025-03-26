@@ -112,7 +112,7 @@ class WilayahController extends Controller
         $user->ACCNT_CODE = $request->kode_akun_personal;
         $user->travel_account = $request->kode_akun_travel;
         $user->save();
-
+        alert()->success('Success','Pengguna Berhasil Ditambahkan');
         return redirect(route('wilayah.pengguna', $user->wilayah_id));
     }
 
@@ -190,7 +190,8 @@ class WilayahController extends Controller
 //        $file = $request->file('file');
 //        (new UserSalaryImport)->import($file);
         Excel::import(new UserSalaryImport(), request()->file('file'));
-        return redirect()->back()->with('alert', 'User Salary & Allowances Berhasil Di-Import');
+        alert()->success('Success','User Salary & Allowances Berhasil Di-Import');
+        return redirect()->back();
     }
 
     public function import_user(Request $request){
