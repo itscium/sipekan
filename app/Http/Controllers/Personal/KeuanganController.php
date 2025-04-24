@@ -68,6 +68,8 @@ class KeuanganController extends Controller
         $balance = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('PERIOD', '<', $tgl_awal)->sum($table.'.AMOUNT');
         $saldo_awal = $this->number_to_credit(-$opening_balance);
 
+        $saldo = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('PERIOD', '<=', $tgl_akhir)->sum('AMOUNT');
+
 
         foreach ($keuangan as $index => $item) {
             $list_keuangan[$index]['credit'] = '';
@@ -85,7 +87,8 @@ class KeuanganController extends Controller
                 $balance += $item['AMOUNT'];
             }
             $list_keuangan[$index]['balance'] = $this->number_to_credit(-$balance);
-            $saldo = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('PERIOD', '<', $tgl_akhir)->sum($table.'.AMOUNT');
+//            $saldo = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('PERIOD', '<', $tgl_akhir)->toSql();
+//            dd($saldo);
             $saldo_akhir = $this->number_to_credit(-$saldo);
         }
             return [$saldo_awal, $saldo_akhir, $list_keuangan, $keuangan];
@@ -114,7 +117,9 @@ class KeuanganController extends Controller
         }
 //        dd(Auth::user()->wilayah_id);
         $account = Auth::user()->ACCNT_CODE;
+//        dd($account);
         [$saldo_awal, $saldo_akhir, $list_keuangan, $keuangan] = $this->get_detail_keuangan($account, $tgl_awal, $tgl_akhir);
+//        dd($tgl_akhir);
         return view('personal.keuangan.index', compact('keuangan', 'saldo_akhir', 'list_keuangan', 'saldo_awal', 'periode_akhir', 'periode_awal'));
     }
 
