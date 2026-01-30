@@ -17,7 +17,7 @@ class LedgerController extends Controller
     {
         $wilayah_id = Auth::user()->wilayah_id;
 //        $table = $this->table($wilayah_id);
-        $table = 'dbo.ADV_A_SALFLDG';
+        $table = 'dbo.CIU_A_SALFLDG';
 //        dd($table);
         $saldo_akhir ='';
         $list_keuangan = [];

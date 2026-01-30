@@ -10,7 +10,7 @@ class A_SALFLDG extends Model
 {
     use HasFactory;
     protected $connection = 'sunplus_db';
-//    protected $table = 'dbo.ADV_A_SALFLDG';
+//    protected $table = 'dbo.CIU_A_SALFLDG';
 
 
 }

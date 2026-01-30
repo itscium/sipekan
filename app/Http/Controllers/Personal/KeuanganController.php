@@ -18,7 +18,7 @@ class KeuanganController extends Controller
         $table = '';
         switch ($wilayah_id){
             case 1:
-                $table = 'dbo.ADV_A_SALFLDG';
+                $table = 'dbo.CIU_A_SALFLDG';
                 break;
             case 2:
                 $table = 'dbo.JLC_A_SALFLDG';
