@@ -55,6 +55,9 @@ class TravelController extends Controller
             case 10002:
                 $table = 'dbo.JBC_A_SALFLDG';
                 break;
+            case 20003:
+                $table = 'dbo.WIU_A_SALFLDG';
+                break;  
         }
         return $table;
     }
@@ -96,6 +99,9 @@ class TravelController extends Controller
                 break;
             case 10002:
                 $table = 'dbo.JBC_B_SALFLDG';
+                break;
+            case 20003:
+                $table = 'dbo.WIU_A_SALFLDG';
                 break;
         }
         return $table;

@@ -53,6 +53,9 @@ class KeuanganController extends Controller
             case 10002:
                 $table = 'dbo.JBC_A_SALFLDG';
                 break;
+            case 20003:
+                $table = 'dbo.WIU_A_SALFLDG';
+                break;    
         }
         return $table;
     }
