@@ -45,7 +45,7 @@ return [
     |
     */
 
-    'logo' => '<b>SIPekan UIKB</b>',
+    'logo' => '<b>SIPekan</b>',
     'logo_img' => 'vendor/adminlte/dist/img/adventist-symbol-circle-ming.png',
     'logo_img_class' => 'brand-image',
     'logo_img_xl' => null,
