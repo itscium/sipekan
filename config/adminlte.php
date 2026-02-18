@@ -334,7 +334,7 @@ return [
             'can' => ['administrator'],
         ],
         [
-            'text' => 'Departemetal Allowance',
+            'text' => 'Departemental Allowance',
             'url'  => '/departemen/keuangan',
             'active' => ['departemen/keuangan*','regex:@^departemen/keuangan/[0-9]+$@'],
             'icon' => 'fas fa-fw fa-cubes',
