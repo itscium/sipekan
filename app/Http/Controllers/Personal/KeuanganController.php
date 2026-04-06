@@ -63,7 +63,7 @@ class KeuanganController extends Controller
     {
         $wilayah_id = Auth::user()->wilayah_id;
         $table = $this->table($wilayah_id);
-//        dd($table);
+        // dd($table);
         $saldo_akhir ='';
         $list_keuangan = [];
         $keuangan = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->whereBetween('PERIOD', [$tgl_awal,$tgl_akhir])->orderBy('JRNAL_NO', 'ASC')->get();
@@ -72,7 +72,6 @@ class KeuanganController extends Controller
         $saldo_awal = $this->number_to_credit(-$opening_balance);
 
         $saldo = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('PERIOD', '<=', $tgl_akhir)->sum('AMOUNT');
-
 
         foreach ($keuangan as $index => $item) {
             $list_keuangan[$index]['credit'] = '';
@@ -90,8 +89,8 @@ class KeuanganController extends Controller
                 $balance += $item['AMOUNT'];
             }
             $list_keuangan[$index]['balance'] = $this->number_to_credit(-$balance);
-//            $saldo = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('PERIOD', '<', $tgl_akhir)->toSql();
-//            dd($saldo);
+            // $saldo = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('PERIOD', '<', $tgl_akhir)->toSql();
+            // dd($saldo);
             $saldo_akhir = $this->number_to_credit(-$saldo);
         }
             return [$saldo_awal, $saldo_akhir, $list_keuangan, $keuangan];
@@ -118,11 +117,11 @@ class KeuanganController extends Controller
             $periode_akhir = date('Y-m');
             $periode_awal = date('Y-m');
         }
-//        dd(Auth::user()->wilayah_id);
+        // dd(Auth::user()->wilayah_id);
         $account = Auth::user()->ACCNT_CODE;
-//        dd($account);
+        // dd($account);
         [$saldo_awal, $saldo_akhir, $list_keuangan, $keuangan] = $this->get_detail_keuangan($account, $tgl_awal, $tgl_akhir);
-//        dd($tgl_akhir);
+        // dd($tgl_akhir);
         return view('personal.keuangan.index', compact('keuangan', 'saldo_akhir', 'list_keuangan', 'saldo_awal', 'periode_akhir', 'periode_awal'));
     }
 
@@ -144,8 +143,7 @@ class KeuanganController extends Controller
     }
 
     public function payrol(){
-
-//        $period = '';
+        // $period = '';
         if (isset($_GET['periode'])){
             $per_akhir = Carbon::parse($_GET['periode'])->format('m');
             $year = Carbon::parse($_GET['periode'])->format('Y');
@@ -155,26 +153,25 @@ class KeuanganController extends Controller
             $period = date('Y-m');
             $year = date('Y');
         }
-//        $period = $_GET['periode'] ?? date('m');
-//        dd($period);
-//        dd($_GET['periode']);
+        // $period = $_GET['periode'] ?? date('m');
+        // dd($period);
+        // dd($_GET['periode']);
         $payrol = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 1)->get();
         $net = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 0)->first();
         return view('personal.keuangan.payrol', compact('payrol', 'period', 'net'));
     }
 
     public function payrol_pdf($tgl){
+        $per_akhir = Carbon::parse($tgl)->format('m');
+        $year = Carbon::parse($tgl)->format('Y');
+        // $period = Carbon::parse($_GET['periode'])->format('Y-m');
 
-            $per_akhir = Carbon::parse($tgl)->format('m');
-            $year = Carbon::parse($tgl)->format('Y');
-//            $period = Carbon::parse($_GET['periode'])->format('Y-m');
-
-//        dd($per_akhir);
+        // dd($per_akhir);
 
         $profile = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 0)->first();
         $earning = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('signal', '+')->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 1)->get();
         $deduction = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('signal', '-')->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 1)->get();
-//        dd($profile);
+        // dd($profile);
         if ($profile === null){
             return back()->with("alert", "Payroll belum Diposting oleh Keuangan!");
         }
@@ -182,23 +179,23 @@ class KeuanganController extends Controller
     }
     public function payrol_print($tgl){
 
-            $per_akhir = Carbon::parse($tgl)->format('m');
-            $year = Carbon::parse($tgl)->format('Y');
-//            $period = Carbon::parse($_GET['periode'])->format('Y-m');
+        $per_akhir = Carbon::parse($tgl)->format('m');
+        $year = Carbon::parse($tgl)->format('Y');
+        // $period = Carbon::parse($_GET['periode'])->format('Y-m');
 
-//        dd($per_akhir);
+        // dd($per_akhir);
 
         $profile = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 0)->first();
         $earning = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('signal', '+')->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 1)->get();
         $deduction = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('signal', '-')->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 1)->get();
-//        dd($profile);
+        // dd($profile);
         if ($profile === null){
             return back()->with("alert", "Payroll belum Diposting oleh Keuangan!");
         }
         return view('personal.keuangan.wium.print-payrol', compact('earning', 'deduction', 'profile'));
-//        $pdf = PDF::loadView('personal.keuangan.wium.pdf-payrol')
-//            ->setPaper('a4');
-//
-//        return $pdf->stream();
+        // $pdf = PDF::loadView('personal.keuangan.wium.pdf-payrol')
+        // ->setPaper('a4');
+        //
+        // return $pdf->stream();
     }
 }
