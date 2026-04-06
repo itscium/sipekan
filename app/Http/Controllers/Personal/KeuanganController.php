@@ -14,6 +14,7 @@ class KeuanganController extends Controller
     public function __construct (){
         $this->middleware('auth');
     }
+
     function table ($wilayah_id){
         $table = '';
         switch ($wilayah_id){
@@ -59,6 +60,7 @@ class KeuanganController extends Controller
         }
         return $table;
     }
+
     function get_detail_keuangan ($account, $tgl_awal, $tgl_akhir)
     {
         $wilayah_id = Auth::user()->wilayah_id;
@@ -142,8 +144,26 @@ class KeuanganController extends Controller
         return view('personal.keuangan.travel', compact('keuangan', 'saldo_akhir', 'list_keuangan', 'saldo_awal', 'periode_awal', 'periode_akhir'));
     }
 
+    // public function payrol(){
+    //     // $period = '';
+    //     if (isset($_GET['periode'])){
+    //         $per_akhir = Carbon::parse($_GET['periode'])->format('m');
+    //         $year = Carbon::parse($_GET['periode'])->format('Y');
+    //         $period = Carbon::parse($_GET['periode'])->format('Y-m');
+    //     }else{
+    //         $per_akhir = date('m');
+    //         $period = date('Y-m');
+    //         $year = date('Y');
+    //     }
+    //     // $period = $_GET['periode'] ?? date('m');
+    //     // dd($period);
+    //     // dd($_GET['periode']);
+    //     $payrol = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 1)->get();
+    //     $net = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 0)->first();
+    //     return view('personal.keuangan.payrol', compact('payrol', 'period', 'net'));
+    // }
+
     public function payrol(){
-        // $period = '';
         if (isset($_GET['periode'])){
             $per_akhir = Carbon::parse($_GET['periode'])->format('m');
             $year = Carbon::parse($_GET['periode'])->format('Y');
@@ -153,11 +173,19 @@ class KeuanganController extends Controller
             $period = date('Y-m');
             $year = date('Y');
         }
-        // $period = $_GET['periode'] ?? date('m');
-        // dd($period);
-        // dd($_GET['periode']);
-        $payrol = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 1)->get();
-        $net = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)->where('period', ltrim($per_akhir))->where('year', $year)->where('stub', 0)->first();
+
+        $payrol = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)
+            ->where('period', $per_akhir) // ✅ FIX HERE
+            ->where('year', $year)
+            ->where('stub', 1)
+            ->get();
+
+        $net = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)
+            ->where('period', $per_akhir) // ✅ FIX HERE
+            ->where('year', $year)
+            ->where('stub', 0)
+            ->first();
+
         return view('personal.keuangan.payrol', compact('payrol', 'period', 'net'));
     }
 
