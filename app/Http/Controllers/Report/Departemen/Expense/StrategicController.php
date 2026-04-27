@@ -65,7 +65,7 @@ class StrategicController extends Controller
         $table = '';
         switch ($wilayah_id){
             case 1:
-                $table = 'dbo.ADV_B_SALFLDG';
+                $table = 'dbo.CIU_B_SALFLDG';
                 break;
             case 2:
                 $table = 'dbo.JLC_B_SALFLDG';
