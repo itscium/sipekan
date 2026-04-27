@@ -66,7 +66,7 @@ class KeuanganController extends Controller
         $table = '';
         switch ($wilayah_id){
             case 1:
-                $table = 'dbo.ADV_B_SALFLDG';
+                $table = 'dbo.CIU_B_SALFLDG';
                 break;
             case 2:
                 $table = 'dbo.JLC_B_SALFLDG';
@@ -157,7 +157,7 @@ class KeuanganController extends Controller
         $table = $this->table_a($wilayah_id);
 
         $departemen = Departemen::where('kepala_departemen', Auth::id())->first();
-//        $code = '';
+        // $code = '';
         $code = DepartmentExpense::where('id', $id_allowance)->first();
         $detail = [];
         $keuangan = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')
@@ -174,19 +174,18 @@ class KeuanganController extends Controller
             $detail[$index]['nomor_jurnal'] = $item['JRNAL_NO'];
 
         }
-
         return $detail;
     }
 
     public function index(){
         if (isset($_GET['periode'])){
             $per_awal = Carbon::parse($_GET['periode'])->format('Y').'001';
-//            $test = $_GET['periode'];
+            // $test = $_GET['periode'];
             $periode = $_GET['periode'];
-//            dd($_GET['periode']);
-//            $per_akhir = date('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
+            // dd($_GET['periode']);
+            // $per_akhir = date('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
             $per_akhir = Carbon::parse($_GET['periode'])->format('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
-//            dd($per_akhir);
+            // dd($per_akhir);
         }else{
             $per_awal = date('Y').'001';
             $per_akhir = date('Y').'0'.date('m');
@@ -195,8 +194,8 @@ class KeuanganController extends Controller
 
         $departemen = Departemen::where('kepala_departemen', Auth::id())->first();
         $allowances = DepartmentExpense::where('wilayah_id', Auth::user()->wilayah_id)->get();
-//        dd(Auth::user()->wilayah_id);
         $data_allowance = [];
+
         foreach ($allowances as $index=> $item){
             $keuangan = $this->get_keuangan($per_awal, $per_akhir, $item['id']);
             $data_allowance[$index]['id'] = $item['id'];
@@ -207,17 +206,24 @@ class KeuanganController extends Controller
             $data_allowance[$index]['travel_advance'] = $keuangan['travel_advance'];
             $data_allowance[$index]['sisa'] = $keuangan['sisa_travel'];
         }
-//        dd($travel);
+        
+        // dd(
+        //     $data_allowance[$index]['budget'], 
+        //     $data_allowance[$index]['actual'], 
+        //     $keuangan, 
+        //     $departemen
+        // );
+
         return view('departemen.Keuangan.index', compact('departemen', 'data_allowance', 'periode'));
     }
 
     public function detail_keuangan ($id) {
         if (isset($_GET['periode'])){
             $per_awal = Carbon::parse($_GET['periode'])->format('Y').'001';
-//            $test = $_GET['periode'];
+            // $test = $_GET['periode'];
             $periode = $_GET['periode'];
             $per_akhir = Carbon::parse($_GET['periode'])->format('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
-//            dd($per_akhir);
+            // dd($per_akhir);
         }else{
             $per_awal = date('Y').'001';
             $per_akhir = date('Y').'0'.date('m');
