@@ -102,7 +102,7 @@ class DepartemenExpenseController extends Controller
                 $table = 'dbo.JBC_B_SALFLDG';
                 break;
             case 20003:
-                $table = 'dbo.WIU_A_SALFLDG';
+                $table = 'dbo.WIU_B_SALFLDG';
                 break;  
         }
         return $table;
