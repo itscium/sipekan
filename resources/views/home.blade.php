@@ -22,7 +22,7 @@
     <div class="float-right d-none d-sm-block">
         Created by IT Department Central Indonesia Union Mission 🇮🇩
     </div>
-    <strong>Copyright &copy; <script>document.write(new Date().getFullYear())</script> <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+    <strong>Copyright &copy; <script>document.write(new Date().getFullYear())</script> <a href="https://adminlte.io">CIUM</a>.</strong> All rights reserved.
 @stop
 
 @push('js')
