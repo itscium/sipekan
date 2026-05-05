@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function (){
         Route::post('/users/import', [WilayahController::class, 'import_user'])->name('wilayah.user.import');
         Route::get('/users/{id}/edit', [WilayahController::class, 'edit_pengguna'])->name('wilayah.pengguna.edit');
         Route::post('/users/update', [WilayahController::class, 'update_pengguna'])->name('wilayah.pengguna.update');
+        Route::delete('/users/{id}/hapus', [WilayahController::class, 'hapus_pengguna'])->name('wilayah.pengguna.hapus');
         Route::get('/{id}/roles', [WilayahController::class, 'role'])->name('wilayah.roles');
         Route::get('/{id}/roles/tambah', [WilayahController::class, 'tambah_role'])->name('wilayah.roles.tambah');
         Route::post('/roles/simpan', [WilayahController::class, 'simpan_role'])->name('wilayah.roles.simpan');

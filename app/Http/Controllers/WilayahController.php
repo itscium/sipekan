@@ -151,6 +151,25 @@ class WilayahController extends Controller
         return redirect(route('wilayah.pengguna', $update_user->wilayah_id))->with('alert', 'Data berhasil Diupdate');
     }
 
+    public function hapus_pengguna($id) {
+        $user = User::find($id);
+
+        if ($user) {
+            $wilayah_id = $user->wilayah_id;
+
+            // Hapus data relasi role terlebih dahulu (jika ada) 
+            UserRole::where('user_id', $id)->delete();
+
+            // Hapus user
+            $user->delete();
+
+            // Tampilkan alert sukses
+            alert()->success('Success', 'User Berhasil Dihapus');
+            return redirect(route('wilayah.pengguna', $wilayah_id))->with('alert', 'Data berhasil dihapus');
+        }
+        return redirect()->back()->with('error', 'User Tidak Ditemukan');
+    }
+
     public function role($id) {
         $wilayah = Wilayah::find($id);
         $roles = Role::where('wilayah_id', $id)->get();

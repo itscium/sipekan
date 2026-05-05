@@ -52,9 +52,9 @@
                                     <a href="{{route('wilayah.pengguna.edit', $user->id)}}" class="btn btn-primary btn-xs">
                                         Edit
                                     </a>
-                                    <a href="{{route('impersonate', $user->id)}}" class="btn btn-primary btn-xs">
+                                    {{-- <a href="{{route('impersonate', $user->id)}}" class="btn btn-primary btn-xs">
                                         <i class="fas fa-user-secret"></i>
-                                    </a>
+                                    </a> --}}
                                     @if($user->status === '0')
                                         <a href="{{route('users.aktifkan', $user->id)}}" class="btn btn-success btn-xs" onclick="return confirm('Are you sure?')">
                                             <i class="fas fa-check"></i> aktifkan
@@ -64,6 +64,13 @@
                                             <i class="fas fa-ban"></i> Non-aktifkan
                                         </a>
                                     @endif
+                                    <form action="{{ route('wilayah.pengguna.hapus', $user->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengguna ini? Data yang dihapus tidak dapat dikembalikan.')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-warning btn-xs">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach
