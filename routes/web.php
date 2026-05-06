@@ -51,9 +51,10 @@ Route::middleware('auth')->group(function (){
         Route::get('/{id}/users/tambah', [WilayahController::class, 'tambah_pengguna'])->name('wilayah.pengguna.tambah');
         Route::post('/users/simpan', [WilayahController::class, 'simpan_pengguna'])->name('wilayah.pengguna.simpan');
         Route::post('/users/import', [WilayahController::class, 'import_user'])->name('wilayah.user.import');
+        Route::post('/users/reset-password', [WilayahController::class, 'reset_password'])->name('wilayah.pengguna.reset_password');
+        Route::delete('/users/{id}/hapus', [WilayahController::class, 'hapus_pengguna'])->name('wilayah.pengguna.hapus');
         Route::get('/users/{id}/edit', [WilayahController::class, 'edit_pengguna'])->name('wilayah.pengguna.edit');
         Route::post('/users/update', [WilayahController::class, 'update_pengguna'])->name('wilayah.pengguna.update');
-        Route::delete('/users/{id}/hapus', [WilayahController::class, 'hapus_pengguna'])->name('wilayah.pengguna.hapus');
         Route::get('/{id}/roles', [WilayahController::class, 'role'])->name('wilayah.roles');
         Route::get('/{id}/roles/tambah', [WilayahController::class, 'tambah_role'])->name('wilayah.roles.tambah');
         Route::post('/roles/simpan', [WilayahController::class, 'simpan_role'])->name('wilayah.roles.simpan');

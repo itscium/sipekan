@@ -64,18 +64,61 @@
                                             <i class="fas fa-ban"></i> Non-aktifkan
                                         </a>
                                     @endif
-                                    <form action="{{ route('wilayah.pengguna.hapus', $user->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengguna ini? Data yang dihapus tidak dapat dikembalikan.')">
+                                    <!-- Tombol Reset Password -->
+                                    <button type="button" class="btn btn-secondary btn-xs" data-toggle="modal" data-target="#modalReset" data-userid="{{ $user->id }}" data-username="{{ $user->name }}">
+                                        Reset Password
+                                    </button>
+
+                                    <!-- Tombol Hapus -->
+                                    <form action="{{ route('wilayah.pengguna.hapus', $user->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus pengguna ini?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-warning btn-xs">
-                                            <i class="fas fa-trash"></i> Hapus
-                                        </button>
+                                        <button type="submit" class="btn btn-warning btn-xs">Hapus</button>
                                     </form>
                                 </td>
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
+
+                    <!-- Modal Reset Password -->
+                    <div class="modal fade" id="modalReset" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Konfirmasi Reset Password</h5>
+                                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                                </div>
+                                <form action="{{ route('wilayah.pengguna.reset_password') }}" method="POST">
+                                    @csrf
+                                    <div class="modal-body">
+                                        <p>Reset password untuk <strong id="reset_name"></strong> menjadi <strong>123456</strong>?</p>
+                                        <input type="hidden" name="user_id" id="reset_user_id">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary">Ya, Reset</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script>
+                    $(document).ready(function() {
+                        $('#modalReset').on('show.bs.modal', function (event) {
+                            var button = $(event.relatedTarget); 
+                            var id = button.data('userid'); 
+                            var name = button.data('username'); 
+                            
+                            var modal = $(this);
+                            modal.find('#reset_user_id').val(id);
+                            modal.find('#reset_name').text(name);
+                        });
+                    });
+                    </script>
+                    
                     <form class="modal fade" id="user_salary_import" action="{{ route('wilayah.user.salary.import') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="modal-dialog">
