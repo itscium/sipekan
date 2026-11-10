@@ -17,12 +17,12 @@ class ProfileController extends Controller
     public function index(){
         $user = User::where('id', Auth::id())->first();
         $cek = UserSalary::where('user_id', Auth::id())->first();
-//        dd($cek);
+        // dd($cek);
         $salary = UserSalary::where('user_id', Auth::id())->where('jumlah', '!=', null)->where('year', date('Y'))->
             whereHas('allowances', function ($query){
                 $query->where('jenis', 'report')->where('tipe', 'personal');
             })->get();
-//        dd($salary);
+        // dd($salary);
         $dept = UserSalary::where('user_id', Auth::id())->where('jumlah', '!=', null)->where('year', date('Y'))->
         whereHas('allowances', function ($query){
             $query->where('tipe', 'departemen');
