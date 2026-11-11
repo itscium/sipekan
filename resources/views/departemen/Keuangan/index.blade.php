@@ -1,105 +1,103 @@
 @extends('adminlte::page')
 
-@section('title', 'SIPEKAN | Keuangan Departemen')
+@section('title', 'SIPekan | Keuangan departemen')
+
+@php
+    $bulan = \Illuminate\Support\Carbon::createFromFormat('Y-m', $periode)->locale('id');
+    $q = array_filter(['departemen' => request('departemen'), 'periode' => $periode]);
+@endphp
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Keuangan Departemen {{$departemen->nama_departemen}}</h1>
-@stop
-
-@section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <!-- /.col -->
-            <div class="col-md-9">
-                <!-- /.card -->
-                <div class="card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Tabel Keuangan Departemen </h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body table-responsive p-0">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th>{{strtoupper('Account Name')}}</th>
-                                <th>{{strtoupper('Account Code')}}</th>
-                                <th>{{strtoupper('Budget')}}</th>
-                                <th>{{strtoupper('Actual')}}</th>
-                                <th>{{strtoupper('cash/Travel advance')}}</th>
-                                <th>{{strtoupper('Sisa Budget')}}</th>
-                                <th class="text-center">Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($data_allowance as $index=>$item)
-                                <tr>
-                                    <th>{{$index+1}}</th>
-                                    <th>{{ucwords($item['account_name'])}}</th>
-                                    <td>{{$item['account_code']}}</td>
-                                    <td class="text-right">{{$item['budget']}}</td>
-                                    <td class="text-right">{{$item['actual']}}</td>
-                                    <td class="text-right">{{ $item['account_code'] === '822110' ? $item['travel_advance'] : '-'}}</td>
-                                    <td class="text-right">{{ $item['sisa']}}</td>
-                                    <td class="text-center">
-                                        <a href="{{route('departemen.keuangan.detail', ['id' => $item['id']])}}" class="btn btn-outline-info btn-sm">Details</a>
-                                    </td>
-                                </tr>
-{{--                            @empty--}}
-{{--                                <tr>--}}
-{{--                                    <td colspan="8" class="text-center">Tidak ada Department Expenses</td>--}}
-{{--                                </tr>--}}
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
-            </div>
-            <div class="col-md-3">
-                <div class="row">
-                    <div class="col-md-12">
-                        <!-- /.card -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">FILTER</h3>
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <form method="GET">
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">PERIODE</label>
-                                        <input type="month" name="periode" onchange="this.form.submit()" value="{{$periode}}" class="form-control" id="exampleInputEmail1">
-{{--                                        value="{{$tgl_akhir}}"--}}
-                                    </div>
-                                </form>
-
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                </div>
-                <div class="row">
-{{--                    <div class="col-md-12">--}}
-{{--                        <!-- small card -->--}}
-{{--                        <div class="small-box bg-info">--}}
-{{--                            <div class="inner">--}}
-{{--                                <h3>Rp. 25,000,000,-</h3>--}}
-
-{{--                                <p>Saldo Akhir</p>--}}
-{{--                            </div>--}}
-{{--                            <div class="icon">--}}
-{{--                                <i class="fas fa-money-bill-wave"></i>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-                </div>
-            </div>
-            <!-- /.col -->
-        </div>
+    <h1>Keuangan departemen</h1>
+    <div class="sp-muted mt-1">
+        @if($departemen)
+            {{ $departemen->nama_departemen }}
+            @if($departemen->wilayah)· {{ $departemen->wilayah->nama }}@endif
+            · Januari – {{ $bulan->translatedFormat('F Y') }}
+        @else
+            Anggaran dan realisasi pengeluaran departemen.
+        @endif
     </div>
 @stop
 
-@push('js')<script>$(() => $("#drPlaceholder").val(''))</script>@endpush
+@section('content')
+    {{-- Filter --}}
+    <form method="GET" class="sp-card mb-3 d-flex flex-wrap align-items-end" style="gap:12px">
+        @if($isAdmin)
+            <div style="flex:1;min-width:240px">
+                <label for="departemen" class="d-block mb-1" style="font-size:13px;font-weight:500;color:var(--sp-text-2)">Departemen</label>
+                <select id="departemen" name="departemen" class="custom-select" onchange="this.form.submit()">
+                    <option value="">Pilih departemen</option>
+                    @foreach($daftar_departemen->groupBy(fn ($d) => optional($d->wilayah)->nama ?? 'Tanpa wilayah') as $wil => $list)
+                        <optgroup label="{{ $wil }}">
+                            @foreach($list as $d)
+                                <option value="{{ $d->id }}" {{ optional($departemen)->id == $d->id ? 'selected' : '' }}>{{ $d->nama_departemen }}</option>
+                            @endforeach
+                        </optgroup>
+                    @endforeach
+                </select>
+            </div>
+        @endif
+        <div style="width:200px">
+            <label for="periode" class="d-block mb-1" style="font-size:13px;font-weight:500;color:var(--sp-text-2)">Sampai bulan</label>
+            <input type="month" id="periode" name="periode" value="{{ $periode }}" class="form-control" onchange="this.form.submit()">
+        </div>
+    </form>
+
+    @if(!$departemen)
+        <div class="sp-card text-center py-5">
+            <i class="fas fa-building fa-2x sp-faint mb-3"></i>
+            @if($isAdmin)
+                <p class="sp-card-title">Pilih departemen</p>
+                <p class="sp-card-sub mb-0">Pilih departemen di atas untuk melihat anggaran dan realisasinya.</p>
+            @else
+                <p class="sp-card-title">Anda belum terdaftar sebagai kepala departemen</p>
+                <p class="sp-card-sub mb-0">Halaman ini menampilkan anggaran departemen yang Anda pimpin. Jika seharusnya Anda kepala departemen, hubungi admin wilayah untuk mengaturnya.</p>
+            @endif
+        </div>
+    @elseif(empty($data_allowance))
+        <div class="sp-card text-center py-5">
+            <i class="fas fa-list-alt fa-2x sp-faint mb-3"></i>
+            <p class="sp-card-title">Belum ada jenis anggaran untuk wilayah ini</p>
+            <p class="sp-card-sub mb-0">Admin perlu menambahkan Department Expense (mis. Travel, Office) di menu Wilayah.</p>
+        </div>
+    @else
+        <div class="card">
+            <div class="card-body p-0 table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                    <tr>
+                        <th>Jenis anggaran</th>
+                        <th>Kode akun</th>
+                        <th class="text-right">Anggaran</th>
+                        <th class="text-right">Realisasi</th>
+                        <th class="text-right">Uang muka travel</th>
+                        <th class="text-right">Sisa anggaran</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($data_allowance as $item)
+                        <tr>
+                            <td><strong style="font-weight:500">{{ ucwords(strtolower($item['account_name'])) }}</strong></td>
+                            <td><code style="color:var(--sp-text);background:var(--sp-surface-2);padding:2px 6px;border-radius:6px">{{ $item['account_code'] }}</code></td>
+                            <td class="text-right sp-num">{{ $item['budget'] }}</td>
+                            <td class="text-right sp-num">{{ $item['actual'] }}</td>
+                            <td class="text-right sp-num">{{ $item['account_code'] === '822110' ? $item['travel_advance'] : '–' }}</td>
+                            <td class="text-right sp-num"><strong style="font-weight:600">{{ $item['sisa'] }}</strong></td>
+                            <td class="text-right">
+                                <a href="{{ route('departemen.keuangan.detail', ['id' => $item['id']] + $q) }}" class="btn btn-primary btn-sm">Rincian</a>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <p class="sp-faint" style="font-size:12.5px">
+            <i class="fas fa-info-circle mr-1"></i>
+            Anggaran dihitung untuk satu tahun penuh; realisasi dari Januari sampai bulan terpilih.
+            Untuk akun travel (822110), sisa anggaran juga dikurangi uang muka travel kepala departemen.
+        </p>
+    @endif
+@stop

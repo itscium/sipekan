@@ -21,6 +21,10 @@ class Departemen extends Model
 'office_expense_code',
     ];
 
+    public function wilayah(){
+        return $this->belongsTo(Wilayah::class, 'wilayah_id', 'id');
+    }
+
     public function user(){
         return $this->belongsTo(User::class, 'kepala_departemen', 'id');
     }

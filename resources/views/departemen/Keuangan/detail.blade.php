@@ -1,95 +1,64 @@
 @extends('adminlte::page')
 
-@section('title', 'SIPEKAN | Detail Keuangan Departemen')
+@section('title', 'SIPekan | Rincian keuangan departemen')
+
+@php
+    $bulan = \Illuminate\Support\Carbon::createFromFormat('Y-m', $periode)->locale('id');
+    $q = array_filter(['departemen' => request('departemen'), 'periode' => $periode]);
+@endphp
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Detail Keuangan Departemen</h1>
-@stop
-
-@section('content')
-    {{--    <livewire:personal-financial />--}}
-    <div class="container-fluid">
-        <div class="row">
-            <!-- /.col -->
-            <div class="col-md-9">
-                <!-- /.card -->
-                <div class="card">
-                    <div class="card-header">
-                        <a href="{{ route('departemen.keuangan.index') }}" class="btn btn-danger btn-xs float-right"><i class="fa fa-backward"></i> Back</a>
-                        <h3 class="card-title">Detail Travel Expense</h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body table-responsive p-0" style="height: 700px;">
-                        <table class="table table-striped table-head-fixed">
-                            <thead>
-                            <tr>
-                                <th>Period</th>
-                                <th>Journal No</th>
-                                <th>Reference</th>
-                                <th>Description</th>
-                                <th>Base Amount</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($detail as $item)
-                                <tr>
-                                    <td>{{$item['period']}}</td>
-                                    <td>{{$item['nomor_jurnal']}}</td>
-                                    <td>{{$item['reference']}}</td>
-                                    <td>{{$item['description']}}</td>
-                                    <td class="text-right">{{$item['amount']}}</td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between" style="gap:12px">
+        <div>
+            <h1>{{ ucwords(strtolower($allowance->nama)) }}</h1>
+            <div class="sp-muted mt-1">
+                {{ $departemen->nama_departemen }} · akun {{ $allowance->account_code }} · Januari – {{ $bulan->translatedFormat('F Y') }}
             </div>
-            <div class="col-md-3">
-                <div class="row">
-                    <div class="col-md-12">
-                        <!-- /.card -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">FILTER</h3>
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <form method="GET">
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">PERIODE</label>
-                                        <input type="month" name="periode" onchange="this.form.submit()" value="{{$periode}}" class="form-control" id="exampleInputEmail1">
-                                        {{--                                        value="{{$tgl_akhir}}"--}}
-                                    </div>
-                                </form>
-
-                            </div>
-                            <!-- /.card-body -->
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <!-- small card -->
-                        <div class="small-box bg-info">
-                            <div class="inner">
-                                <h3>{{$saldo}}</h3>
-
-                                <p>Actual Expense</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-money-bill-wave"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- /.col -->
         </div>
+        <a href="{{ route('departemen.keuangan.index', $q) }}" class="sp-btn" style="height:38px"><i class="fas fa-arrow-left"></i>Kembali</a>
     </div>
 @stop
 
-@push('js')<script>$(() => $("#drPlaceholder").val(''))</script>@endpush
+@section('content')
+    <div class="d-flex flex-wrap mb-3" style="gap:16px">
+        <div class="sp-card" style="flex:1;min-width:220px">
+            <div class="sp-stat-label"><span class="sp-stat-icon"><i class="fas fa-receipt"></i></span>Realisasi</div>
+            <div class="sp-stat-value sp-num">{{ $saldo }}</div>
+            <div class="sp-stat-foot">{{ count($detail) }} transaksi</div>
+        </div>
+        <form method="GET" class="sp-card" style="width:240px">
+            @if(request('departemen'))<input type="hidden" name="departemen" value="{{ request('departemen') }}">@endif
+            <label for="periode" class="d-block mb-1" style="font-size:13px;font-weight:500;color:var(--sp-text-2)">Sampai bulan</label>
+            <input type="month" id="periode" name="periode" value="{{ $periode }}" class="form-control" onchange="this.form.submit()">
+        </form>
+    </div>
+
+    <div class="card">
+        <div class="card-body p-0 table-responsive" style="max-height:640px">
+            <table class="table table-head-fixed mb-0">
+                <thead>
+                <tr>
+                    <th>Periode</th>
+                    <th>No. jurnal</th>
+                    <th>Referensi</th>
+                    <th>Keterangan</th>
+                    <th class="text-right">Jumlah</th>
+                </tr>
+                </thead>
+                <tbody>
+                @forelse($detail as $item)
+                    <tr>
+                        <td class="sp-muted">{{ $item['period'] }}</td>
+                        <td>{{ $item['nomor_jurnal'] }}</td>
+                        <td>{{ $item['reference'] }}</td>
+                        <td>{{ $item['description'] }}</td>
+                        <td class="text-right sp-num">{{ $item['amount'] }}</td>
+                    </tr>
+                @empty
+                    <tr><td colspan="5" class="text-center sp-faint py-4">Belum ada transaksi pada periode ini.</td></tr>
+                @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+@stop

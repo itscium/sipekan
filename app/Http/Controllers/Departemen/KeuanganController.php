@@ -10,6 +10,7 @@ use App\Models\WIUM\A_SALFLDG;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class KeuanganController extends Controller
 {
@@ -108,13 +109,12 @@ class KeuanganController extends Controller
         return $table;
     }
 
-    function get_keuangan ($per_awal, $per_akhir, $id_allowance){
-        $wilayah_id = Auth::user()->wilayah_id;
+    function get_keuangan ($per_awal, $per_akhir, $id_allowance, Departemen $departemen){
+        // Pakai wilayah departemen (bukan wilayah user) supaya admin juga bisa melihat.
+        $wilayah_id = $departemen->wilayah_id;
         $table_a = $this->table_a($wilayah_id);
         $table_b = $this->table_b($wilayah_id);
         $allowance = DepartmentExpense::where('id', $id_allowance)->first();
-
-        $departemen = Departemen::where('kepala_departemen', Auth::id())->first();
         //get Travel Expense
         $travel_actual = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
             ->where('ACCNT_CODE', $allowance->account_code)
@@ -127,7 +127,7 @@ class KeuanganController extends Controller
             ->whereBetween('PERIOD', [$per_awal, date('Y'.'012')])
             ->sum($table_b.'.AMOUNT');
         $travel_advance = (new A_SALFLDG)->setTable($table_a)->where('ALLOCATION', '<>', 'C')
-            ->where('ACCNT_CODE', $departemen->user->travel_account)
+            ->where('ACCNT_CODE', optional($departemen->user)->travel_account ?? '')
             ->where('PERIOD', '<=', $per_akhir)
             ->sum($table_a.'.AMOUNT');
 
@@ -152,11 +152,9 @@ class KeuanganController extends Controller
         ];
     }
 
-    function get_detail_keuangan ($per_awal, $per_akhir, $id_allowance){
-        $wilayah_id = Auth::user()->wilayah_id;
+    function get_detail_keuangan ($per_awal, $per_akhir, $id_allowance, Departemen $departemen){
+        $wilayah_id = $departemen->wilayah_id;
         $table = $this->table_a($wilayah_id);
-
-        $departemen = Departemen::where('kepala_departemen', Auth::id())->first();
         // $code = '';
         $code = DepartmentExpense::where('id', $id_allowance)->first();
         $detail = [];
@@ -177,62 +175,68 @@ class KeuanganController extends Controller
         return $detail;
     }
 
-    public function index(){
-        if (isset($_GET['periode'])){
-            $per_awal = Carbon::parse($_GET['periode'])->format('Y').'001';
-            // $test = $_GET['periode'];
-            $periode = $_GET['periode'];
-            // dd($_GET['periode']);
-            // $per_akhir = date('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
-            $per_akhir = Carbon::parse($_GET['periode'])->format('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
-            // dd($per_akhir);
-        }else{
-            $per_awal = date('Y').'001';
-            $per_akhir = date('Y').'0'.date('m');
-            $periode = date('Y-m');
+    /**
+     * Departemen yang ditampilkan:
+     * - kepala departemen: departemen yang ia pimpin;
+     * - admin: departemen yang dipilih lewat ?departemen=ID.
+     * Mengembalikan null jika tidak ada.
+     */
+    private function resolveDepartemen(Request $request): ?Departemen
+    {
+        if (Gate::allows('administrator') && $request->filled('departemen')) {
+            return Departemen::find($request->query('departemen'));
         }
-
-        $departemen = Departemen::where('kepala_departemen', Auth::id())->first();
-        $allowances = DepartmentExpense::where('wilayah_id', Auth::user()->wilayah_id)->get();
-        $data_allowance = [];
-
-        foreach ($allowances as $index=> $item){
-            $keuangan = $this->get_keuangan($per_awal, $per_akhir, $item['id']);
-            $data_allowance[$index]['id'] = $item['id'];
-            $data_allowance[$index]['account_name'] = $item['nama'];
-            $data_allowance[$index]['account_code'] = $item['account_code'];
-            $data_allowance[$index]['budget'] = $keuangan['travel_budget'];
-            $data_allowance[$index]['actual'] = $keuangan['travel_actual'];
-            $data_allowance[$index]['travel_advance'] = $keuangan['travel_advance'];
-            $data_allowance[$index]['sisa'] = $keuangan['sisa_travel'];
-        }
-        
-        // dd(
-        //     $data_allowance[$index]['budget'], 
-        //     $data_allowance[$index]['actual'], 
-        //     $keuangan, 
-        //     $departemen
-        // );
-
-        return view('departemen.Keuangan.index', compact('departemen', 'data_allowance', 'periode'));
+        return Departemen::where('kepala_departemen', Auth::id())->first();
     }
 
-    public function detail_keuangan ($id) {
-        if (isset($_GET['periode'])){
-            $per_awal = Carbon::parse($_GET['periode'])->format('Y').'001';
-            // $test = $_GET['periode'];
-            $periode = $_GET['periode'];
-            $per_akhir = Carbon::parse($_GET['periode'])->format('Y').'0'.Carbon::parse($_GET['periode'])->format('m');
-            // dd($per_akhir);
-        }else{
-            $per_awal = date('Y').'001';
-            $per_akhir = date('Y').'0'.date('m');
-            $periode = date('Y-m');
+    /** Periode SunSystems dari ?periode=YYYY-MM: Januari s.d. bulan terpilih. */
+    private function periode(Request $request): array
+    {
+        $p = $request->query('periode');
+        $date = ($p && preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $p)) ? Carbon::createFromFormat('Y-m', $p) : now();
+        return [$date->format('Y') . '001', $date->format('Y') . '0' . $date->format('m'), $date->format('Y-m')];
+    }
+
+    public function index(Request $request){
+        [$per_awal, $per_akhir, $periode] = $this->periode($request);
+
+        $isAdmin = Gate::allows('administrator');
+        $departemen = $this->resolveDepartemen($request);
+        $daftar_departemen = $isAdmin
+            ? Departemen::with('wilayah:id,nama')->orderBy('wilayah_id')->orderBy('nama_departemen')->get(['id', 'nama_departemen', 'wilayah_id'])
+            : collect();
+
+        $data_allowance = [];
+        if ($departemen) {
+            $allowances = DepartmentExpense::where('wilayah_id', $departemen->wilayah_id)->get();
+            foreach ($allowances as $index => $item) {
+                $keuangan = $this->get_keuangan($per_awal, $per_akhir, $item['id'], $departemen);
+                $data_allowance[$index]['id'] = $item['id'];
+                $data_allowance[$index]['account_name'] = $item['nama'];
+                $data_allowance[$index]['account_code'] = $item['account_code'];
+                $data_allowance[$index]['budget'] = $keuangan['travel_budget'];
+                $data_allowance[$index]['actual'] = $keuangan['travel_actual'];
+                $data_allowance[$index]['travel_advance'] = $keuangan['travel_advance'];
+                $data_allowance[$index]['sisa'] = $keuangan['sisa_travel'];
+            }
         }
-        $detail = $this->get_detail_keuangan($per_awal, $per_akhir, $id);
-        $temp = $this->get_keuangan($per_awal, $per_akhir, $id);
+
+        return view('departemen.Keuangan.index', compact('departemen', 'data_allowance', 'periode', 'isAdmin', 'daftar_departemen'));
+    }
+
+    public function detail_keuangan (Request $request, $id) {
+        [$per_awal, $per_akhir, $periode] = $this->periode($request);
+
+        $departemen = $this->resolveDepartemen($request);
+        $allowance = DepartmentExpense::find($id);
+        if (!$departemen || !$allowance || (string) $allowance->wilayah_id !== (string) $departemen->wilayah_id) {
+            return redirect()->route('departemen.keuangan.index', $request->only('departemen', 'periode'));
+        }
+
+        $detail = $this->get_detail_keuangan($per_awal, $per_akhir, $id, $departemen);
+        $temp = $this->get_keuangan($per_awal, $per_akhir, $id, $departemen);
         $saldo = $temp['travel_actual'];
 
-        return view('departemen.Keuangan.detail', compact('per_akhir', 'per_awal', 'periode', 'detail', 'saldo'));
+        return view('departemen.Keuangan.detail', compact('per_akhir', 'per_awal', 'periode', 'detail', 'saldo', 'departemen', 'allowance'));
     }
 }
