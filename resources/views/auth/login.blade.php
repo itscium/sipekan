@@ -12,9 +12,16 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/sipekan.css') }}?v={{ filemtime(public_path('css/sipekan.css')) }}">
+    @include('partials.sp-theme-head')
 </head>
 <body class="sp-body">
 @include('sweetalert::alert')
+
+<button type="button" class="sp-icon-btn sp-theme-toggle sp-auth-theme" data-sp-theme-toggle onclick="spToggleTheme()"
+        aria-label="Ganti mode malam/terang" title="Mode malam/terang">
+    <i class="fas fa-moon sp-theme-moon"></i>
+    <i class="fas fa-sun sp-theme-sun"></i>
+</button>
 
 <div class="sp-auth">
     <section class="sp-auth-side sp-auth-side-3d">

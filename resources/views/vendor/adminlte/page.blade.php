@@ -64,6 +64,11 @@
                 </div>
 
                 <div class="sp-topbar-right">
+                    <button type="button" class="sp-icon-btn sp-theme-toggle" data-sp-theme-toggle onclick="spToggleTheme()"
+                            aria-label="Ganti mode malam/terang" title="Mode malam/terang">
+                        <i class="fas fa-moon sp-theme-moon"></i>
+                        <i class="fas fa-sun sp-theme-sun"></i>
+                    </button>
                     @if(session()->has('impersonate'))
                         <form method="POST" action="{{ route('impersonate.destroy') }}" class="m-0">
                             @csrf

@@ -176,6 +176,15 @@ function start(host) {
         renderer.render(scene, camera);
     }
 
+    // Mode malam: pita sedikit diredupkan agar tidak menyilaukan di latar gelap
+    const applyTheme = () => {
+        const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        renderer.toneMappingExposure = dark ? 0.82 : 1.05;
+        if (started) frame();
+    };
+    window.addEventListener('sp-theme', applyTheme);
+    applyTheme();
+
     started = true;
 
     if (reduceMotion) {

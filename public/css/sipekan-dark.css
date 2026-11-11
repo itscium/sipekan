@@ -1,0 +1,134 @@
+/* ==========================================================================
+   SIPekan - MODE MALAM
+   Aktif jika <html data-theme="dark">. Halaman lama (AdminLTE) juga diberi
+   body.dark-mode bawaan AdminLTE 3.2; warnanya diselaraskan di bawah ini.
+   ========================================================================== */
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --sp-bg: #0d1220;
+    --sp-surface: #151c2c;
+    --sp-surface-2: #1b2437;
+    --sp-border: #263049;
+    --sp-border-strong: #34405c;
+    --sp-text: #e7ebf3;
+    --sp-text-2: #aeb8cc;
+    --sp-text-3: #7d889f;
+    --sp-accent: #5b8ff0;
+    --sp-accent-hover: #7ba6f6;
+    --sp-accent-soft: #172746;
+    --sp-accent-text: #a5c3ff;
+    --sp-success: #4ade80;
+    --sp-success-soft: #10291c;
+    --sp-danger: #f87171;
+    --sp-danger-soft: #2e1618;
+    --sp-warning: #fbbf24;
+    --sp-warning-soft: #2c2310;
+}
+
+/* ---------- Kerangka & komponen baru ---------- */
+[data-theme="dark"] body.sp-body { background: var(--sp-bg) !important; color: var(--sp-text); }
+[data-theme="dark"] .sp-topbar { background: rgba(13, 18, 32, .85); }
+[data-theme="dark"] .sp-impersonate { border-color: #5c4614; }
+[data-theme="dark"] .sp-dropdown-menu { box-shadow: 0 12px 32px rgba(0, 0, 0, .45); }
+[data-theme="dark"] .sp-brand img, [data-theme="dark"] .sp-auth-brand img { background: #fff; }
+[data-theme="dark"] .sp-fp-notice { border-color: #24406e; }
+[data-theme="dark"] .sp-select option:disabled { color: #59637a; }
+[data-theme="dark"] .sp-pay-bar span { background: #24406e; }
+[data-theme="dark"] .sp-pay-bar:hover span { background: #3a63a8; }
+[data-theme="dark"] .sp-pay-bar.active span { background: var(--sp-accent); }
+[data-theme="dark"] .sp-btn-android:hover { background: #10291c; }
+[data-theme="dark"] .sp-dl code,
+[data-theme="dark"] .sp-content code { color: var(--sp-text) !important; background: var(--sp-surface-2) !important; }
+
+/* ---------- Komponen AdminLTE / Bootstrap 4 di halaman lama ---------- */
+[data-theme="dark"] .sp-content,
+[data-theme="dark"] .sp-content .text-dark,
+[data-theme="dark"] .sp-content h1, [data-theme="dark"] .sp-content h2,
+[data-theme="dark"] .sp-content h3, [data-theme="dark"] .sp-content h4 { color: var(--sp-text) !important; }
+[data-theme="dark"] .sp-content .text-muted { color: var(--sp-text-3) !important; }
+
+[data-theme="dark"] .sp-content .card,
+[data-theme="dark"] .sp-content .card-primary,
+[data-theme="dark"] .sp-content .small-box,
+[data-theme="dark"] .sp-content .info-box,
+[data-theme="dark"] .sp-content .modal-content,
+[data-theme="dark"] .sp-content .bg-white,
+[data-theme="dark"] .sp-content .bg-light {
+    background-color: var(--sp-surface) !important; color: var(--sp-text); border-color: var(--sp-border);
+}
+[data-theme="dark"] .sp-content .card-header,
+[data-theme="dark"] .sp-content .card-footer { background: transparent; border-color: var(--sp-border); }
+
+[data-theme="dark"] .sp-content .table,
+[data-theme="dark"] .sp-content .table td,
+[data-theme="dark"] .sp-content .table th { color: var(--sp-text); border-color: var(--sp-border) !important; background-color: transparent; }
+[data-theme="dark"] .sp-content .table thead th,
+[data-theme="dark"] .sp-content .table-head-fixed thead tr:nth-child(1) th { background: var(--sp-surface-2) !important; color: var(--sp-text-2); }
+[data-theme="dark"] .sp-content .table-striped tbody tr:nth-of-type(odd) { background: rgba(255, 255, 255, .025); }
+[data-theme="dark"] .sp-content .table-hover tbody tr:hover { background: var(--sp-accent-soft); color: var(--sp-text); }
+[data-theme="dark"] .sp-content .table-bordered,
+[data-theme="dark"] .sp-content fieldset.border { border-color: var(--sp-border) !important; }
+
+[data-theme="dark"] .sp-content .form-control,
+[data-theme="dark"] .sp-content .custom-select,
+[data-theme="dark"] .sp-content .input-group-text,
+[data-theme="dark"] .sp-content .select2-container--default .select2-selection--single,
+[data-theme="dark"] .sp-content .select2-container--bootstrap4 .select2-selection {
+    background-color: var(--sp-surface-2) !important; color: var(--sp-text) !important; border-color: var(--sp-border-strong) !important;
+}
+[data-theme="dark"] .sp-content .form-control:disabled,
+[data-theme="dark"] .sp-content .form-control[readonly] { background-color: var(--sp-bg) !important; color: var(--sp-text-3) !important; }
+[data-theme="dark"] .sp-content .form-control::placeholder { color: var(--sp-text-3); }
+[data-theme="dark"] .sp-content label:not(.form-check-label):not(.custom-control-label) { color: var(--sp-text-2); }
+
+[data-theme="dark"] .sp-content .btn-default,
+[data-theme="dark"] .sp-content .btn-light,
+[data-theme="dark"] .sp-content .btn-outline-secondary { background: var(--sp-surface-2); color: var(--sp-text) !important; border-color: var(--sp-border-strong); }
+[data-theme="dark"] .sp-content .btn-outline-info { color: #67d4e8 !important; border-color: #2b6f7d; }
+[data-theme="dark"] .sp-content .page-link { background: var(--sp-surface); border-color: var(--sp-border); color: var(--sp-text-2); }
+[data-theme="dark"] .sp-content .page-item.disabled .page-link { background: var(--sp-surface); color: var(--sp-text-3); }
+[data-theme="dark"] .sp-content .nav-pills .nav-link:not(.active) { color: var(--sp-text-2); }
+[data-theme="dark"] .sp-content hr { border-color: var(--sp-border); }
+
+[data-theme="dark"] .sp-content .dataTables_wrapper,
+[data-theme="dark"] .sp-content .dataTables_info,
+[data-theme="dark"] .sp-content .dataTables_length,
+[data-theme="dark"] .sp-content .dataTables_filter { color: var(--sp-text-2) !important; }
+[data-theme="dark"] .sp-content .dataTables_wrapper input,
+[data-theme="dark"] .sp-content .dataTables_wrapper select { background: var(--sp-surface-2); color: var(--sp-text); border: 1px solid var(--sp-border-strong); }
+
+[data-theme="dark"] .select2-dropdown { background: var(--sp-surface); border-color: var(--sp-border-strong); color: var(--sp-text); }
+[data-theme="dark"] .select2-search__field { background: var(--sp-surface-2); color: var(--sp-text); }
+[data-theme="dark"] .daterangepicker { background: var(--sp-surface); border-color: var(--sp-border); color: var(--sp-text); }
+[data-theme="dark"] .daterangepicker .calendar-table { background: var(--sp-surface); border-color: var(--sp-border); }
+[data-theme="dark"] .daterangepicker td.off { background: transparent; color: var(--sp-text-3); }
+[data-theme="dark"] .swal2-popup { background: var(--sp-surface) !important; color: var(--sp-text) !important; }
+[data-theme="dark"] .swal2-title,
+[data-theme="dark"] .swal2-html-container { color: var(--sp-text) !important; }
+
+/* ---------- Login ---------- */
+[data-theme="dark"] .sp-auth { background: var(--sp-surface); }
+[data-theme="dark"] .sp-auth-side-3d {
+    color: #e7ebf3;
+    background:
+        radial-gradient(120% 80% at 15% 0%, #1d2f66 0%, rgba(29, 47, 102, 0) 60%),
+        radial-gradient(90% 70% at 100% 100%, #2a1e3d 0%, rgba(42, 30, 61, 0) 65%),
+        linear-gradient(160deg, #0f1730 0%, #141a33 45%, #19142a 100%);
+}
+[data-theme="dark"] .sp-auth-side-3d .sp-auth-hero { background: rgba(13, 18, 32, .45); border-color: rgba(255, 255, 255, .08); }
+[data-theme="dark"] .sp-auth-side-3d .sp-auth-hero h1 { color: #f1f4fa; }
+[data-theme="dark"] .sp-auth-side-3d .sp-auth-hero p,
+[data-theme="dark"] .sp-auth-side-3d .sp-auth-points li { color: #c3cbe0; }
+[data-theme="dark"] .sp-auth-side-3d .sp-auth-points i { color: #7ba6f6; }
+[data-theme="dark"] .sp-auth-side-3d .sp-auth-foot { color: #8390ab; }
+
+/* ---------- Tombol ganti tema ---------- */
+.sp-theme-toggle .sp-theme-sun { display: none; }
+[data-theme="dark"] .sp-theme-toggle .sp-theme-moon { display: none; }
+[data-theme="dark"] .sp-theme-toggle .sp-theme-sun { display: inline; color: #fbbf24; }
+.sp-auth-theme { position: fixed; top: 16px; right: 16px; z-index: 10; }
+
+/* Transisi halus hanya saat tombol ditekan, bukan saat halaman dimuat */
+html.sp-theme-anim, html.sp-theme-anim * {
+    transition: background-color .25s ease, border-color .25s ease, color .25s ease !important;
+}

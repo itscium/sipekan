@@ -44,6 +44,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="{{ asset('css/sipekan.css') }}?v={{ filemtime(public_path('css/sipekan.css')) }}">
     <meta name="theme-color" content="#1f5fbf">
+    @include('partials.sp-theme-head')
 
     {{-- Livewire Styles --}}
     @if(config('adminlte.livewire'))
@@ -87,6 +88,7 @@
 </head>
 
 <body class="@yield('classes_body')" @yield('body_data')>
+<script>document.body.classList.toggle('dark-mode', document.documentElement.getAttribute('data-theme') === 'dark');</script>
 @include('sweetalert::alert')
 
     {{-- Body Content --}}
