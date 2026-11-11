@@ -16,6 +16,8 @@
 @stop
 
 @section('content')
+    @include('partials.sp-fp-schedule')
+
     @if($list_machine->isEmpty())
         <div class="sp-card text-center py-5">
             <i class="fas fa-fingerprint fa-2x sp-faint mb-3"></i>

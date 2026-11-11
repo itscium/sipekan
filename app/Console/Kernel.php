@@ -15,7 +15,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Tarik log absensi dari mesin fingerprint setiap hari kerja (Senin–Jumat) pukul 09.00 WIB.
+        // Butuh cron di server: * * * * * cd /path/ke/sipekan && php artisan schedule:run >> /dev/null 2>&1
+        $schedule->command('fingerprint:sync-logs --trigger=otomatis')
+            ->weekdays()
+            ->at('09:00')
+            ->timezone('Asia/Jakarta')
+            ->withoutOverlapping(30)
+            ->appendOutputTo(storage_path('logs/fingerprint-sync.log'));
     }
 
     /**

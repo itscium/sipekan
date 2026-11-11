@@ -1,20 +1,19 @@
 @extends('adminlte::page')
 
-@section('title', 'SIPEKAN | Log Attendance')
+@section('title', 'SIPekan | Log absensi')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">Log Attendance</h1>
+    <h1>Log absensi</h1>
 @stop
 
 @section('content')
-    <div class="container-fluid">
+    @include('partials.sp-fp-schedule')
+
+    <div class="container-fluid px-0">
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body table-responsive">
-                        <a href="{{ route('wilayah.fingerprint-machine.get-log-attendance') }}" class="btn btn-primary mb-2">
-                            Get Log Attendance from Machine <i class="fa fa-download"></i>
-                        </a>
                         <table class="table table-hover table-bordered table-stripped" id="example2">
                             <thead>
                             <tr>

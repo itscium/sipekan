@@ -6,6 +6,7 @@ use App\Models\FPMachine;
 use App\Models\FPMachineLog;
 use App\Models\FPMachineUser;
 use App\Models\User;
+use App\Services\FingerprintSyncService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -249,7 +250,26 @@ class FPMachineController extends Controller
         return view('master-data.wilayah.wium.fingerprint.log-attendance', compact('list_log'));
     }
 
-    public function GetLogAttendance()
+    /** Tombol "Tarik log sekarang": memakai proses yang sama dengan jadwal otomatis. */
+    public function GetLogAttendance(FingerprintSyncService $sync)
+    {
+        $result = $sync->syncAll('manual');
+
+        if (empty($result['machines'])) {
+            alert()->warning('Belum ada mesin', 'Tambahkan mesin fingerprint terlebih dahulu.');
+        } elseif ($result['ok']) {
+            alert()->success('Berhasil', "{$result['inserted']} log absensi baru disimpan.");
+        } else {
+            $errors = collect($result['machines'])->where('ok', false)
+                ->map(fn ($m) => "{$m['machine']}: {$m['error']}")->implode("\n");
+            alert()->error('Sebagian gagal', "{$result['inserted']} log baru disimpan. Gagal:\n{$errors}");
+        }
+
+        return redirect()->back();
+    }
+
+    /** Versi lama (tidak dipakai lagi), disimpan sebagai referensi. */
+    private function GetLogAttendanceLama()
     {
         $machine = FPMachine::all();
         $current_date1 = date('2025-03-09');
