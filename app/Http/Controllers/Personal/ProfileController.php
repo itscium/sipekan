@@ -98,7 +98,15 @@ class ProfileController extends Controller
         }
         unset($data['hapus_foto']);
 
-        $user->fill($data)->save();
+        try {
+            $user->fill($data)->save();
+        } catch (\Throwable $e) {
+            // Jangan tinggalkan file foto yatim jika penyimpanan ke database gagal.
+            if (!empty($data['foto'])) {
+                Storage::disk('local')->delete($data['foto']);
+            }
+            throw $e;
+        }
 
         if (array_key_exists('foto', $data) && $oldPhoto && $oldPhoto !== $data['foto']) {
             Storage::disk('local')->delete($oldPhoto);

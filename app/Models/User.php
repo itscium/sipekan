@@ -77,6 +77,11 @@ class User extends Authenticatable
         if (empty($this->attributes['foto'] ?? null)) {
             return null;
         }
+        // File bisa tidak ada di server ini (mis. diunggah di server lain yang memakai database yang sama).
+        // Dalam kasus itu tampilkan inisial, bukan gambar rusak.
+        if (!\Illuminate\Support\Facades\Storage::disk('local')->exists($this->attributes['foto'])) {
+            return null;
+        }
         // Nama file ikut di URL supaya browser memuat foto baru setelah diganti.
         return route('personal.profile.photo', ['user' => $this->id, 'v' => basename($this->attributes['foto'])]);
     }
