@@ -269,6 +269,11 @@ body.sp-body a:not(.btn):hover { color: var(--sp-accent-hover); text-decoration:
     .sp-dl dt { border-bottom: 0; padding-bottom: 0; }
 }
 
+/* Riwayat gaji di dalam tab profil: tanpa bingkai kartu, grafik di bawah rincian */
+.sp-pay-embed > .sp-card { border: 0; border-radius: 0; padding: 12px 0 0; margin-bottom: 8px !important; }
+.sp-pay-embed .sp-pay { grid-template-columns: minmax(0, 1fr); }
+.sp-pay-embed .sp-pay-chart-wrap { border-left: 0; padding-left: 0; border-top: 1px solid var(--sp-border); padding-top: 16px; }
+
 /* Riwayat gaji */
 .sp-pay-filter { display: flex; align-items: center; gap: 6px; margin: 0; }
 .sp-select {

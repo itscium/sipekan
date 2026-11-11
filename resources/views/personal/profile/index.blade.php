@@ -8,6 +8,7 @@
     $departemen = $user->kepala_departemen->nama_departemen ?? null;
     $ttl = collect([$user->tempat_lahir, $user->tanggal_lahir ? \Illuminate\Support\Carbon::parse($user->tanggal_lahir)->translatedFormat('d F Y') : null])->filter()->implode(', ');
     $kosong = '<span class="sp-faint">Belum diisi</span>';
+    $showPay = $cek !== null || ($pay['available'] ?? false) || ($pay['error'] ?? false);
 @endphp
 
 @section('content_header')
@@ -64,8 +65,10 @@
         <div class="sp-card p-0">
             <div class="sp-tabs nav" role="tablist">
                 <a class="sp-tab active" href="#identitas" data-toggle="tab" role="tab">Data pribadi</a>
-                @if($cek !== null)
+                @if($showPay)
                     <a class="sp-tab" href="#tunjangan" data-toggle="tab" role="tab">Gaji dan tunjangan</a>
+                @endif
+                @if($cek !== null)
                     @can('head_dept')
                         <a class="sp-tab" href="#anggaran" data-toggle="tab" role="tab">Anggaran departemen</a>
                     @endcan
@@ -93,34 +96,48 @@
                     </p>
                 </div>
 
-                @if($cek !== null)
+                @if($showPay)
                     <div class="tab-pane" id="tunjangan" role="tabpanel">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <p class="sp-pay-items-title mt-3">Berdasarkan laporan ({{ date('Y') }})</p>
-                                @forelse($salary as $item)
-                                    <div class="sp-pay-row">
-                                        <span>{{ $item->allowances->nama }}@if($item->keterangan) <span class="sp-faint">· {{ $item->keterangan }}</span>@endif</span>
-                                        <span class="sp-num">{{ number_format($item->jumlah, 0, ',', '.') }}{{ $item->satuan ?? '' }}</span>
-                                    </div>
-                                @empty
-                                    <div class="sp-faint" style="font-size:13px">Tidak ada data.</div>
-                                @endforelse
-                            </div>
-                            <div class="col-lg-6">
-                                <p class="sp-pay-items-title mt-3">Tunjangan bulanan ({{ date('Y') }})</p>
-                                @forelse($monthly as $item)
-                                    <div class="sp-pay-row">
-                                        <span>{{ $item->allowances->nama }}</span>
-                                        <span class="sp-num">{{ number_format($item->jumlah, 0, ',', '.') }}{{ $item->satuan ?? '' }}</span>
-                                    </div>
-                                @empty
-                                    <div class="sp-faint" style="font-size:13px">Tidak ada data.</div>
-                                @endforelse
-                            </div>
+                        {{-- Riwayat gaji dari payroll, sama seperti di Beranda --}}
+                        <div class="sp-pay-embed">
+                            @include('partials.sp-payroll', ['pay' => $pay, 'payRoute' => 'personal.profile.index', 'payAnchor' => 'tunjangan'])
                         </div>
-                    </div>
 
+                        @if(!($pay['available'] ?? false) && !($pay['error'] ?? false))
+                            <div class="sp-empty">Belum ada data gaji untuk akun Anda.</div>
+                        @endif
+
+                        @if($salary->isNotEmpty() || $monthly->isNotEmpty())
+                            <hr style="border-color:var(--sp-border);margin:8px 0 4px">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <p class="sp-pay-items-title mt-3">Tunjangan sesuai laporan ({{ date('Y') }})</p>
+                                    @forelse($salary as $item)
+                                        <div class="sp-pay-row">
+                                            <span>{{ $item->allowances->nama }}@if($item->keterangan) <span class="sp-faint">· {{ $item->keterangan }}</span>@endif</span>
+                                            <span class="sp-num">{{ number_format($item->jumlah, 0, ',', '.') }}{{ $item->satuan ?? '' }}</span>
+                                        </div>
+                                    @empty
+                                        <div class="sp-faint" style="font-size:13px">Tidak ada data.</div>
+                                    @endforelse
+                                </div>
+                                <div class="col-lg-6">
+                                    <p class="sp-pay-items-title mt-3">Tunjangan bulanan ({{ date('Y') }})</p>
+                                    @forelse($monthly as $item)
+                                        <div class="sp-pay-row">
+                                            <span>{{ $item->allowances->nama }}</span>
+                                            <span class="sp-num">{{ number_format($item->jumlah, 0, ',', '.') }}{{ $item->satuan ?? '' }}</span>
+                                        </div>
+                                    @empty
+                                        <div class="sp-faint" style="font-size:13px">Tidak ada data.</div>
+                                    @endforelse
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                @endif
+
+                @if($cek !== null)
                     @can('head_dept')
                         <div class="tab-pane" id="anggaran" role="tabpanel">
                             <p class="sp-pay-items-title mt-3">Anggaran departemen ({{ date('Y') }})</p>
@@ -139,3 +156,18 @@
         </div>
     </div>
 @stop
+
+@push('js')
+    <script>
+        // Buka tab sesuai alamat, mis. /personal/profile?gaji=2025-01#tunjangan
+        (function () {
+            var h = window.location.hash;
+            if (h && document.querySelector('.sp-tabs a[href="' + h + '"]')) {
+                $('.sp-tabs a[href="' + h + '"]').tab('show');
+            }
+            $('.sp-tabs a').on('shown.bs.tab', function (e) {
+                history.replaceState(null, '', e.target.getAttribute('href'));
+            });
+        })();
+    </script>
+@endpush

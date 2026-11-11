@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Personal;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserSalary;
+use App\Services\DashboardService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -22,8 +23,10 @@ class ProfileController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(){
+    public function index(Request $request, DashboardService $dashboard){
         $user = User::where('id', Auth::id())->first();
+        // Riwayat gaji (sama dengan Beranda), filter bulan lewat ?gaji=YYYY-MM
+        $pay = $dashboard->payroll($user, $request->query('gaji'));
         $cek = UserSalary::where('user_id', Auth::id())->first();
         $salary = UserSalary::where('user_id', Auth::id())->where('jumlah', '!=', null)->where('year', date('Y'))->
             whereHas('allowances', function ($query){
@@ -37,7 +40,7 @@ class ProfileController extends Controller
             whereHas('allowances', function ($query){
                 $query->where('tipe', 'personal')->where('kategori', 'monthly');
             })->get();
-        return view('personal.profile.index',compact('user', 'salary', 'monthly', 'dept', 'cek'));
+        return view('personal.profile.index',compact('user', 'salary', 'monthly', 'dept', 'cek', 'pay'));
     }
 
     public function edit()
