@@ -41,7 +41,7 @@
             </nav>
 
             <div class="sp-sidebar-user">
-                <span class="sp-avatar">{{ $spInitials }}</span>
+                @include('partials.sp-avatar', ['u' => $spUser, 'size' => 34])
                 <div style="min-width:0">
                     <div class="sp-user-name">{{ $spUser->name }}</div>
                     <div class="sp-user-meta">{{ $spRole }}</div>
@@ -76,7 +76,7 @@
 
                     <div class="sp-dropdown" id="spUserMenu">
                         <button type="button" class="sp-user-btn" data-sp-dropdown aria-haspopup="true" aria-expanded="false">
-                            <span class="sp-avatar">{{ $spInitials }}</span>
+                            @include('partials.sp-avatar', ['u' => $spUser, 'size' => 32])
                             <span class="sp-user-label sp-muted" style="font-size:13.5px;font-weight:500">{{ \Illuminate\Support\Str::limit($spUser->name, 22) }}</span>
                             <i class="fas fa-chevron-down sp-faint" style="font-size:11px"></i>
                         </button>

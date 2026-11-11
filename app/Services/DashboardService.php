@@ -57,7 +57,6 @@ class DashboardService
             'is_admin' => $isAdmin,
             'personal' => null,
             'travel' => null,
-            'payroll' => null,
             'attendance' => null,
             'department' => null,
             'admin' => null,
@@ -76,9 +75,6 @@ class DashboardService
         }
         if ($table && $user->travel_account) {
             $data['travel'] = $this->safe($data, 'travel', fn () => $this->account($table, $user->travel_account, 0));
-        }
-        if ($user->ACCNT_CODE) {
-            $data['payroll'] = $this->safe($data, 'payroll', fn () => $this->latestPayroll($user->ACCNT_CODE));
         }
         if (Gate::forUser($user)->allows('uni')) {
             $data['attendance'] = $this->safe($data, 'attendance', fn () => $this->attendanceThisMonth($user->id));
@@ -152,24 +148,92 @@ class DashboardService
         ];
     }
 
-    /** Gaji bersih terakhir yang sudah diposting di APS. */
-    private function latestPayroll(string $enrollmentCode): ?array
+    /**
+     * Riwayat gaji dari APS untuk bulan yang dipilih (format "YYYY-MM").
+     * Jika bulan kosong atau tidak ada datanya, dipakai bulan terakhir yang sudah diposting.
+     * Hasil: daftar bulan yang tersedia, rincian bulan terpilih, dan tren 12 bulan.
+     */
+    public function payroll(User $user, ?string $ym): array
     {
-        $net = Payrol::where('enrollment_code', $enrollmentCode)
-            ->where('stub', 0)
-            ->orderByRaw('CAST([year] AS INT) DESC, CAST([period] AS INT) DESC')
-            ->first(['year', 'period', 'value', 'date_payment']);
-
-        if (!$net) {
-            return null;
+        if (!$user->ACCNT_CODE || $user->type === 'admin') {
+            return ['available' => false, 'error' => false];
         }
 
-        $month = Carbon::createFromDate((int) $net->year, (int) $net->period, 1);
+        $ym = (is_string($ym) && preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $ym)) ? $ym : null;
+
+        try {
+            return Cache::remember(
+                'dashboard:payroll:' . $user->id . ':' . ($ym ?? 'latest') . ':' . now()->format('YmdH'),
+                now()->addMinutes(self::CACHE_MINUTES),
+                fn () => $this->buildPayroll($user->ACCNT_CODE, $ym)
+            );
+        } catch (\Throwable $e) {
+            Log::warning('Dashboard blok gaji gagal dimuat: ' . $e->getMessage());
+            return ['available' => false, 'error' => true];
+        }
+    }
+
+    private function buildPayroll(string $code, ?string $ym): array
+    {
+        // Semua bulan yang sudah diposting beserta gaji bersihnya (stub 0 = ringkasan).
+        $months = Payrol::where('enrollment_code', $code)->where('stub', 0)
+            ->selectRaw('[year], [period], MAX([value]) AS net, MAX([date_payment]) AS paid')
+            ->groupBy('year', 'period')
+            ->orderByRaw('CAST([year] AS INT) DESC, CAST([period] AS INT) DESC')
+            ->get()
+            ->map(fn ($r) => [
+                'key' => sprintf('%04d-%02d', (int) $r->year, (int) $r->period),
+                'year' => (int) $r->year,
+                'month' => (int) $r->period,
+                'net' => (float) $r->net,
+                'paid' => $r->paid,
+            ])
+            ->values();
+
+        if ($months->isEmpty()) {
+            return ['available' => false, 'error' => false];
+        }
+
+        $index = $ym ? $months->search(fn ($m) => $m['key'] === $ym) : 0;
+        $notFound = $ym && $index === false;
+        $index = $index === false ? 0 : $index;
+        $sel = $months[$index];
+
+        $items = Payrol::where('enrollment_code', $code)->where('stub', 1)
+            ->where('year', (string) $sel['year'])
+            ->where('period', (string) $sel['month'])
+            ->get(['signal', 'allowance_name', 'value']);
+
+        $earnings = $items->where('signal', '+')->sortByDesc(fn ($i) => (float) $i->value)
+            ->map(fn ($i) => ['name' => trim($i->allowance_name), 'value' => (float) $i->value])->values()->all();
+        $deductions = $items->where('signal', '-')->sortByDesc(fn ($i) => (float) $i->value)
+            ->map(fn ($i) => ['name' => trim($i->allowance_name), 'value' => (float) $i->value])->values()->all();
+
+        // Tren: 12 bulan sampai bulan terpilih, urut dari yang terlama.
+        $trend = $months->slice($index, 12)->reverse()->values()->map(fn ($m) => [
+            'key' => $m['key'],
+            'label' => Carbon::create($m['year'], $m['month'], 1)->locale('id')->translatedFormat('M y'),
+            'net' => $m['net'],
+        ])->all();
 
         return [
-            'net' => (float) $net->value,
-            'month' => $month,
-            'paid_at' => $net->date_payment ? Carbon::parse($net->date_payment) : null,
+            'available' => true,
+            'error' => false,
+            'not_found' => $notFound,
+            'requested' => $ym,
+            'selected' => $sel['key'],
+            'month' => Carbon::create($sel['year'], $sel['month'], 1),
+            'paid_at' => $sel['paid'] ? Carbon::parse($sel['paid']) : null,
+            'net' => $sel['net'],
+            'earnings' => $earnings,
+            'deductions' => $deductions,
+            'total_earnings' => array_sum(array_column($earnings, 'value')),
+            'total_deductions' => array_sum(array_column($deductions, 'value')),
+            'prev' => $months[$index + 1]['key'] ?? null,
+            'next' => $index > 0 ? $months[$index - 1]['key'] : null,
+            'years' => $months->pluck('year')->unique()->values()->all(),
+            'months_by_year' => $months->groupBy('year')->map(fn ($g) => $g->pluck('month')->all())->all(),
+            'trend' => $trend,
         ];
     }
 

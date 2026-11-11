@@ -83,6 +83,9 @@ Route::middleware('auth')->group(function (){
         Route::get('/keuangan/payrol/{tgl}/print', [KeuanganController::class, 'payrol_print'])->name('personal.keuangan.payrol.print');
         Route::get('/keuangan/payrol/{tgl}/pdf', [KeuanganController::class, 'payrol_pdf'])->name('personal.keuangan.payrol.pdf');
         Route::get('/profile', [ProfileController::class, 'index'])->name('personal.profile.index');
+        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('personal.profile.edit');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('personal.profile.update');
+        Route::get('/profile/foto/{user}', [ProfileController::class, 'photo'])->whereNumber('user')->name('personal.profile.photo');
         Route::get('/attendance', [\App\Http\Controllers\WIUM\AttendanceController::class, 'index'])->name('personal.attendance.index');
         Route::get('/change-password', [\App\Http\Controllers\Personal\ChangePasswordController::class, 'index'])->name('personal.change-password.index');
         Route::post('/change-password', [\App\Http\Controllers\Personal\ChangePasswordController::class, 'update_password'])->name('personal.change-password.update');

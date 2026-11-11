@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\DashboardService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -15,13 +16,15 @@ class HomeController extends Controller
     /**
      * Halaman Beranda.
      */
-    public function index(DashboardService $dashboard)
+    public function index(Request $request, DashboardService $dashboard)
     {
         $user = Auth::user();
 
         return view('home', [
             'user' => $user,
             'd' => $dashboard->forUser($user),
+            // Filter bulan gaji: ?gaji=YYYY-MM
+            'pay' => $dashboard->payroll($user, $request->query('gaji')),
         ]);
     }
 }

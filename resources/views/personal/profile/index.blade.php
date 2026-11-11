@@ -1,249 +1,141 @@
 @extends('adminlte::page')
 
-@section('title', 'SIPEKAN | Profile')
+@section('title', 'SIPekan | Profil')
+
+@php
+    \Illuminate\Support\Carbon::setLocale('id');
+    $dept = $dept ?? collect();
+    $departemen = $user->kepala_departemen->nama_departemen ?? null;
+    $ttl = collect([$user->tempat_lahir, $user->tanggal_lahir ? \Illuminate\Support\Carbon::parse($user->tanggal_lahir)->translatedFormat('d F Y') : null])->filter()->implode(', ');
+    $kosong = '<span class="sp-faint">Belum diisi</span>';
+@endphp
 
 @section('content_header')
-    <h1 class="m-0 text-dark">PROFILE</h1>
+    <div class="d-flex flex-wrap align-items-center justify-content-between" style="gap:12px">
+        <h1>Profil saya</h1>
+        <a href="{{ route('personal.profile.edit') }}" class="sp-btn sp-btn-primary" style="height:38px"><i class="fas fa-pen"></i>Edit profil</a>
+    </div>
 @stop
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-3">
-
-                <!-- Profile Image -->
-                <div class="card card-primary card-outline">
-                    <div class="card-body box-profile">
-                        <div class="text-center">
-                            @if(config('adminlte.usermenu_image'))
-                                <img src="{{ Auth::user()->adminlte_image() }}"
-                                     class="profile-user-img img-fluid img-circle"
-                                     alt="{{ Auth::user()->name }}">
-                            @endif
-{{--                            <img class="profile-user-img img-fluid img-circle"--}}
-{{--                                 src="{{asset('/dist/img/user4-128x128.jpg')}}"--}}
-{{--                                 alt="User profile picture">--}}
-                        </div>
-
-                        <h3 class="profile-username text-center">{{ Auth::user()->name }}</h3>
-
-{{--                        <p class="text-muted text-center">{{ $user->roles->jabatan->role }}</p>--}}
-                        <p class="text-muted text-center">{{ Auth::user()->kepala_departemen->nama_departemen ?? '' }}</p>
-
-                    </div>
-                    <!-- /.card-body -->
+    <div class="sp-profile">
+        {{-- Kolom kiri --}}
+        <div>
+            <div class="sp-card text-center mb-3">
+                <div class="sp-profile-photo">
+                    @include('partials.sp-avatar', ['u' => $user, 'size' => 112])
+                    <a href="{{ route('personal.profile.edit') }}#foto" class="sp-profile-photo-edit" title="Ganti foto" aria-label="Ganti foto"><i class="fas fa-camera"></i></a>
                 </div>
-                <!-- /.card -->
-
-                <!-- About Me Box -->
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">About Me</h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <strong><i class="fas fa-book mr-1"></i> Education</strong>
-
-                        <p class="text-muted">
-                            B.S. in Computer Science from the University of Tennessee at Knoxville
-                        </p>
-
-                        <hr>
-
-                        <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
-
-                        <p class="text-muted">Malibu, California</p>
-
-                        <hr>
-
-                        <strong><i class="fas fa-pencil-alt mr-1"></i> Skills</strong>
-
-                        <p class="text-muted">
-                            <span class="tag tag-danger">UI Design</span>
-                            <span class="tag tag-success">Coding</span>
-                            <span class="tag tag-info">Javascript</span>
-                            <span class="tag tag-warning">PHP</span>
-                            <span class="tag tag-primary">Node.js</span>
-                        </p>
-
-                        <hr>
-
-                        <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
-
-                        <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-                <!-- /.card -->
+                <p class="sp-card-title mt-3" style="font-size:17px">{{ $user->name }}</p>
+                @if($departemen)<p class="sp-muted mb-1" style="font-size:13.5px">{{ $departemen }}</p>@endif
+                <p class="sp-faint mb-0" style="font-size:13px">{{ optional($user->wilayah)->nama }}</p>
             </div>
-            <!-- /.col -->
-            <div class="col-md-9">
-                <div class="card">
-                    <div class="card-header p-2">
-                        <ul class="nav nav-pills">
-                            <li class="nav-item"><a class="nav-link active" href="#identity" data-toggle="tab">Personal Identity</a></li>
-                            @if($cek !== null)
-                            <li class="nav-item"><a class="nav-link" href="#salary" data-toggle="tab">Salary & Allowances</a></li>
-                            @can('head_dept')
-                                <li class="nav-item"><a class="nav-link" href="#departemen" data-toggle="tab">Departement Budget</a></li>
-                            @endcan
-                            @endif
-                        </ul>
-                    </div><!-- /.card-header -->
-                    <div class="card-body">
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="identity">
-                                <form class="form-horizontal">
-                                    <div class="form-group row">
-                                        <label for="inputName" class="col-sm-2 col-form-label">Name</label>
-                                        <div class="col-sm-10">
-                                            <input type="email" class="form-control" id="inputName" value="{{$user->name}}" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
-                                        <div class="col-sm-10">
-                                            <input type="email" class="form-control" id="inputEmail" value="{{$user->email}}" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="inputEmail" class="col-sm-2 col-form-label">Departemen</label>
-                                        <div class="col-sm-10">
-                                            <input type="email" class="form-control" id="inputEmail" value="{{$user->kepala_departemen->nama_departemen ?? ''}}" disabled>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="tab-pane" id="salary">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <fieldset class="border p-2 mb-2">
-                                            <legend class="w-auto">By Report</legend>
-                                            <table class="table table-sm">
-                                                @foreach($salary as $item)
-                                                    <tr>
-                                                        <th>{{strtoupper($item->allowances->nama)}}</th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <td class="text-right">{{number_format($item->jumlah)}}{{$item->satuan ?? ''}}</td>
-                                                        <td>{{$item->keterangan}}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </table>
-                                        </fieldset>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <fieldset class="border p-2 mb-2">
-                                            <legend class="w-auto">Monthly Allowances</legend>
-                                            <table class="table table-sm">
-                                                @foreach($monthly as $item)
-                                                    <tr>
-                                                        <th>{{strtoupper($item->allowances->nama)}}</th>
-                                                        <td class="text-right">{{number_format($item->jumlah)}}{{$item->satuan ?? ''}}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </table>
-                                            <dl class="row" style="display: none">
-                                                <dt class="col-sm-2">Wagefactor</dt>
-                                                <dd class="col-sm-1 text-right">67.500</dd>
-                                                <dd class="col-sm-8"></dd>
-                                                <dt class="col-sm-2">Optical Allowances</dt>
-                                                <dd class="col-sm-1 text-right">After 75%</dd>
-                                                <dd class="col-sm-8">Max 2.500.000 for Reinbursment</dd>
-                                                <dt class="col-sm-12">Medical Allowances</dt>
-                                                <dt class="col-sm-2">&nbsp;&nbsp; - OPD</dt>
-                                                <dd class="col-sm-1 text-right">75%</dd>
-                                                <dd class="col-sm-8"></dd>
-                                                <dt class="col-sm-2">&nbsp;&nbsp; - IPD</dt>
-                                                <dd class="col-sm-1 text-right">90%</dd>
-                                                <dd class="col-sm-8"></dd>
-                                                <dt class="col-sm-2">&nbsp;&nbsp; - Tarif Kamar</dt>
-                                                <dd class="col-sm-1 text-right">1.200.000</dd>
-                                                <dd class="col-sm-8">Officers</dd>
-                                                <dd class="col-sm-1 offset-sm-2 text-right">900.000</dd>
-                                                <dd class="col-sm-8">Dept., Assc., Asst.,Contr., HRD,Chief</dd>
-                                                <dd class="col-sm-1 offset-sm-2 text-right">750.000</dd>
-                                                <dd class="col-sm-8">Staff</dd>
-                                                <dt class="col-sm-2">Educational Allowances</dt>
-                                                <dd class="col-sm-1 text-right">60%</dd>
-                                                <dd class="col-sm-8"></dd>
-                                                <dt class="col-sm-2">Road Tax</dt>
-                                                <dd class="col-sm-1 text-right">3.000.000</dd>
-                                                <dd class="col-sm-8">Max</dd>
-                                                <dt class="col-sm-2">Car Insurance</dt>
-                                                <dd class="col-sm-1 text-right">5.000.000</dd>
-                                                <dd class="col-sm-8">Max</dd>
-                                                <dt class="col-sm-2">Perdiem</dt>
-                                                <dd class="col-sm-1 text-right">350.000</dd>
-                                                <dd class="col-sm-8"></dd>
-                                                <dt class="col-sm-2">Single Meal</dt>
-                                                <dd class="col-sm-1 text-right">87.500</dd>
-                                                <dd class="col-sm-8"></dd>
-                                                <dt class="col-sm-12">Milage/km - Pertalite/liter (Base Market)</dt>
-                                                <dt class="col-sm-2">&nbsp;&nbsp; - Car Authorized</dt>
-                                                <dd class="col-sm-1 text-right">2.460</dd>
-                                                <dd class="col-sm-8"></dd>
-                                                <dt class="col-sm-2">&nbsp;&nbsp; - Car Unauthorized</dt>
-                                                <dd class="col-sm-1 text-right">3.040</dd>
-                                                <dd class="col-sm-8"></dd>
-                                                <dt class="col-sm-2">&nbsp;&nbsp; - Scooter Authorized</dt>
-                                                <dd class="col-sm-1 text-right">775</dd>
-                                                <dd class="col-sm-8"></dd>
-                                                <dt class="col-sm-2">&nbsp;&nbsp; - Scooter Unauthorized</dt>
-                                                <dd class="col-sm-1 text-right">1.000</dd>
-                                                <dd class="col-sm-8"></dd>
-                                                <dt class="col-sm-2">Hotel</dt>
-                                                <dd class="col-sm-1 text-right">600.000</dd>
-                                                <dd class="col-sm-8">Max/night</dd>
-                                                <dt class="col-sm-2">Milage</dt>
-                                                <dd class="col-sm-1 text-right">800 KM</dd>
-                                                <dd class="col-sm-8">PP Max</dd>
-                                            </dl>
-                                        </fieldset>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="departemen">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <fieldset class="border p-2 mb-2">
-                                            <legend class="w-auto">Budget Departemen</legend>
-                                            <table class="table table-sm">
-                                                @foreach($dept as $item)
-                                                    <tr>
-                                                        <th>
-                                                            {{strtoupper($item->allowances->nama)}}
-                                                        </th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <td class="text-right">{{number_format($item->jumlah)}}{{$item->satuan ?? ''}}</td>
-                                                        <td>{{$item->keterangan}}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </table>
-                                        </fieldset>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /.tab-pane -->
-                        </div>
-                        <!-- /.tab-content -->
-                    </div><!-- /.card-body -->
+
+            <div class="sp-card">
+                <p class="sp-card-title mb-3">Tentang saya</p>
+
+                <div class="sp-about-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <div><div class="sp-about-label">Pendidikan</div>{!! $user->pendidikan ? e($user->pendidikan) : $kosong !!}</div>
                 </div>
-                <!-- /.card -->
+                <div class="sp-about-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div><div class="sp-about-label">Alamat</div>{!! $user->alamat ? e($user->alamat) : $kosong !!}</div>
+                </div>
+                <div class="sp-about-item">
+                    <i class="fas fa-star"></i>
+                    <div>
+                        <div class="sp-about-label">Keahlian</div>
+                        @forelse($user->keahlian_list as $skill)
+                            <span class="sp-badge accent mr-1 mb-1">{{ $skill }}</span>
+                        @empty
+                            {!! $kosong !!}
+                        @endforelse
+                    </div>
+                </div>
+                <div class="sp-about-item">
+                    <i class="far fa-file-alt"></i>
+                    <div><div class="sp-about-label">Catatan</div>{!! $user->tentang ? nl2br(e($user->tentang)) : $kosong !!}</div>
+                </div>
             </div>
-            <!-- /.col -->
         </div>
-        <!-- /.row -->
-    </div><!-- /.container-fluid -->
+
+        {{-- Kolom kanan --}}
+        <div class="sp-card p-0">
+            <div class="sp-tabs nav" role="tablist">
+                <a class="sp-tab active" href="#identitas" data-toggle="tab" role="tab">Data pribadi</a>
+                @if($cek !== null)
+                    <a class="sp-tab" href="#tunjangan" data-toggle="tab" role="tab">Gaji dan tunjangan</a>
+                    @can('head_dept')
+                        <a class="sp-tab" href="#anggaran" data-toggle="tab" role="tab">Anggaran departemen</a>
+                    @endcan
+                @endif
+            </div>
+
+            <div class="tab-content" style="padding:8px 20px 20px">
+                <div class="tab-pane active" id="identitas" role="tabpanel">
+                    <dl class="sp-dl">
+                        <dt>Nama lengkap</dt><dd>{{ $user->name }}</dd>
+                        <dt>Email</dt><dd>{{ $user->email }}</dd>
+                        <dt>No. HP</dt><dd>{!! $user->no_hp ? e($user->no_hp) : $kosong !!}</dd>
+                        <dt>Jenis kelamin</dt><dd>{!! $user->jenis_kelamin ? e($user->jenis_kelamin) : $kosong !!}</dd>
+                        <dt>Tempat, tanggal lahir</dt><dd>{!! $ttl !== '' ? e($ttl) : $kosong !!}</dd>
+                        <dt>Alamat</dt><dd>{!! $user->alamat ? e($user->alamat) : $kosong !!}</dd>
+                        <dt>Wilayah</dt><dd>{{ optional($user->wilayah)->nama ?? '–' }}</dd>
+                        <dt>Departemen</dt><dd>{{ $departemen ?? '–' }}</dd>
+                        <dt>Kode akun</dt><dd><code>{{ $user->ACCNT_CODE ?? '–' }}</code></dd>
+                        @if($user->travel_account)
+                            <dt>Akun travel</dt><dd><code>{{ $user->travel_account }}</code></dd>
+                        @endif
+                    </dl>
+                    <p class="sp-faint mb-0" style="font-size:12.5px">
+                        <i class="fas fa-lock mr-1"></i>Nama, email, wilayah, dan kode akun diatur oleh admin. Hubungi admin jika ada yang perlu diubah.
+                    </p>
+                </div>
+
+                @if($cek !== null)
+                    <div class="tab-pane" id="tunjangan" role="tabpanel">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <p class="sp-pay-items-title mt-3">Berdasarkan laporan ({{ date('Y') }})</p>
+                                @forelse($salary as $item)
+                                    <div class="sp-pay-row">
+                                        <span>{{ $item->allowances->nama }}@if($item->keterangan) <span class="sp-faint">· {{ $item->keterangan }}</span>@endif</span>
+                                        <span class="sp-num">{{ number_format($item->jumlah, 0, ',', '.') }}{{ $item->satuan ?? '' }}</span>
+                                    </div>
+                                @empty
+                                    <div class="sp-faint" style="font-size:13px">Tidak ada data.</div>
+                                @endforelse
+                            </div>
+                            <div class="col-lg-6">
+                                <p class="sp-pay-items-title mt-3">Tunjangan bulanan ({{ date('Y') }})</p>
+                                @forelse($monthly as $item)
+                                    <div class="sp-pay-row">
+                                        <span>{{ $item->allowances->nama }}</span>
+                                        <span class="sp-num">{{ number_format($item->jumlah, 0, ',', '.') }}{{ $item->satuan ?? '' }}</span>
+                                    </div>
+                                @empty
+                                    <div class="sp-faint" style="font-size:13px">Tidak ada data.</div>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+
+                    @can('head_dept')
+                        <div class="tab-pane" id="anggaran" role="tabpanel">
+                            <p class="sp-pay-items-title mt-3">Anggaran departemen ({{ date('Y') }})</p>
+                            @forelse($dept as $item)
+                                <div class="sp-pay-row">
+                                    <span>{{ $item->allowances->nama }}@if($item->keterangan) <span class="sp-faint">· {{ $item->keterangan }}</span>@endif</span>
+                                    <span class="sp-num">{{ number_format($item->jumlah, 0, ',', '.') }}{{ $item->satuan ?? '' }}</span>
+                                </div>
+                            @empty
+                                <div class="sp-faint" style="font-size:13px">Tidak ada data.</div>
+                            @endforelse
+                        </div>
+                    @endcan
+                @endif
+            </div>
+        </div>
+    </div>
 @stop
