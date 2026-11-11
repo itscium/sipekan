@@ -405,6 +405,34 @@ body.sp-body:has(.sp-auth) { margin: 0; }
     width: 420px; height: 420px; border-radius: 50%;
     border: 64px solid rgba(255, 255, 255, .05);
 }
+/* Panel 3D: langit pastel + pita mengilap (lihat public/js/sipekan-login-3d.js) */
+.sp-auth-side-3d {
+    color: #0d2a57;
+    background:
+        radial-gradient(120% 80% at 15% 0%, #cfdcff 0%, rgba(207, 220, 255, 0) 60%),
+        radial-gradient(90% 70% at 100% 100%, #fbefe4 0%, rgba(251, 239, 228, 0) 65%),
+        linear-gradient(160deg, #dfe6ff 0%, #ece8ff 45%, #f7f2ee 100%);
+}
+.sp-auth-side-3d::after { display: none; }
+.sp-auth-3d { position: absolute; inset: 0; z-index: 0; opacity: 0; transition: opacity 1.2s ease; }
+.sp-auth-3d.is-ready { opacity: 1; }
+.sp-auth-3d canvas { display: block; width: 100% !important; height: 100% !important; }
+.sp-auth-side-3d > :not(.sp-auth-3d) { position: relative; z-index: 1; }
+.sp-auth-side-3d .sp-auth-brand img { box-shadow: 0 2px 10px rgba(19, 60, 122, .15); }
+.sp-auth-side-3d .sp-auth-hero h1 { color: #0d2a57; }
+.sp-auth-side-3d .sp-auth-hero p { color: #3c4f72; }
+.sp-auth-side-3d .sp-auth-points li { color: #2a3d63; }
+.sp-auth-side-3d .sp-auth-points i { color: var(--sp-accent); }
+.sp-auth-side-3d .sp-auth-foot { color: #5b6b8a; }
+.sp-auth-side-3d { justify-content: flex-start; }
+.sp-auth-side-3d .sp-auth-hero {
+    margin-top: auto; margin-bottom: 20px;
+    align-self: flex-start; max-width: 500px; padding: 20px 22px; border-radius: 16px;
+    background: rgba(255, 255, 255, .32); border: 1px solid rgba(255, 255, 255, .6);
+    backdrop-filter: blur(8px) saturate(140%); -webkit-backdrop-filter: blur(8px) saturate(140%);
+}
+.sp-auth-side-3d .sp-auth-hero h1 { font-size: 30px; }
+.sp-auth-side-3d .sp-auth-points { margin-top: 18px; }
 .sp-auth-brand { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 18px; }
 .sp-auth-brand img { width: 40px; height: 40px; border-radius: 50%; background: #fff; }
 .sp-auth-hero h1 { font-size: 34px; line-height: 1.2; font-weight: 600; letter-spacing: -.02em; margin: 0 0 14px; color: #fff; }

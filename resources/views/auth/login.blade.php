@@ -17,7 +17,9 @@
 @include('sweetalert::alert')
 
 <div class="sp-auth">
-    <section class="sp-auth-side">
+    <section class="sp-auth-side sp-auth-side-3d">
+        {{-- Animasi 3D (Three.js). Tanpa WebGL, panel tetap tampil dengan latar gradasi. --}}
+        <div class="sp-auth-3d" id="spAuth3d" aria-hidden="true"></div>
         <div class="sp-auth-brand">
             <img src="{{ asset('vendor/adminlte/dist/img/adventist-symbol-circle-ming.png') }}" alt="GMAHK">
             SIPekan
@@ -102,6 +104,14 @@
     </main>
 </div>
 
+<script type="importmap">
+    {
+        "imports": {
+            "three": "{{ asset('vendor/three/three.module.min.js') }}"
+        }
+    }
+</script>
+<script type="module" src="{{ asset('js/sipekan-login-3d.js') }}?v={{ filemtime(public_path('js/sipekan-login-3d.js')) }}"></script>
 <script>
     document.getElementById('spTogglePass').addEventListener('click', function () {
         var p = document.getElementById('password');

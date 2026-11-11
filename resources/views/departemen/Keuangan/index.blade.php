@@ -24,16 +24,24 @@
     {{-- Filter --}}
     <form method="GET" class="sp-card mb-3 d-flex flex-wrap align-items-end" style="gap:12px">
         @if($isAdmin)
+            <div style="width:260px">
+                <label for="wilayah" class="d-block mb-1" style="font-size:13px;font-weight:500;color:var(--sp-text-2)">Wilayah</label>
+                {{-- Ganti wilayah: kosongkan pilihan departemen agar daftar departemen ikut berganti --}}
+                <select id="wilayah" name="wilayah" class="custom-select"
+                        onchange="this.form.departemen.value='';this.form.submit()">
+                    @foreach($daftar_wilayah as $w)
+                        <option value="{{ $w->id }}" {{ (string) $wilayah_id === (string) $w->id ? 'selected' : '' }}>
+                            {{ $w->nama }}{{ $w->id == 20003 ? ' (WIUM)' : ($w->id == 1 ? ' (CIUM)' : '') }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
             <div style="flex:1;min-width:240px">
                 <label for="departemen" class="d-block mb-1" style="font-size:13px;font-weight:500;color:var(--sp-text-2)">Departemen</label>
                 <select id="departemen" name="departemen" class="custom-select" onchange="this.form.submit()">
-                    <option value="">Pilih departemen</option>
-                    @foreach($daftar_departemen->groupBy(fn ($d) => optional($d->wilayah)->nama ?? 'Tanpa wilayah') as $wil => $list)
-                        <optgroup label="{{ $wil }}">
-                            @foreach($list as $d)
-                                <option value="{{ $d->id }}" {{ optional($departemen)->id == $d->id ? 'selected' : '' }}>{{ $d->nama_departemen }}</option>
-                            @endforeach
-                        </optgroup>
+                    <option value="">Pilih departemen ({{ $daftar_departemen->count() }})</option>
+                    @foreach($daftar_departemen as $d)
+                        <option value="{{ $d->id }}" {{ optional($departemen)->id == $d->id ? 'selected' : '' }}>{{ $d->nama_departemen }}</option>
                     @endforeach
                 </select>
             </div>

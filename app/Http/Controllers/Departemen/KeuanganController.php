@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Allowances;
 use App\Models\Departemen;
 use App\Models\DepartmentExpense;
+use App\Models\Wilayah;
 use App\Models\WIUM\A_SALFLDG;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -202,9 +203,18 @@ class KeuanganController extends Controller
 
         $isAdmin = Gate::allows('administrator');
         $departemen = $this->resolveDepartemen($request);
-        $daftar_departemen = $isAdmin
-            ? Departemen::with('wilayah:id,nama')->orderBy('wilayah_id')->orderBy('nama_departemen')->get(['id', 'nama_departemen', 'wilayah_id'])
-            : collect();
+
+        // Admin memilih wilayah dulu (bawaan: WIUM), lalu departemen di wilayah itu.
+        $daftar_wilayah = collect();
+        $daftar_departemen = collect();
+        $wilayah_id = null;
+        if ($isAdmin) {
+            $daftar_wilayah = Wilayah::orderBy('id')->get(['id', 'nama', 'english_name']);
+            $wilayah_id = $departemen->wilayah_id
+                ?? ($request->filled('wilayah') ? $request->query('wilayah') : config('sipekan.default_wilayah_id'));
+            $daftar_departemen = Departemen::where('wilayah_id', $wilayah_id)
+                ->orderBy('nama_departemen')->get(['id', 'nama_departemen', 'wilayah_id']);
+        }
 
         $data_allowance = [];
         if ($departemen) {
@@ -221,7 +231,7 @@ class KeuanganController extends Controller
             }
         }
 
-        return view('departemen.Keuangan.index', compact('departemen', 'data_allowance', 'periode', 'isAdmin', 'daftar_departemen'));
+        return view('departemen.Keuangan.index', compact('departemen', 'data_allowance', 'periode', 'isAdmin', 'daftar_departemen', 'daftar_wilayah', 'wilayah_id'));
     }
 
     public function detail_keuangan (Request $request, $id) {
