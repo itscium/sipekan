@@ -31,11 +31,17 @@ Auth::routes(['register'=>false]);
 Route::middleware('auth')->group(function (){
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
     Route::resource('departemens', DepartemenController::class);
-    Route::prefix('wilayah')->group( function (){
+    Route::prefix('wilayah')->middleware('can:administrator')->group( function (){
         Route::get('/', [WilayahController::class, 'index'])->name('wilayah.index');
         Route::get('/edit/{id}', [WilayahController::class, 'edit'])->name('wilayah.edit');
         Route::post('/update', [WilayahController::class, 'update'])->name('wilayah.update');
         Route::get('/{id}/fingerprint-machine', [\App\Http\Controllers\FPMachineController::class, 'index'])->name('wilayah.fingerprint-machine');
+        Route::get('/{id}/fingerprint-machine/tambah', [\App\Http\Controllers\FPMachineController::class, 'create'])->name('wilayah.fingerprint-machine.create');
+        Route::post('/{id}/fingerprint-machine', [\App\Http\Controllers\FPMachineController::class, 'store'])->name('wilayah.fingerprint-machine.store');
+        Route::get('/{id}/fingerprint-machine/{machine}/edit', [\App\Http\Controllers\FPMachineController::class, 'edit'])->whereNumber('machine')->name('wilayah.fingerprint-machine.edit');
+        Route::put('/{id}/fingerprint-machine/{machine}', [\App\Http\Controllers\FPMachineController::class, 'update'])->whereNumber('machine')->name('wilayah.fingerprint-machine.update');
+        Route::delete('/{id}/fingerprint-machine/{machine}', [\App\Http\Controllers\FPMachineController::class, 'destroy'])->whereNumber('machine')->name('wilayah.fingerprint-machine.destroy');
+        Route::post('/{id}/fingerprint-machine/{machine}/tes-koneksi', [\App\Http\Controllers\FPMachineController::class, 'testConnection'])->whereNumber('machine')->name('wilayah.fingerprint-machine.test');
         Route::get('/{id_wilayah}/fingerprint-machine/{id_machine}/list-user', [\App\Http\Controllers\FPMachineController::class, 'ListUser'])->name('wilayah.fingerprint-machine.list-user');
         Route::get('/{id_user}/{id}/hubungkan-user', [\App\Http\Controllers\FPMachineController::class, 'HubungkanUser'])->name('wilayah.fingerprint-machine.hubungkan-user');
         Route::post('/fingerprint/connet-user', [\App\Http\Controllers\FPMachineController::class, 'connectUser'])->name('wilayah.fingerprint-machine.connect-user');
@@ -114,14 +120,16 @@ Route::middleware('auth')->group(function (){
 
     Route::get('/impersonate/{id}', [\App\Http\Controllers\ImpersonateController::class, 'impersonate'])->name('impersonate');
     Route::delete('/impersonate/destroy', [\App\Http\Controllers\ImpersonateController::class, 'destroy'])->name('impersonate.destroy');
-    Route::get('users/non-aktif/{id}', function (string $id){
-       \App\Models\User::where('id', $id)->update(['status' => 0]);
-       return redirect()->back()->with('alert', 'User Non-aktif');
-    })->name('users.non-aktifkan');
-    Route::get('users/aktif/{id}', function (string $id){
-       \App\Models\User::where('id', $id)->update(['status' => 1]);
-        return redirect()->back()->with('alert', 'User Aktif');
-    })->name('users.aktifkan');
+    Route::middleware('can:administrator')->group(function (){
+        Route::get('users/non-aktif/{id}', function (string $id){
+           \App\Models\User::where('id', $id)->update(['status' => 0]);
+           return redirect()->back()->with('alert', 'User Non-aktif');
+        })->name('users.non-aktifkan');
+        Route::get('users/aktif/{id}', function (string $id){
+           \App\Models\User::where('id', $id)->update(['status' => 1]);
+            return redirect()->back()->with('alert', 'User Aktif');
+        })->name('users.aktifkan');
+    });
 });
 
 //Auth::routes();

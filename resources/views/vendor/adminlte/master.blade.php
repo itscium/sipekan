@@ -18,7 +18,7 @@
     {{-- Title --}}
     <title>
         @yield('title_prefix', config('adminlte.title_prefix', ''))
-        @yield('title', config('adminlte.title', 'SIPEKAN-UIKB'))
+        @yield('title', config('adminlte.title', 'SIPekan'))
         @yield('title_postfix', config('adminlte.title_postfix', ''))
     </title>
 
@@ -34,10 +34,16 @@
         @include('adminlte::plugins', ['type' => 'css'])
 
         <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     @else
         <link rel="stylesheet" href="{{ mix(config('adminlte.laravel_mix_css_path', 'css/app.css')) }}">
     @endif
+
+    {{-- Tema SIPekan --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="{{ asset('css/sipekan.css') }}?v={{ filemtime(public_path('css/sipekan.css')) }}">
+    <meta name="theme-color" content="#1f5fbf">
 
     {{-- Livewire Styles --}}
     @if(config('adminlte.livewire'))

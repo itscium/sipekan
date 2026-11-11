@@ -2,27 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Services\DashboardService;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
     /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * Halaman Beranda.
      */
-    public function index()
+    public function index(DashboardService $dashboard)
     {
-        return view('home');
+        $user = Auth::user();
+
+        return view('home', [
+            'user' => $user,
+            'd' => $dashboard->forUser($user),
+        ]);
     }
 }

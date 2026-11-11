@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'SIPEKAN | UIKB',
+    'title' => 'SIPekan',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -225,225 +225,119 @@ return [
     */
 
     'menu' => [
-        // Navbar items:
+        // Menu sidebar SIPekan. Hak akses tetap memakai Gate yang sama ('can').
         [
-            'type'         => 'navbar-search',
-            'text'         => 'search',
-            'topnav_right' => true,
+            'text' => 'Beranda',
+            'url'  => 'dashboard',
+            'icon' => 'fas fa-fw fa-home',
         ],
         [
-            'type'         => 'fullscreen-widget',
-            'topnav_right' => true,
-        ],
-
-        // Sidebar items:
-        [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
-        ],
-        [
-            'text' => 'blog',
-            'url'  => 'admin/blog',
-            'can'  => 'manage-blog',
-        ],
-        [
-            'header' => 'personal',
-            'classes' => 'text-bold text-uppercase',
+            'header' => 'Pribadi',
             'can' => ['user'],
         ],
         [
-            'text' => 'profile',
+            'text' => 'Profil',
             'url'  => 'personal/profile',
             'icon' => 'fas fa-fw fa-user',
             'can' => ['user'],
         ],
         [
-            'text' => 'Attendance',
+            'text' => 'Absensi',
             'url'  => 'personal/attendance',
             'icon' => 'fas fa-fw fa-fingerprint',
             'can' => ['uni'],
         ],
         [
-          'text' => 'Financial',
-          'icon' => 'fas fa-fw fa-money-bill',
-          'submenu' => [
-              [
-                  'text' => 'Personal Finance',
-                  'url'  => '/personal/keuangan',
-              ],
-//              [
-//                  'text' => 'Payrol',
-//                  'url'  => '/personal/keuangan/payrol',
-//                  'can' => ['wium']
-//              ],
-              [
-                  'text' => 'Travel Finance',
-                  'url'  => '/personal/travel',
-                  'can' => ['ada_travel'],
-              ],
-          ],
+            'text' => 'Keuangan',
+            'icon' => 'fas fa-fw fa-wallet',
+            'submenu' => [
+                [
+                    'text' => 'Keuangan personal',
+                    'url'  => '/personal/keuangan',
+                    'active' => ['personal/keuangan*'],
+                ],
+                [
+                    'text' => 'Keuangan travel',
+                    'url'  => '/personal/travel',
+                    'can' => ['ada_travel'],
+                ],
+            ],
             'can' => ['user'],
         ],
-//        [
-//            'text'    => 'multilevel',
-//            'icon'    => 'fas fa-fw fa-share',
-//            'submenu' => [
-//                [
-//                    'text' => 'level_one',
-//                    'url'  => '#',
-//                ],
-//                [
-//                    'text'    => 'level_one',
-//                    'url'     => '#',
-//                    'submenu' => [
-//                        [
-//                            'text' => 'level_two',
-//                            'url'  => '#',
-//                        ],
-//                        [
-//                            'text'    => 'level_two',
-//                            'url'     => '#',
-//                            'submenu' => [
-//                                [
-//                                    'text' => 'level_three',
-//                                    'url'  => '#',
-//                                ],
-//                                [
-//                                    'text' => 'level_three',
-//                                    'url'  => '#',
-//                                ],
-//                            ],
-//                        ],
-//                    ],
-//                ],
-//                [
-//                    'text' => 'level_one',
-//                    'url'  => '#',
-//                ],
-//            ],
-//        ],
-        [   'header' => 'Admins Area',
-            'classes' => 'text-bold text-uppercase',
+        [
+            'header' => 'Admin',
             'can' => ['administrator'],
         ],
         [
-            'text' => 'Employee Allowance',
+            'text' => 'Tunjangan pegawai',
             'url'  => '/admins/employee-allowance',
-            'active' => ['admins/employee*','regex:@^admins/employee/[0-9]+$@'],
+            'active' => ['admins/employee*', 'regex:@^admins/employee/[0-9]+$@'],
             'icon' => 'fas fa-fw fa-users',
             'can' => ['administrator'],
         ],
         [
-            'text' => 'Departemental Allowance',
+            'text' => 'Tunjangan departemen',
             'url'  => '/departemen/keuangan',
-            'active' => ['departemen/keuangan*','regex:@^departemen/keuangan/[0-9]+$@'],
+            'active' => ['departemen/keuangan*', 'regex:@^departemen/keuangan/[0-9]+$@'],
             'icon' => 'fas fa-fw fa-cubes',
             'can' => ['administrator'],
         ],
-//        [
-//            'text' => 'Departments Members',
-//            'url'  => '/departemen/pegawai',
-//            'icon' => 'fas fa-fw fa-users',
-//            'can' => ['head_dept'],
-//        ],
-        [   'header' => 'Department',
-            'classes' => 'text-bold text-uppercase',
+        [
+            'header' => 'Departemen',
             'can' => ['head_dept'],
         ],
         [
-            'text' => 'Departments Financial',
+            'text' => 'Keuangan departemen',
             'url'  => '/departemen/keuangan',
-            'active' => ['departemen/keuangan*','regex:@^departemen/keuangan/[0-9]+$@'],
+            'active' => ['departemen/keuangan*', 'regex:@^departemen/keuangan/[0-9]+$@'],
             'icon' => 'fas fa-fw fa-building',
             'can' => ['head_dept'],
         ],
-        [   'header' => 'Ledgers',
-            'classes' => 'text-bold text-uppercase',
+        [
+            'header' => 'Ledger',
             'can' => ['conference_finance'],
         ],
         [
-            'text' => 'Conf./Mission on WIUM',
+            'text' => 'Konferens/misi di WIUM',
             'url'  => '/ledgers/conference-on-wium',
-            'active' => ['ledgers/*','regex:@^ledgers/[0-9]+$@'],
+            'active' => ['ledgers/*', 'regex:@^ledgers/[0-9]+$@'],
             'icon' => 'fas fa-fw fa-folder-open',
             'can' => ['conference_finance'],
         ],
-        [   'header' => 'Report',
-            'classes' => 'text-bold text-uppercase',
+        [
+            'header' => 'Laporan',
             'can' => ['finance', 'officers'],
         ],
         [
-            'text' => 'Departments Expense',
+            'text' => 'Pengeluaran departemen',
             'url'  => '/report/departemen',
-            'active' => ['report/departemen*','regex:@^report/departemen/[0-9]+$@'],
-            'icon' => 'fas fa-fw fa-building',
+            'active' => ['report/departemen*', 'regex:@^report/departemen/[0-9]+$@'],
+            'icon' => 'fas fa-fw fa-chart-bar',
             'can' => ['finance', 'officers'],
         ],
-//        [
-//            'text' => 'Departemen Expense',
-//            'icon' => 'fas fa-fw fa-briefcase',
-//            'active' => ['report/departemen/*','regex:@^report/departemen/[0-9]+$@'],
-//            'submenu' => [
-//                [
-//                    'text' => 'Travel Expense',
-//                    'url'  => '/report/departemen/travel-expense',
-//                    'active' => ['report/departemen/travel-expense/*','regex:@^report/departemen/travel-expense/[0-9]+$@'],
-//                ],
-//                [
-//                    'text' => 'Special Travel',
-//                    'url'  => '/report/departemen/special-travel',
-//                    'active' => ['report/departemen/special-travel/*','regex:@^report/departemen/special-travel/[0-9]+$@'],
-//                ],
-//                [
-//                    'text' => 'Strategic Plan',
-//                    'url'  => '/report/departemen/strategic-plan',
-//                    'active' => ['report/departemen/strategic-plan/*','regex:@^report/departemen/strategic-plan/[0-9]+$@'],
-//                ],
-//                [
-//                    'text' => 'Office Expense',
-//                    'url'  => '/report/departemen/office-expense',
-//                    'active' => ['report/departemen/office-expense/*','regex:@^report/departemen/office-expense/[0-9]+$@'],
-//                ],
-//            ],
-//            'can' => ['finance'],
-//        ],
-//        [
-//            'text' => 'Departments Expense',
-//            'url'  => '/report/departemen',
-//            'icon' => 'fas fa-fw fa-briefcase',
-//            'can' => ['finance'],
-//        ],
-        [   'header' => 'Master Data',
-            'classes' => 'text-bold text-uppercase',
+        [
+            'header' => 'Master data',
             'can' => ['administrator'],
         ],
         [
             'text' => 'Wilayah',
             'url'  => '/wilayah',
             'icon' => 'fas fa-fw fa-map',
-            'active' => ['wilayah*','regex:@^wilayah/[0-9]+$@'],
+            'active' => ['wilayah*', 'regex:@^wilayah/[0-9]+$@'],
             'can' => ['administrator'],
         ],
-//        [
-//            'text' => 'Departmens',
-//            'url'  => '/departemens',
-//            'icon' => 'fas fa-fw fa-building',
-//            'active' => ['departemens*','regex:@^departemens/[0-9]+$@'],
-//            'can' => ['administrator'],
-//        ],
-        [   'header' => 'Settings',
-            'classes' => 'text-bold text-uppercase',
+        [
+            'header' => 'Pengaturan',
             'can' => ['user', 'administrator'],
         ],
         [
             'text' => 'SOP',
             'route'  => 'sop.index',
             'icon' => 'fas fa-fw fa-book',
-//            'can' => ['uni', 'administrator'],
             'can' => ['administrator'],
         ],
         [
-            'text' => 'change_password',
+            'text' => 'Ganti password',
             'route'  => 'personal.change-password.index',
             'icon' => 'fas fa-fw fa-lock',
             'can' => ['user', 'administrator'],
