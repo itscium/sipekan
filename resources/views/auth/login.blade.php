@@ -84,6 +84,19 @@
                 Masuk <i class="fas fa-arrow-right" style="font-size:13px"></i>
             </button>
 
+            {{-- Disembunyikan jika halaman dibuka dari dalam aplikasi Android SIPekan sendiri --}}
+            @php($apkPath = storage_path('app/' . config('sipekan.android.file')))
+            @if(!str_contains(request()->userAgent() ?? '', 'SIPekanApp') && is_file($apkPath))
+                <a href="{{ route('android.download') }}" class="sp-btn sp-btn-android" download>
+                    <i class="fab fa-android"></i> Unduh Aplikasi Android
+                </a>
+                <p class="sp-android-meta">
+                    Versi {{ config('sipekan.android.version') }} ·
+                    {{ number_format(filesize($apkPath) / 1024, 0, ',', '.') }} KB ·
+                    Android {{ config('sipekan.android.min_android') }} ke atas
+                </p>
+            @endif
+
             <p class="sp-auth-note">Lupa password? Hubungi bagian keuangan atau admin wilayah Anda.</p>
         </form>
     </main>

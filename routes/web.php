@@ -28,6 +28,16 @@ Route::get('/', function () {
 
 Auth::routes(['register'=>false]);
 
+// Unduh aplikasi Android (bisa diakses tanpa login, dari halaman login)
+Route::get('/unduh/android', function () {
+    $path = storage_path('app/' . config('sipekan.android.file'));
+    abort_unless(is_file($path), 404, 'File aplikasi belum tersedia.');
+    return response()->download($path, 'SIPekan-' . config('sipekan.android.version') . '.apk', [
+        'Content-Type' => 'application/vnd.android.package-archive',
+        'Cache-Control' => 'no-cache',
+    ]);
+})->name('android.download');
+
 Route::middleware('auth')->group(function (){
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
     Route::resource('departemens', DepartemenController::class);
