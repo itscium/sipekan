@@ -55,6 +55,9 @@
                 </div>
             </div>
 
+            {{-- Siapa yang sedang mengakses SIPekan + log aktivitas (khusus admin) --}}
+            @include('partials.sp-activity-panel')
+
             <div class="sp-grid sp-grid-2">
                 <div class="sp-card">
                     <div class="sp-card-head">

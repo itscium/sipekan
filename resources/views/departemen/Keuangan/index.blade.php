@@ -58,6 +58,9 @@
             @if($isAdmin)
                 <p class="sp-card-title">Pilih departemen</p>
                 <p class="sp-card-sub mb-0">Pilih departemen di atas untuk melihat anggaran dan realisasinya.</p>
+            @elseif($anggaran_disembunyikan ?? false)
+                <p class="sp-card-title">Anggaran departemen tidak ditampilkan</p>
+                <p class="sp-card-sub mb-0">Anggaran departemen untuk wilayah Anda tidak tersedia di SIPekan. Hubungi bagian keuangan untuk informasi anggaran.</p>
             @else
                 <p class="sp-card-title">Anda belum terdaftar sebagai kepala departemen</p>
                 <p class="sp-card-sub mb-0">Halaman ini menampilkan anggaran departemen yang Anda pimpin. Jika seharusnya Anda kepala departemen, hubungi admin wilayah untuk mengaturnya.</p>

@@ -38,8 +38,11 @@ class AuthServiceProvider extends ServiceProvider
             return $user->type == 'user';
         });
 
+        // Kepala departemen yang anggarannya boleh ditampilkan
+        // (wilayah di config sipekan.hidden_budget_wilayah_ids tidak termasuk).
         Gate::define('head_dept', static function ($user){
-            return $user->kepala_departemen->kepala_departemen ?? '';
+            $dept = $user->kepala_departemen;
+            return $dept !== null && $dept->isBudgetVisible();
         });
 
         Gate::define('finance', function ($user){

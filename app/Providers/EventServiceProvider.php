@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Services\ActivityTracker;
+use Illuminate\Auth\Events\Failed;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -27,7 +31,10 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // Log aktivitas: masuk, keluar, dan gagal masuk (lihat App\Services\ActivityTracker)
+        Event::listen(Login::class, fn (Login $e) => app(ActivityTracker::class)->login($e->user, request()));
+        Event::listen(Logout::class, fn (Logout $e) => app(ActivityTracker::class)->logout($e->user, request()));
+        Event::listen(Failed::class, fn (Failed $e) => app(ActivityTracker::class)->failed($e->credentials['email'] ?? null, $e->user, request()));
     }
 
     /**

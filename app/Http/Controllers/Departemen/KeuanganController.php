@@ -185,9 +185,17 @@ class KeuanganController extends Controller
     private function resolveDepartemen(Request $request): ?Departemen
     {
         if (Gate::allows('administrator') && $request->filled('departemen')) {
-            return Departemen::find($request->query('departemen'));
+            // Departemen dari wilayah yang disembunyikan tidak boleh dibuka admin
+            return Departemen::where('id', $request->query('departemen'))->budgetVisible()->first();
         }
-        return Departemen::where('kepala_departemen', Auth::id())->first();
+        // Kepala departemen di wilayah yang disembunyikan juga tidak melihat anggarannya
+        return Departemen::where('kepala_departemen', Auth::id())->budgetVisible()->first();
+    }
+
+    /** Wilayah yang anggaran departemennya disembunyikan dari pilihan admin (config/sipekan.php). */
+    private function hiddenWilayah(): array
+    {
+        return array_map('strval', config('sipekan.hidden_budget_wilayah_ids', []));
     }
 
     /** Periode SunSystems dari ?periode=YYYY-MM: Januari s.d. bulan terpilih. */
@@ -203,15 +211,22 @@ class KeuanganController extends Controller
 
         $isAdmin = Gate::allows('administrator');
         $departemen = $this->resolveDepartemen($request);
+        // Kepala departemen yang wilayahnya disembunyikan: tampilkan pesan khusus, bukan "belum terdaftar"
+        $anggaran_disembunyikan = !$isAdmin && !$departemen
+            && Departemen::where('kepala_departemen', Auth::id())->exists();
 
         // Admin memilih wilayah dulu (bawaan: WIUM), lalu departemen di wilayah itu.
         $daftar_wilayah = collect();
         $daftar_departemen = collect();
         $wilayah_id = null;
         if ($isAdmin) {
-            $daftar_wilayah = Wilayah::orderBy('id')->get(['id', 'nama', 'english_name']);
-            $wilayah_id = $departemen->wilayah_id
-                ?? ($request->filled('wilayah') ? $request->query('wilayah') : config('sipekan.default_wilayah_id'));
+            $daftar_wilayah = Wilayah::whereNotIn('id', $this->hiddenWilayah())
+                ->orderBy('id')->get(['id', 'nama', 'english_name']);
+            $wilayah_id = $departemen->wilayah_id ?? $request->query('wilayah');
+            // Wilayah tersembunyi atau tidak dikenal -> kembali ke wilayah bawaan (WIUM)
+            if (!$daftar_wilayah->contains('id', $wilayah_id)) {
+                $wilayah_id = config('sipekan.default_wilayah_id');
+            }
             $daftar_departemen = Departemen::where('wilayah_id', $wilayah_id)
                 ->orderBy('nama_departemen')->get(['id', 'nama_departemen', 'wilayah_id']);
         }
@@ -231,7 +246,7 @@ class KeuanganController extends Controller
             }
         }
 
-        return view('departemen.Keuangan.index', compact('departemen', 'data_allowance', 'periode', 'isAdmin', 'daftar_departemen', 'daftar_wilayah', 'wilayah_id'));
+        return view('departemen.Keuangan.index', compact('departemen', 'data_allowance', 'periode', 'isAdmin', 'daftar_departemen', 'daftar_wilayah', 'wilayah_id', 'anggaran_disembunyikan'));
     }
 
     public function detail_keuangan (Request $request, $id) {

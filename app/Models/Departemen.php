@@ -21,6 +21,17 @@ class Departemen extends Model
 'office_expense_code',
     ];
 
+    /** Hanya departemen yang anggarannya boleh ditampilkan (lihat config/sipekan.php). */
+    public function scopeBudgetVisible($query)
+    {
+        return $query->whereNotIn('wilayah_id', array_map('strval', config('sipekan.hidden_budget_wilayah_ids', [])));
+    }
+
+    public function isBudgetVisible(): bool
+    {
+        return !in_array((string) $this->wilayah_id, array_map('strval', config('sipekan.hidden_budget_wilayah_ids', [])), true);
+    }
+
     public function wilayah(){
         return $this->belongsTo(Wilayah::class, 'wilayah_id', 'id');
     }

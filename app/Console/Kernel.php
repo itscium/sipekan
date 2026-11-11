@@ -23,6 +23,12 @@ class Kernel extends ConsoleKernel
             ->timezone('Asia/Jakarta')
             ->withoutOverlapping(30)
             ->appendOutputTo(storage_path('logs/fingerprint-sync.log'));
+
+        // Hapus log aktivitas pengguna yang lebih dari 90 hari, setiap hari pukul 02.00 WIB.
+        $schedule->command('activity:prune --days=90')
+            ->dailyAt('02:00')
+            ->timezone('Asia/Jakarta')
+            ->withoutOverlapping(60);
     }
 
     /**

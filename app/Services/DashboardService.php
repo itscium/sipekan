@@ -79,7 +79,7 @@ class DashboardService
         if (Gate::forUser($user)->allows('uni')) {
             $data['attendance'] = $this->safe($data, 'attendance', fn () => $this->attendanceThisMonth($user->id));
         }
-        $data['department'] = $this->safe($data, 'department', fn () => Departemen::where('kepala_departemen', $user->id)->first(['id', 'nama_departemen']));
+        $data['department'] = $this->safe($data, 'department', fn () => Departemen::where('kepala_departemen', $user->id)->budgetVisible()->first(['id', 'nama_departemen']));
 
         return $data;
     }

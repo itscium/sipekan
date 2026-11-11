@@ -269,6 +269,24 @@ body.sp-body a:not(.btn):hover { color: var(--sp-accent-hover); text-decoration:
     .sp-dl dt { border-bottom: 0; padding-bottom: 0; }
 }
 
+/* Pengguna online & log aktivitas (Beranda admin) */
+.sp-activity { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); align-items: start; }
+.sp-online-av { position: relative; display: inline-flex; flex: 0 0 auto; }
+.sp-online-dot { position: absolute; right: -1px; bottom: -1px; width: 10px; height: 10px; border-radius: 50%; background: #12b76a; border: 2px solid var(--sp-surface); }
+.sp-activity-foot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--sp-border); font-size: 12.5px; color: var(--sp-text-3); }
+.sp-log-row { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 0; border-top: 1px solid var(--sp-border); font-size: 13.5px; }
+.sp-log-row:first-child { border-top: 0; }
+.sp-toasts { position: fixed; top: 72px; right: 20px; z-index: 1060; display: flex; flex-direction: column; gap: 8px; width: 330px; max-width: calc(100vw - 32px); }
+.sp-toast {
+    display: flex; align-items: center; gap: 10px; padding: 12px 14px; font-size: 13.5px;
+    background: var(--sp-surface); border: 1px solid var(--sp-border); border-radius: var(--sp-radius-lg);
+    box-shadow: 0 12px 32px rgba(16, 24, 40, .14); animation: spToastIn .25s ease; transition: opacity .4s, transform .4s;
+}
+.sp-toast.hide { opacity: 0; transform: translateX(16px); }
+.sp-toast-x { border: 0; background: none; color: var(--sp-text-3); font-size: 20px; line-height: 1; cursor: pointer; }
+@keyframes spToastIn { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+@media (max-width: 1100px) { .sp-activity { grid-template-columns: minmax(0, 1fr); } }
+
 /* Pemberitahuan jadwal tarik log absensi */
 .sp-fp-notice {
     display: flex; align-items: center; gap: 14px; flex-wrap: wrap;

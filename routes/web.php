@@ -123,6 +123,10 @@ Route::middleware('auth')->group(function (){
         Route::get('/departemen/office-expense', [OfficeController::class, 'index'])->name('report.departemen.office.index');
         Route::get('/departemen/office-expense/details/{id_departemen}', [OfficeController::class, 'detail_office'])->name('report.departemen.office.detail');
     });
+    // Pengguna online & log aktivitas (khusus admin)
+    Route::get('/admin/log-aktivitas', [\App\Http\Controllers\ActivityController::class, 'index'])->name('admin.activity.index');
+    Route::get('/admin/log-aktivitas/feed', [\App\Http\Controllers\ActivityController::class, 'feed'])->name('admin.activity.feed');
+
     Route::prefix('admins')->group( function (){
         Route::get('employee-allowance', [\App\Http\Controllers\WIUM\Allowance\PersonalController::class, 'index'])->name('employee.allowance.index');
     });
