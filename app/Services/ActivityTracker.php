@@ -66,9 +66,22 @@ class ActivityTracker
         'android.download',
     ];
 
+    /**
+     * Aktivitas yang tidak dicatat:
+     * - akun administrator (type = admin);
+     * - admin yang sedang impersonate (masuk sebagai pengguna lain).
+     */
+    public function shouldIgnore(?User $user): bool
+    {
+        return ($user && $user->type === 'admin') || session()->has('impersonate');
+    }
+
     /** Catat halaman yang dibuka (dipanggil middleware). */
     public function trackRequest(Request $request, User $user): void
     {
+        if ($this->shouldIgnore($user)) {
+            return;
+        }
         $route = optional($request->route())->getName();
         if (!$route || in_array($route, self::SKIP_ROUTES, true) || $request->ajax() || $request->expectsJson()) {
             return;
@@ -93,13 +106,16 @@ class ActivityTracker
 
     public function login(User $user, Request $request): void
     {
+        if ($this->shouldIgnore($user)) {
+            return;
+        }
         $this->markOnline($user, 'Baru masuk');
         $this->write(['user_id' => $user->id, 'action' => 'login', 'label' => 'Login'], $request);
     }
 
     public function logout(?User $user, Request $request): void
     {
-        if (!$user) {
+        if (!$user || $this->shouldIgnore($user)) {
             return;
         }
         $online = Cache::get(self::ONLINE_KEY, []);
@@ -126,6 +142,11 @@ class ActivityTracker
     {
         $cut = now()->subMinutes(self::ONLINE_MINUTES)->timestamp;
         $online = array_filter(Cache::get(self::ONLINE_KEY, []), fn ($o) => $o['at'] >= $cut);
+        // Jangan tampilkan akun administrator (termasuk yang tercatat sebelum aturan ini ada)
+        if ($online) {
+            $admins = User::whereIn('id', array_keys($online))->where('type', 'admin')->pluck('id')->all();
+            $online = array_diff_key($online, array_flip($admins));
+        }
         uasort($online, fn ($a, $b) => $b['at'] <=> $a['at']);
         return $online;
     }

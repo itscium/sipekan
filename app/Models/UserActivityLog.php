@@ -22,6 +22,17 @@ class UserActivityLog extends Model
         'print' => 'Cetak',
     ];
 
+    /**
+     * Log yang boleh ditampilkan: aktivitas akun administrator disembunyikan.
+     * Percobaan gagal masuk tetap tampil (termasuk ke akun admin) karena penting untuk keamanan.
+     */
+    public function scopeVisible($query)
+    {
+        return $query->where(fn ($q) => $q->whereNull('user_id')
+            ->orWhere('action', 'failed')
+            ->orWhereNotIn('user_id', User::select('id')->where('type', 'admin')));
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

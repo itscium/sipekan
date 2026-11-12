@@ -42,7 +42,7 @@ class ActivityController extends Controller
 
         return response()->json([
             'online' => $onlineList,
-            'today_users' => UserActivityLog::whereDate('created_at', today())->whereNotNull('user_id')
+            'today_users' => UserActivityLog::visible()->whereDate('created_at', today())->whereNotNull('user_id')->where('action', '!=', 'failed')
                 ->distinct()->count('user_id'),
             'failed_today' => UserActivityLog::whereDate('created_at', today())->where('action', 'failed')->count(),
             'server_time' => now()->format('H.i'),
@@ -59,7 +59,7 @@ class ActivityController extends Controller
             'sampai' => ['nullable', 'date'],
         ]);
 
-        $logs = UserActivityLog::with('user:id,name')
+        $logs = UserActivityLog::visible()->with('user:id,name')
             ->when($data['q'] ?? null, function ($q, $term) {
                 $q->where(fn ($w) => $w->whereHas('user', fn ($u) => $u->where('name', 'like', "%{$term}%"))
                     ->orWhere('email', 'like', "%{$term}%")
@@ -73,8 +73,8 @@ class ActivityController extends Controller
             ->withQueryString();
 
         // Ringkasan hari ini
-        $today = UserActivityLog::whereDate('created_at', today())
-            ->selectRaw("COUNT(DISTINCT user_id) AS users,
+        $today = UserActivityLog::visible()->whereDate('created_at', today())
+            ->selectRaw("COUNT(DISTINCT CASE WHEN action <> 'failed' THEN user_id END) AS users,
                 SUM(CASE WHEN action = 'login' THEN 1 ELSE 0 END) AS logins,
                 SUM(CASE WHEN action = 'failed' THEN 1 ELSE 0 END) AS failed,
                 SUM(CASE WHEN action = 'print' THEN 1 ELSE 0 END) AS prints")
