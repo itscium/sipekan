@@ -7,16 +7,35 @@
 @endphp
 
 @section('content_header')
-    <div class="d-flex flex-wrap align-items-center justify-content-between" style="gap:12px">
-        <div>
-            <h1>Log aktivitas</h1>
-            <div class="sp-muted mt-1">Siapa membuka apa di SIPekan. Log disimpan 90 hari.</div>
-        </div>
-        <a href="{{ route('dashboard') }}" class="sp-btn" style="height:38px"><i class="fas fa-arrow-left"></i>Beranda</a>
-    </div>
+    <h1>Log aktivitas</h1>
+    <div class="sp-muted mt-1">Siapa membuka apa di SIPekan: masuk, keluar, gagal masuk, halaman, dan cetak slip. Log disimpan 90 hari.</div>
 @stop
 
 @section('content')
+    {{-- Ringkasan hari ini --}}
+    <div class="sp-grid sp-grid-stats mb-3">
+        <a href="{{ route('dashboard') }}" class="sp-card" style="color:inherit" title="Lihat siapa yang sedang online di Beranda">
+            <div class="sp-stat-label"><span class="sp-stat-icon" style="background:var(--sp-success-soft);color:var(--sp-success)"><i class="fas fa-circle" style="font-size:9px"></i></span>Sedang online</div>
+            <div class="sp-stat-value sp-num">{{ $onlineCount }}</div>
+            <div class="sp-stat-foot">Aktif dalam {{ \App\Services\ActivityTracker::ONLINE_MINUTES }} menit terakhir</div>
+        </a>
+        <div class="sp-card">
+            <div class="sp-stat-label"><span class="sp-stat-icon"><i class="fas fa-users"></i></span>Pengguna aktif hari ini</div>
+            <div class="sp-stat-value sp-num">{{ (int) ($today->users ?? 0) }}</div>
+            <div class="sp-stat-foot">{{ (int) ($today->logins ?? 0) }} kali login</div>
+        </div>
+        <div class="sp-card">
+            <div class="sp-stat-label"><span class="sp-stat-icon"><i class="fas fa-print"></i></span>Cetak slip hari ini</div>
+            <div class="sp-stat-value sp-num">{{ (int) ($today->prints ?? 0) }}</div>
+            <div class="sp-stat-foot">Slip gaji dan ledger</div>
+        </div>
+        <a href="{{ route('admin.activity.index', ['aksi' => 'failed', 'dari' => today()->toDateString()]) }}" class="sp-card" style="color:inherit">
+            <div class="sp-stat-label"><span class="sp-stat-icon" style="background:var(--sp-danger-soft);color:var(--sp-danger)"><i class="fas fa-user-lock"></i></span>Gagal masuk hari ini</div>
+            <div class="sp-stat-value sp-num" @if(($today->failed ?? 0) > 0) style="color:var(--sp-danger)" @endif>{{ (int) ($today->failed ?? 0) }}</div>
+            <div class="sp-stat-foot">Klik untuk melihat rinciannya</div>
+        </a>
+    </div>
+
     <form method="GET" class="sp-card mb-3 d-flex flex-wrap align-items-end" style="gap:12px">
         <div style="flex:1;min-width:200px">
             <label for="q" class="d-block mb-1" style="font-size:13px;font-weight:500;color:var(--sp-text-2)">Cari</label>

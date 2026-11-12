@@ -55,10 +55,7 @@
                 </div>
             </div>
 
-            {{-- Siapa yang sedang mengakses SIPekan + log aktivitas (khusus admin) --}}
-            @include('partials.sp-activity-panel')
-
-            <div class="sp-grid sp-grid-2">
+            <div class="sp-grid sp-grid-2" style="align-items:start">
                 <div class="sp-card">
                     <div class="sp-card-head">
                         <div>
@@ -78,13 +75,19 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="sp-card">
-                    <p class="sp-card-title mb-3">Akses cepat</p>
-                    <div class="sp-shortcuts" style="grid-template-columns:1fr">
-                        <a href="{{ route('wilayah.index') }}" class="sp-shortcut"><i class="fas fa-map"></i>Kelola wilayah dan pengguna</a>
-                        <a href="{{ route('employee.allowance.index') }}" class="sp-shortcut"><i class="fas fa-users"></i>Tunjangan pegawai</a>
-                        <a href="{{ route('departemen.keuangan.index') }}" class="sp-shortcut"><i class="fas fa-cubes"></i>Tunjangan departemen</a>
-                        <a href="{{ route('sop.index') }}" class="sp-shortcut"><i class="fas fa-book"></i>SOP</a>
+                <div>
+                    {{-- Siapa yang sedang mengakses SIPekan + notifikasi (log lengkap: menu Admin > Log aktivitas) --}}
+                    @include('partials.sp-activity-panel')
+
+                    <div class="sp-card">
+                        <p class="sp-card-title mb-3">Akses cepat</p>
+                        <div class="sp-shortcuts" style="grid-template-columns:1fr">
+                            <a href="{{ route('wilayah.index') }}" class="sp-shortcut"><i class="fas fa-map"></i>Kelola wilayah dan pengguna</a>
+                            <a href="{{ route('employee.allowance.index') }}" class="sp-shortcut"><i class="fas fa-users"></i>Tunjangan pegawai</a>
+                            <a href="{{ route('departemen.keuangan.index') }}" class="sp-shortcut"><i class="fas fa-cubes"></i>Tunjangan departemen</a>
+                            <a href="{{ route('admin.activity.index') }}" class="sp-shortcut"><i class="fas fa-history"></i>Log aktivitas</a>
+                            <a href="{{ route('sop.index') }}" class="sp-shortcut"><i class="fas fa-book"></i>SOP</a>
+                        </div>
                     </div>
                 </div>
             </div>

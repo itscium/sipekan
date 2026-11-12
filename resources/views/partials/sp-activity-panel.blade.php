@@ -1,5 +1,8 @@
-{{-- Panel "Sedang online" + "Log aktivitas" + notifikasi pengguna baru online. Khusus admin, hanya di Beranda. --}}
-<div class="sp-grid sp-activity mb-3" id="spActivity" data-feed="{{ route('admin.activity.feed') }}">
+{{--
+    Panel "Sedang online" + notifikasi pengguna baru online (khusus admin).
+    Log aktivitas lengkap ada di halaman tersendiri: menu Admin > Log aktivitas.
+--}}
+<div class="sp-grid mb-3" id="spActivity" data-feed="{{ route('admin.activity.feed') }}">
     <div class="sp-card">
         <div class="sp-card-head">
             <div>
@@ -10,20 +13,12 @@
         </div>
         <ul class="sp-list" id="spOnlineList"><li class="sp-faint" style="font-size:13px">Memuat…</li></ul>
         <div class="sp-activity-foot">
-            <span>Hari ini: <strong id="spTodayUsers">–</strong> pengguna aktif</span>
+            <span>Hari ini: <strong id="spTodayUsers">–</strong> pengguna aktif · diperbarui <span id="spFeedTime">–</span></span>
             <span id="spFailedToday"></span>
+            @unless(request()->routeIs('admin.activity.*'))
+                <a href="{{ route('admin.activity.index') }}" class="small">Lihat log aktivitas</a>
+            @endunless
         </div>
-    </div>
-
-    <div class="sp-card">
-        <div class="sp-card-head">
-            <div>
-                <p class="sp-card-title">Log aktivitas</p>
-                <p class="sp-card-sub">Diperbarui otomatis tiap 30 detik · <span id="spFeedTime">–</span></p>
-            </div>
-            <a href="{{ route('admin.activity.index') }}" class="small">Lihat semua</a>
-        </div>
-        <div id="spLogList"><div class="sp-faint" style="font-size:13px">Memuat…</div></div>
     </div>
 </div>
 
@@ -36,7 +31,6 @@
     if (!root) return;
     var feedUrl = root.dataset.feed;
     var known = null; // id pengguna online pada pembaruan sebelumnya
-    var badge = { login: 'success', failed: 'danger', print: 'accent', logout: '', page: '' };
 
     function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -76,12 +70,6 @@
                 '<div class="sp-list-sub">' + esc(u.label) + ' · ' + esc(u.ago) + (u.wilayah ? ' · ' + esc(u.wilayah) : '') + '</div></div></li>';
         }).join('') : '<li class="sp-faint" style="font-size:13px">Tidak ada pengguna lain yang online.</li>';
 
-        document.getElementById('spLogList').innerHTML = d.logs.length ? d.logs.map(function (l) {
-            return '<div class="sp-log-row"><span class="sp-faint sp-num">' + esc(l.time) + '</span>' +
-                '<div style="min-width:0"><div><strong style="font-weight:500">' + esc(l.name) + '</strong> ' + esc(l.sentence) + '</div>' +
-                '<div class="sp-faint" style="font-size:12px">' + (l.email ? esc(l.email) + ' · ' : '') + esc(l.device) + ' · ' + esc(l.ip) + '</div></div>' +
-                '<span class="sp-badge ' + (badge[l.action] || '') + '">' + esc(l.action_label) + '</span></div>';
-        }).join('') : '<div class="sp-faint" style="font-size:13px">Belum ada aktivitas.</div>';
 
         // Notifikasi untuk pengguna yang baru muncul (bukan saat pertama kali dimuat)
         var ids = d.online.map(function (u) { return u.id; });

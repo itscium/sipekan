@@ -40,14 +40,8 @@ class ActivityController extends Controller
             ];
         }
 
-        $logs = UserActivityLog::with('user:id,name')
-            ->where('action', '!=', 'page')
-            ->orWhere(fn ($q) => $q->where('action', 'page')->where('route_name', '!=', 'dashboard'))
-            ->orderByDesc('id')->limit(12)->get();
-
         return response()->json([
             'online' => $onlineList,
-            'logs' => $logs->map(fn ($l) => $this->logRow($l))->values(),
             'today_users' => UserActivityLog::whereDate('created_at', today())->whereNotNull('user_id')
                 ->distinct()->count('user_id'),
             'failed_today' => UserActivityLog::whereDate('created_at', today())->where('action', 'failed')->count(),
@@ -78,26 +72,21 @@ class ActivityController extends Controller
             ->paginate(50)
             ->withQueryString();
 
+        // Ringkasan hari ini
+        $today = UserActivityLog::whereDate('created_at', today())
+            ->selectRaw("COUNT(DISTINCT user_id) AS users,
+                SUM(CASE WHEN action = 'login' THEN 1 ELSE 0 END) AS logins,
+                SUM(CASE WHEN action = 'failed' THEN 1 ELSE 0 END) AS failed,
+                SUM(CASE WHEN action = 'print' THEN 1 ELSE 0 END) AS prints")
+            ->first();
+
         return view('admin.activity.index', [
             'logs' => $logs,
             'filters' => $data,
             'actions' => UserActivityLog::ACTIONS,
+            'today' => $today,
+            'onlineCount' => count($this->tracker->online()),
         ]);
-    }
-
-    private function logRow(UserActivityLog $l): array
-    {
-        return [
-            'id' => $l->id,
-            'time' => $l->created_at->isToday() ? $l->created_at->format('H.i') : $l->created_at->format('d/m H.i'),
-            'name' => optional($l->user)->name ?? 'Tidak dikenal',
-            'sentence' => $l->sentence,
-            'email' => $l->action === 'failed' ? $l->email : null,
-            'device' => $l->device,
-            'ip' => $l->ip,
-            'action' => $l->action,
-            'action_label' => UserActivityLog::ACTIONS[$l->action] ?? $l->action,
-        ];
     }
 
     private function ago(int $ts): string

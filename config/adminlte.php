@@ -283,6 +283,13 @@ return [
             'can' => ['administrator'],
         ],
         [
+            'text' => 'Log aktivitas',
+            'url'  => '/admin/log-aktivitas',
+            'active' => ['admin/log-aktivitas*'],
+            'icon' => 'fas fa-fw fa-history',
+            'can' => ['administrator'],
+        ],
+        [
             'header' => 'Departemen',
             'can' => ['head_dept'],
         ],
