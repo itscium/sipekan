@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\UserActivityLog;
+use App\Models\Wilayah;
 use App\Services\ActivityTracker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -59,11 +60,19 @@ class ActivityController extends Controller
             'sampai' => ['nullable', 'date'],
         ]);
 
-        $logs = UserActivityLog::visible()->with('user:id,name')
-            ->when($data['q'] ?? null, function ($q, $term) {
+        // Kode singkat (CIUM, WIUM, ...) tidak tersimpan di database, jadi cocokkan dulu ke daftar wilayah:
+        // kode singkat harus sama persis, nama wilayah cukup mengandung kata yang dicari.
+        $term = trim($data['q'] ?? '');
+        $wilayahIds = $term === '' ? [] : Wilayah::get(['id', 'nama', 'kode', 'english_name'])
+            ->filter(fn ($w) => strcasecmp($w->short_code, $term) === 0 || stripos($w->nama, $term) !== false)
+            ->pluck('id')->all();
+
+        $logs = UserActivityLog::visible()->with(['user:id,name,wilayah_id', 'user.wilayah:id,nama,kode,english_name'])
+            ->when($term !== '', function ($q) use ($term, $wilayahIds) {
                 $q->where(fn ($w) => $w->whereHas('user', fn ($u) => $u->where('name', 'like', "%{$term}%"))
                     ->orWhere('email', 'like', "%{$term}%")
-                    ->orWhere('ip', 'like', "%{$term}%"));
+                    ->orWhere('ip', 'like', "%{$term}%")
+                    ->when($wilayahIds, fn ($x) => $x->orWhereHas('user', fn ($u) => $u->whereIn('wilayah_id', $wilayahIds))));
             })
             ->when($data['aksi'] ?? null, fn ($q, $a) => $q->where('action', $a))
             ->when($data['dari'] ?? null, fn ($q, $d) => $q->where('created_at', '>=', Carbon::parse($d)->startOfDay()))

@@ -8,6 +8,15 @@ return [
     'default_wilayah_id' => 20003,
 
     /*
+    | Kode singkat wilayah (mis. di Log aktivitas). Jika tidak diisi di sini,
+    | kode dibentuk dari huruf depan nama Inggris wilayah:
+    | Central Indonesia Union Mission -> CIUM, West Indonesia Union Mission -> WIUM.
+    | Contoh mengganti: 9 => 'WKR',
+    */
+    'wilayah_codes' => [
+    ],
+
+    /*
     | Wilayah yang anggaran departemennya TIDAK ditampilkan di halaman
     | Keuangan/Tunjangan departemen (pilihan admin). Hapus ID dari daftar ini
     | untuk menampilkannya kembali.

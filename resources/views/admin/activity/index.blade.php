@@ -39,7 +39,7 @@
     <form method="GET" class="sp-card mb-3 d-flex flex-wrap align-items-end" style="gap:12px">
         <div style="flex:1;min-width:200px">
             <label for="q" class="d-block mb-1" style="font-size:13px;font-weight:500;color:var(--sp-text-2)">Cari</label>
-            <input type="search" id="q" name="q" value="{{ $filters['q'] ?? '' }}" class="form-control" placeholder="Nama, email, atau IP">
+            <input type="search" id="q" name="q" value="{{ $filters['q'] ?? '' }}" class="form-control" placeholder="Nama, kode wilayah (CIUM), email, atau IP">
         </div>
         <div style="width:170px">
             <label for="aksi" class="d-block mb-1" style="font-size:13px;font-weight:500;color:var(--sp-text-2)">Aktivitas</label>
@@ -85,6 +85,9 @@
                         <td>
                             @if($l->user)
                                 <strong style="font-weight:500">{{ $l->user->name }}</strong>
+                                @if($l->user->wilayah)
+                                    <span class="sp-badge accent ml-1" title="{{ $l->user->wilayah->nama }}">{{ $l->user->wilayah->short_code }}</span>
+                                @endif
                             @else
                                 <span class="sp-faint">Tidak dikenal</span>
                             @endif
