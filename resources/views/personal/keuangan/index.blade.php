@@ -16,9 +16,8 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Detail Keuangan Personal</h3>
-                        @if(Auth::user()->wilayah_id === '1')
-                            <a href="{{url('personal/keuangan/payrol')}}" class="btn btn-success float-right">Payroll
-                                Information</a>
+                        @if($adaPayroll ?? false)
+                            <a href="{{ route('personal.keuangan.payrol') }}" class="btn btn-success float-right"><i class="fas fa-file-invoice-dollar mr-1"></i> Slip gaji</a>
                         @endif
                     </div>
                     <!-- /.card-header -->

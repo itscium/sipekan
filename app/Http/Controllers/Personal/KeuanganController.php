@@ -123,8 +123,9 @@ class KeuanganController extends Controller
         $account = Auth::user()->ACCNT_CODE;
         // dd($account);
         [$saldo_awal, $saldo_akhir, $list_keuangan, $keuangan] = $this->get_detail_keuangan($account, $tgl_awal, $tgl_akhir);
-        // dd($tgl_akhir);
-        return view('personal.keuangan.index', compact('keuangan', 'saldo_akhir', 'list_keuangan', 'saldo_awal', 'periode_akhir', 'periode_awal'));
+        // Tombol slip gaji muncul jika pegawai punya data payroll, apa pun wilayahnya
+        $adaPayroll = $this->latestPayrollMonth($account) !== null;
+        return view('personal.keuangan.index', compact('keuangan', 'saldo_akhir', 'list_keuangan', 'saldo_awal', 'periode_akhir', 'periode_awal', 'adaPayroll'));
     }
 
     public function travel(){
@@ -163,16 +164,31 @@ class KeuanganController extends Controller
     //     return view('personal.keuangan.payrol', compact('payrol', 'period', 'net'));
     // }
 
-    public function payrol(){
-        if (isset($_GET['periode'])){
-            $per_akhir = Carbon::parse($_GET['periode'])->format('m');
-            $year = Carbon::parse($_GET['periode'])->format('Y');
-            $period = Carbon::parse($_GET['periode'])->format('Y-m');
-        }else{
-            $per_akhir = date('m');
-            $period = date('Y-m');
-            $year = date('Y');
+    /** Slip gaji terakhir yang sudah diposting di APS untuk pegawai ini (null jika tidak ada). */
+    private function latestPayrollMonth(?string $code): ?Carbon
+    {
+        if (!$code) {
+            return null;
         }
+        $last = Payrol::where('enrollment_code', $code)->where('stub', 0)
+            ->orderByDesc('year')->orderByDesc('period')
+            ->first(['year', 'period']);
+        return $last ? Carbon::create((int) $last->year, (int) $last->period, 1) : null;
+    }
+
+    public function payrol(){
+        $latest = $this->latestPayrollMonth(Auth::user()->ACCNT_CODE);
+
+        $requested = request()->query('periode');
+        if ($requested && preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $requested)) {
+            $date = Carbon::createFromFormat('Y-m', $requested)->startOfMonth();
+        } else {
+            // Tanpa pilihan bulan: buka slip terakhir yang tersedia, bukan bulan berjalan yang bisa saja kosong
+            $date = $latest ?? now()->startOfMonth();
+        }
+        $per_akhir = $date->format('m');
+        $year = $date->format('Y');
+        $period = $date->format('Y-m');
 
         $payrol = Payrol::where('enrollment_code', Auth::user()->ACCNT_CODE)
             ->where('period', $per_akhir) // ✅ FIX HERE
@@ -186,7 +202,7 @@ class KeuanganController extends Controller
             ->where('stub', 0)
             ->first();
 
-        return view('personal.keuangan.payrol', compact('payrol', 'period', 'net'));
+        return view('personal.keuangan.payrol', compact('payrol', 'period', 'net', 'latest'));
     }
 
     public function payrol_pdf($tgl){

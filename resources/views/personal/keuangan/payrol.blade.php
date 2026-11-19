@@ -16,8 +16,10 @@
                 <div class="card">
                     <div class="card-header">
                         <a href="{{url('personal/keuangan')}}" class="btn btn-danger"><i class="fa fa-backward"></i> Back</a>
-                        <a href="{{route('personal.keuangan.payrol.pdf', $period)}}" target="_blank" class="btn btn-outline-warning float-right ml-2"><i class="fa fa-file-pdf"></i> PDF</a>
-                        <a href="{{route('personal.keuangan.payrol.print', $period)}}" target="_blank" class="btn btn-outline-success float-right"><i class="fa fa-print"></i> Print</a>
+                        @if($net)
+                            <a href="{{route('personal.keuangan.payrol.pdf', $period)}}" target="_blank" class="btn btn-outline-warning float-right ml-2"><i class="fa fa-file-pdf"></i> PDF</a>
+                            <a href="{{route('personal.keuangan.payrol.print', $period)}}" target="_blank" class="btn btn-outline-success float-right"><i class="fa fa-print"></i> Print</a>
+                        @endif
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0">
@@ -40,7 +42,17 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="text-center">Payrol Belum Diposting oleh Keuangan</td>
+                                    <td colspan="4" class="text-center py-4">
+                                        Slip gaji {{ \Illuminate\Support\Carbon::createFromFormat('Y-m', $period)->locale('id')->translatedFormat('F Y') }} belum diposting oleh Keuangan.
+                                        @if($latest ?? null)
+                                            <div class="mt-2">
+                                                Slip terakhir yang tersedia:
+                                                <a href="{{ route('personal.keuangan.payrol', ['periode' => $latest->format('Y-m')]) }}">{{ $latest->locale('id')->translatedFormat('F Y') }}</a>
+                                            </div>
+                                        @else
+                                            <div class="mt-2 text-muted">Belum ada data payroll untuk akun Anda. Hubungi bagian keuangan.</div>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforelse
                             </tbody>
