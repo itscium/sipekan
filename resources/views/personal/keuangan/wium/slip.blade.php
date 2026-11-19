@@ -85,7 +85,7 @@
     <header class="slip-head">
         <div class="slip-logo"><img src="{{ asset('img/logo.png') }}" alt="Logo Gereja Masehi Advent Hari Ketujuh"></div>
         <div class="slip-org">
-            <b>West Indonesia Union Mission</b>
+            <b>{{ trim($profile->entity_name ?? '') ?: 'Central Indonesia Union Mission' }}</b>
             <span>JL. MT Haryono Blok A, Kav 4 - 5, Jakarta Selatan, 12810</span>
         </div>
         <div class="slip-month">Slip gaji<b>{{ $paid->translatedFormat('M Y') }}</b></div>
