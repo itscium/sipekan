@@ -32,8 +32,8 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td colspan="5" class="text-center"><strong>Opening Balance</strong></td>
-                                <td class="text-right"><strong>{{$saldo_awal}}</strong></td>
+                                <td colspan="5" class="text-center"><strong>Saldo awal</strong></td>
+                                <td class="text-right">@include('partials.sp-balance', ['value' => $saldo_awal, 'label' => true, 'kind' => 'travel'])</td>
                             </tr>
                             @foreach($list_keuangan as $item)
                                 <tr>
@@ -42,11 +42,12 @@
                                     <td>{{$item['description']}}</td>
                                     <td class="text-right">{{$item['debit']}}	</td>
                                     <td class="text-right">{{$item['credit']}}</td>
-                                    <td class="text-right">{{$item['balance']}}	</td>
+                                    <td class="text-right">@include('partials.sp-balance', ['value' => $item['balance'], 'kind' => 'travel'])</td>
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
+                        <div class="sp-order-note">Diurutkan berdasarkan nomor jurnal, sehingga tanggal transaksi bisa tidak berurutan.</div>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -81,17 +82,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <!-- small card -->
-                        <div class="small-box bg-info">
-                            <div class="inner">
-                                <h3>{{$saldo_akhir}},-</h3>
-
-                                <p>Saldo Akhir</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fas fa-money-bill-wave"></i>
-                            </div>
-                        </div>
+                        @include('partials.sp-balance-card', ['value' => $saldo_akhir, 'kind' => 'travel', 'title' => 'Saldo akhir akun travel'])
                     </div>
                 </div>
             </div>

@@ -103,11 +103,14 @@
             <div class="sp-card">
                 <div class="sp-stat-label"><span class="sp-stat-icon"><i class="fas fa-wallet"></i></span>Saldo akun personal</div>
                 @if($p)
-                    <div class="sp-stat-value sp-num">
-                        {{ $rp($p['balance']) }}
-                        @if($p['is_credit'])<span class="sp-badge accent align-middle" title="Saldo kredit">Cr.</span>@endif
-                    </div>
-                    <div class="sp-stat-foot">Bulan ini: debit {{ number_format($p['month_debit'], 0, ',', '.') }} · kredit {{ number_format($p['month_credit'], 0, ',', '.') }}</div>
+                    @php($pState = $p['balance'] == 0 ? '' : ($p['is_credit'] ? 'pos' : 'neg'))
+                    <div class="sp-stat-value sp-num" @if($pState) style="color: var(--sp-{{ $pState === 'pos' ? 'success' : 'danger' }})" @endif>{{ $rp($p['balance']) }}</div>
+                    @if($pState === 'pos')
+                        <span class="sp-bal-chip pos" title="Dana Anda yang masih tersimpan di organisasi">Lebih bayar · Cr.</span>
+                    @elseif($pState === 'neg')
+                        <span class="sp-bal-chip neg" title="Tagihan Anda yang belum lunas">Kewajiban</span>
+                    @endif
+                    <div class="sp-stat-foot mt-2">Bulan ini: debit {{ number_format($p['month_debit'], 0, ',', '.') }} · kredit {{ number_format($p['month_credit'], 0, ',', '.') }}</div>
                 @else
                     <div class="sp-stat-value sp-faint">–</div>
                     <div class="sp-stat-foot">Kode akun belum diatur</div>
@@ -117,11 +120,14 @@
             @if($t)
                 <div class="sp-card">
                     <div class="sp-stat-label"><span class="sp-stat-icon"><i class="fas fa-plane"></i></span>Saldo akun travel</div>
-                    <div class="sp-stat-value sp-num">
-                        {{ $rp($t['balance']) }}
-                        @if($t['is_credit'])<span class="sp-badge accent align-middle" title="Saldo kredit">Cr.</span>@endif
-                    </div>
-                    <div class="sp-stat-foot"><a href="{{ route('personal.keuangan.travel') }}">Lihat rincian travel</a></div>
+                    @php($tState = $t['balance'] == 0 ? '' : ($t['is_credit'] ? 'pos' : 'neg'))
+                    <div class="sp-stat-value sp-num" @if($tState) style="color: var(--sp-{{ $tState === 'pos' ? 'success' : 'danger' }})" @endif>{{ $rp($t['balance']) }}</div>
+                    @if($tState === 'pos')
+                        <span class="sp-bal-chip pos">Lebih bayar · Cr.</span>
+                    @elseif($tState === 'neg')
+                        <span class="sp-bal-chip neg">Belum dipertanggungjawabkan</span>
+                    @endif
+                    <div class="sp-stat-foot mt-2"><a href="{{ route('personal.keuangan.travel') }}">Lihat rincian travel</a></div>
                 </div>
             @endif
 

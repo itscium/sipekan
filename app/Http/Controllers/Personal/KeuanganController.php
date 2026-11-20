@@ -84,26 +84,28 @@ class KeuanganController extends Controller
             $list_keuangan[$index]['nomor_jurnal'] = $item['JRNAL_NO'];
             $list_keuangan[$index]['baris_jurnal'] = $item['JRNAL_LINE'];
             if ($item['D_C'] === 'D') {
-                $list_keuangan[$index]['debit'] = number_format($item['AMOUNT'] * -1);
+                $list_keuangan[$index]['debit'] = number_format($item['AMOUNT'] * -1, 0, ',', '.');
                 $balance += $item['AMOUNT'];
             } else {
-                $list_keuangan[$index]['credit'] = number_format($item['AMOUNT']);
+                $list_keuangan[$index]['credit'] = number_format($item['AMOUNT'], 0, ',', '.');
                 $balance += $item['AMOUNT'];
             }
             $list_keuangan[$index]['balance'] = $this->number_to_credit(-$balance);
             // $saldo = (new A_SALFLDG)->setTable($table)->where('ALLOCATION', '<>', 'C')->where('ACCNT_CODE', $account)->where('PERIOD', '<', $tgl_akhir)->toSql();
             // dd($saldo);
-            $saldo_akhir = $this->number_to_credit(-$saldo);
         }
+        // Saldo akhir selalu diisi, juga saat periode ini tidak punya transaksi
+        $saldo_akhir = $this->number_to_credit(-$saldo);
             return [$saldo_awal, $saldo_akhir, $list_keuangan, $keuangan];
     }
 
+    /** Format saldo: negatif = "x Cr." (lebih bayar), selain itu = kewajiban. Format angka Indonesia. */
     function number_to_credit($number) {
         if ($number < 0) {
-            return (number_format($number*-1))." Cr.";
+            return number_format($number * -1, 0, ',', '.') . " Cr.";
         }
 
-        return number_format($number);
+        return number_format($number, 0, ',', '.');
     }
 
     public function index()
