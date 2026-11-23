@@ -27,7 +27,12 @@
 
 /* ---------- Kerangka & komponen baru ---------- */
 [data-theme="dark"] body.sp-body { background: var(--sp-bg) !important; color: var(--sp-text); }
-[data-theme="dark"] .sp-topbar { background: rgba(13, 18, 32, .85); }
+[data-theme="dark"] .sp-topbar { background: color-mix(in srgb, var(--sp-surface) 85%, transparent); }
+/* Tata letak floating: bayangan lebih pekat agar tetap terlihat di latar gelap */
+:root[data-theme="dark"] { --sp-shadow: 0 12px 34px rgba(0, 0, 0, .45), 0 2px 6px rgba(0, 0, 0, .3); }
+[data-theme="dark"] .sp-sidebar { border-color: var(--sp-border); }
+[data-theme="dark"] .sp-content .card,
+[data-theme="dark"] .sp-content .card-primary { border-color: transparent; box-shadow: var(--sp-shadow); }
 [data-theme="dark"] .sp-impersonate { border-color: #5c4614; }
 [data-theme="dark"] .sp-dropdown-menu { box-shadow: 0 12px 32px rgba(0, 0, 0, .45); }
 [data-theme="dark"] .sp-brand img, [data-theme="dark"] .sp-auth-brand img { background: #fff; }

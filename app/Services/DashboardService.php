@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Log;
 class DashboardService
 {
     /** Tabel ledger SunSystems per wilayah (sama dengan Personal\KeuanganController). */
-    private const LEDGER_TABLES = [
+    public const LEDGER_TABLES = [
         1 => 'dbo.CIU_A_SALFLDG',
         2 => 'dbo.JLC_A_SALFLDG',
         3 => 'dbo.NSM_A_SALFLDG',

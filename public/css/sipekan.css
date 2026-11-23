@@ -531,3 +531,72 @@ body.sp-body:has(.sp-auth) { margin: 0; }
     .sp-impersonate span { display: none; }
     .sp-stat-value { font-size: 21px; }
 }
+
+/* ==========================================================================
+   TATA LETAK FLOATING
+   Sidebar, topbar, dan kartu melayang di atas latar. Untuk kembali ke tata
+   letak menempel, hapus blok ini sampai akhir file.
+   ========================================================================== */
+:root {
+    --sp-gap: 14px;
+    --sp-float-radius: 18px;
+    --sp-shadow: 0 10px 30px rgba(16, 24, 40, .08), 0 2px 6px rgba(16, 24, 40, .05);
+}
+
+/* Sidebar */
+.sp-sidebar {
+    inset: var(--sp-gap) auto var(--sp-gap) var(--sp-gap);
+    border: 1px solid var(--sp-border);
+    border-radius: var(--sp-float-radius);
+    box-shadow: var(--sp-shadow);
+    overflow: hidden;
+}
+.sp-brand { border-bottom-color: transparent; }
+.sp-nav-link.active { box-shadow: inset 3px 0 0 var(--sp-accent); border-radius: 0 var(--sp-radius) var(--sp-radius) 0; }
+
+/* Area utama memberi ruang untuk sidebar + jarak di kiri dan kanannya */
+.sp-main { margin-left: calc(var(--sp-sidebar-w) + var(--sp-gap) * 2); padding-right: var(--sp-gap); }
+
+/* Topbar seperti kapsul yang tetap menempel saat digulir */
+.sp-topbar {
+    top: var(--sp-gap);
+    margin-top: var(--sp-gap);
+    padding: 0 18px;
+    border: 1px solid var(--sp-border);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--sp-surface) 82%, transparent);
+    box-shadow: var(--sp-shadow);
+}
+.sp-content { padding: 22px 6px 28px; }
+.sp-footer { border-top: 0; padding: 8px 6px 20px; }
+
+/* Kartu: dipisahkan bayangan, bukan garis */
+.sp-card,
+.sp-content .card,
+.sp-bal-card,
+.sp-shortcut {
+    border-color: transparent;
+    box-shadow: var(--sp-shadow);
+}
+.sp-card, .sp-content .card { border-radius: 16px; }
+.sp-bal-card.pos { border-top-color: var(--sp-success); }
+.sp-bal-card.neg { border-top-color: var(--sp-danger); }
+.sp-shortcut:hover { border-color: var(--sp-accent); }
+/* Kartu di dalam kartu (mis. Riwayat gaji di tab profil) tidak perlu bayangan ganda */
+.sp-card .sp-card, .sp-pay-embed > .sp-card { box-shadow: none; }
+
+/* Kotak notifikasi dropdown & toast tetap berbayang lebih tegas */
+.sp-dropdown-menu, .sp-toast { border-radius: 14px; }
+
+/* HP & tablet: sidebar menjadi panel geser yang juga melayang */
+@media (max-width: 991.98px) {
+    .sp-sidebar {
+        inset: 10px auto 10px 10px;
+        transform: translateX(calc(-100% - 20px));
+    }
+    .sp-app.sidebar-open .sp-sidebar { transform: none; }
+    .sp-main { margin-left: 0; padding: 0 10px; }
+    .sp-topbar { top: 10px; margin-top: 10px; padding: 0 12px; }
+    .sp-content { padding: 18px 2px 24px; }
+    .sp-footer { padding: 8px 2px 18px; }
+}
