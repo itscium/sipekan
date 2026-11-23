@@ -24,7 +24,7 @@
                 <img src="{{ asset(config('adminlte.logo_img')) }}" alt="GMAHK">
                 <span>
                     <span class="sp-brand-name d-block">SIPekan</span>
-                    <span class="sp-brand-sub">Uni Indonesia Kawasan Barat</span>
+                    <span class="sp-brand-sub">Uni Indonesia Kawasan Tengah</span>
                 </span>
             </a>
 
@@ -114,7 +114,7 @@
             </main>
 
             <footer class="sp-footer">
-                <span>&copy; {{ date('Y') }} Uni Indonesia Kawasan Barat</span>
+                <span>&copy; {{ date('Y') }} Uni Indonesia Kawasan Tengah</span>
                 <span>Dibuat oleh Departemen IT CIUM</span>
             </footer>
         </div>

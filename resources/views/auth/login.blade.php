@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Sistem Informasi Pelaporan dan Keuangan Uni Indonesia Kawasan Barat">
+    <meta name="description" content="Sistem Informasi Pelaporan dan Keuangan Uni Indonesia Kawasan Tengah">
     <meta name="theme-color" content="#133c7a">
     <title>Masuk · SIPekan</title>
     <link rel="shortcut icon" href="{{ asset('favicons/favicon.ico') }}">
@@ -34,7 +34,7 @@
 
         <div class="sp-auth-hero" style="position:relative;z-index:1">
             <h1>Sistem Informasi Pelaporan dan Keuangan</h1>
-            <p>Uni Indonesia Kawasan Barat. Lihat keuangan pribadi, slip gaji, absensi, dan laporan departemen di satu tempat.</p>
+            <p>Uni Indonesia Kawasan Tengah. Lihat keuangan pribadi, slip gaji, absensi, dan laporan departemen di satu tempat.</p>
             <ul class="sp-auth-points">
                 <li><i class="fas fa-wallet"></i>Saldo dan riwayat transaksi pribadi</li>
                 <li><i class="fas fa-file-invoice-dollar"></i>Slip gaji yang bisa dicetak</li>

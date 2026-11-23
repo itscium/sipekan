@@ -5,7 +5,7 @@
 
     {{-- Base Meta Tags --}}
     <meta charset="utf-8">
-    <meta name="description" content="Sistem Informasi Pelaporan dan Keuangan Uni Indonesia Kawasan Barat">
+    <meta name="description" content="Sistem Informasi Pelaporan dan Keuangan Uni Indonesia Kawasan Tengah">
     <meta name="keywords" content="Sistem Informasi, Pelaporan, Keuangan, Sistem Keuangan, Sistem Pelaporan, GMAHK, UNI, Advent">
     <meta name="author" content="IT Department Central Indonesia Union Mission 🇮🇩">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
