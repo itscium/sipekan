@@ -269,6 +269,27 @@ body.sp-body a:not(.btn):hover { color: var(--sp-accent-hover); text-decoration:
     .sp-dl dt { border-bottom: 0; padding-bottom: 0; }
 }
 
+/* Pengumuman (Beranda pegawai & pratinjau admin) */
+.sp-ann { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; border-radius: 14px; border: 1px solid var(--sp-border); background: var(--sp-surface); }
+.sp-ann.penting { border-color: #f5c46b; background: var(--sp-warning-soft); }
+.sp-ann.info { border-color: #a9c4ee; background: var(--sp-accent-soft); }
+.sp-ann-ico { width: 34px; height: 34px; flex: 0 0 34px; border-radius: 10px; background: var(--sp-surface); color: var(--sp-warning); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+.sp-ann.info .sp-ann-ico { color: var(--sp-accent); }
+.sp-ann-title { font-weight: 600; font-size: 15.5px; color: var(--sp-text); margin-bottom: 4px; }
+.sp-ann-body { white-space: pre-line; color: var(--sp-text); font-size: 14px; }
+.sp-ann-cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; padding: 8px 14px; border-radius: var(--sp-radius); background: var(--sp-accent); color: #fff !important; font-weight: 600; font-size: 13.5px; }
+.sp-ann-cta:hover { background: var(--sp-accent-hover); }
+.sp-ann-modal-back { position: fixed; inset: 0; z-index: 1070; background: rgba(10, 14, 24, .5); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.sp-ann-modal { background: var(--sp-surface); border-radius: 18px; box-shadow: 0 24px 60px rgba(0, 0, 0, .3); max-width: 520px; width: 100%; padding: 24px; }
+.sp-ann-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.sp-bu-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px; }
+.sp-bu { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--sp-border); border-radius: var(--sp-radius); font-size: 13px; cursor: pointer; margin: 0; font-weight: 400 !important; color: var(--sp-text) !important; }
+.sp-bu input { accent-color: var(--sp-accent); width: 16px; height: 16px; flex: 0 0 16px; }
+.sp-bu.on { border-color: var(--sp-accent); background: var(--sp-accent-soft); }
+.sp-locked { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 32px 24px; }
+.sp-locked-ico { width: 52px; height: 52px; border-radius: 50%; background: var(--sp-danger-soft); color: var(--sp-danger); display: inline-flex; align-items: center; justify-content: center; font-size: 20px; }
+@media (max-width: 991.98px) { .sp-ann-grid { grid-template-columns: minmax(0, 1fr); } }
+
 /* Saldo berwarna: hijau = lebih bayar (Cr.), merah = kewajiban */
 .sp-bal { display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end; font-weight: 600; white-space: nowrap; }
 .sp-bal.pos { color: var(--sp-success); }

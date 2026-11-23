@@ -42,7 +42,12 @@ class AuthServiceProvider extends ServiceProvider
         // (wilayah di config sipekan.hidden_budget_wilayah_ids tidak termasuk).
         Gate::define('head_dept', static function ($user){
             $dept = $user->kepala_departemen;
-            return $dept !== null && $dept->isBudgetVisible();
+            return $dept !== null && $dept->isBudgetVisible() && !\App\Models\FinanceLock::lockedFor($user);
+        });
+
+        // Pegawai yang laporan keuangannya masih terbuka (Admin > Akses keuangan)
+        Gate::define('finance_open', static function ($user){
+            return $user->type == 'user' && !\App\Models\FinanceLock::lockedFor($user);
         });
 
         Gate::define('finance', function ($user){

@@ -104,6 +104,15 @@ class ActivityTracker
         ], $request);
     }
 
+    /**
+     * Catat tindakan admin yang penting (tutup/buka akses keuangan, tayangkan pengumuman).
+     * Tidak terkena aturan "aktivitas admin tidak dicatat".
+     */
+    public function adminAction(User $user, string $action, string $label, Request $request): void
+    {
+        $this->write(['user_id' => $user->id, 'action' => $action, 'label' => mb_substr($label, 0, 150)], $request);
+    }
+
     public function login(User $user, Request $request): void
     {
         if ($this->shouldIgnore($user)) {

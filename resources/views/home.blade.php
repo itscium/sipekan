@@ -99,7 +99,22 @@
         @php($t = $d['travel'])
         @php($att = $d['attendance'])
 
+        {{-- Pengumuman dari admin untuk Business Unit pegawai ini --}}
+        @include('partials.sp-announcements', ['announcements' => $announcements])
+
+        @if($financeLocked)
+            {{-- Laporan keuangan Business Unit ini sudah ditutup (Admin > Akses keuangan) --}}
+            <div class="sp-card sp-locked mb-3">
+                <span class="sp-locked-ico" aria-hidden="true"><i class="fas fa-lock"></i></span>
+                <p class="sp-card-title" style="font-size:17px">Laporan keuangan dipindahkan ke {{ config('sipekan.portal.name') }}</p>
+                <p class="sp-muted mb-0" style="max-width:52ch">Saldo, transaksi, slip gaji, dan riwayat gaji Anda sekarang tersedia di portal yang baru.</p>
+                <a href="{{ config('sipekan.portal.url') }}" target="_blank" rel="noopener" class="sp-btn sp-btn-primary">Buka {{ config('sipekan.portal.name') }} <i class="fas fa-external-link-alt" style="font-size:12px"></i></a>
+                <span class="sp-faint" style="font-size:12.5px">{{ config('sipekan.portal.url') }}</span>
+            </div>
+        @endif
+
         <div class="sp-grid sp-grid-stats mb-3">
+            @unless($financeLocked)
             <div class="sp-card">
                 <div class="sp-stat-label"><span class="sp-stat-icon"><i class="fas fa-wallet"></i></span>Saldo akun personal</div>
                 @if($p)
@@ -130,6 +145,7 @@
                     <div class="sp-stat-foot mt-2"><a href="{{ route('personal.keuangan.travel') }}">Lihat rincian travel</a></div>
                 </div>
             @endif
+            @endunless
 
             @if($att)
                 @php($pct = min(100, round($att['present'] / $att['workdays'] * 100)))
@@ -157,10 +173,12 @@
         </div>
 
         {{-- ================= Riwayat gaji dengan filter bulan ================= --}}
-        @include('partials.sp-payroll', ['pay' => $pay, 'payRoute' => 'dashboard', 'payAnchor' => 'riwayat-gaji'])
+        @unless($financeLocked)
+            @include('partials.sp-payroll', ['pay' => $pay, 'payRoute' => 'dashboard', 'payAnchor' => 'riwayat-gaji'])
+        @endunless
 
-
-        <div class="sp-grid sp-grid-2">
+        <div class="sp-grid {{ $financeLocked ? '' : 'sp-grid-2' }}">
+            @unless($financeLocked)
             <div class="sp-card">
                 <div class="sp-card-head">
                     <div>
@@ -191,6 +209,7 @@
                     <div class="sp-empty">Belum ada transaksi.</div>
                 @endif
             </div>
+            @endunless
 
             <div>
                 @if($d['department'])
@@ -207,10 +226,14 @@
                 <div class="sp-card">
                     <p class="sp-card-title mb-3">Akses cepat</p>
                     <div class="sp-shortcuts" style="grid-template-columns:1fr">
-                        <a href="{{ route('personal.keuangan.index') }}" class="sp-shortcut"><i class="fas fa-wallet"></i>Keuangan personal</a>
-                        @can('ada_travel')
-                            <a href="{{ route('personal.keuangan.travel') }}" class="sp-shortcut"><i class="fas fa-plane"></i>Keuangan travel</a>
-                        @endcan
+                        @if($financeLocked)
+                            <a href="{{ config('sipekan.portal.url') }}" target="_blank" rel="noopener" class="sp-shortcut"><i class="fas fa-external-link-alt"></i>{{ config('sipekan.portal.name') }}</a>
+                        @else
+                            <a href="{{ route('personal.keuangan.index') }}" class="sp-shortcut"><i class="fas fa-wallet"></i>Keuangan personal</a>
+                            @can('ada_travel')
+                                <a href="{{ route('personal.keuangan.travel') }}" class="sp-shortcut"><i class="fas fa-plane"></i>Keuangan travel</a>
+                            @endcan
+                        @endif
                         @can('uni')
                             <a href="{{ route('personal.attendance.index') }}" class="sp-shortcut"><i class="fas fa-fingerprint"></i>Absensi</a>
                         @endcan

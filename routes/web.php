@@ -87,11 +87,11 @@ Route::middleware('auth')->group(function (){
 
     });
     Route::prefix('personal')->group( function (){
-        Route::get('/keuangan', [KeuanganController::class, 'index'])->name('personal.keuangan.index');
-        Route::get('/travel', [KeuanganController::class, 'travel'])->name('personal.keuangan.travel');
-        Route::get('/keuangan/payrol', [KeuanganController::class, 'payrol'])->name('personal.keuangan.payrol');
-        Route::get('/keuangan/payrol/{tgl}/print', [KeuanganController::class, 'payrol_print'])->name('personal.keuangan.payrol.print');
-        Route::get('/keuangan/payrol/{tgl}/pdf', [KeuanganController::class, 'payrol_pdf'])->name('personal.keuangan.payrol.pdf');
+        Route::get('/keuangan', [KeuanganController::class, 'index'])->middleware('finance.open')->name('personal.keuangan.index');
+        Route::get('/travel', [KeuanganController::class, 'travel'])->middleware('finance.open')->name('personal.keuangan.travel');
+        Route::get('/keuangan/payrol', [KeuanganController::class, 'payrol'])->middleware('finance.open')->name('personal.keuangan.payrol');
+        Route::get('/keuangan/payrol/{tgl}/print', [KeuanganController::class, 'payrol_print'])->middleware('finance.open')->name('personal.keuangan.payrol.print');
+        Route::get('/keuangan/payrol/{tgl}/pdf', [KeuanganController::class, 'payrol_pdf'])->middleware('finance.open')->name('personal.keuangan.payrol.pdf');
         Route::get('/profile', [ProfileController::class, 'index'])->name('personal.profile.index');
         Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('personal.profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('personal.profile.update');
@@ -102,8 +102,8 @@ Route::middleware('auth')->group(function (){
     });
     Route::prefix('departemen')->group( function (){
         Route::get('/pegawai', [App\Http\Controllers\Departemen\DepartemenController::class, 'index'])->name('departemen.pegawai.index');
-        Route::get('/keuangan', [App\Http\Controllers\Departemen\KeuanganController::class, 'index'])->name('departemen.keuangan.index');
-        Route::get('/keuangan/{id}/detail', [App\Http\Controllers\Departemen\KeuanganController::class, 'detail_keuangan'])->name('departemen.keuangan.detail');
+        Route::get('/keuangan', [App\Http\Controllers\Departemen\KeuanganController::class, 'index'])->middleware('finance.open')->name('departemen.keuangan.index');
+        Route::get('/keuangan/{id}/detail', [App\Http\Controllers\Departemen\KeuanganController::class, 'detail_keuangan'])->middleware('finance.open')->name('departemen.keuangan.detail');
     });
     Route::prefix('ledgers')->group( function (){
         Route::get('/conference-on-wium', [\App\Http\Controllers\Conference\LedgerController::class, 'index'])->name('ledger.conference_on_wium.index');
@@ -124,6 +124,25 @@ Route::middleware('auth')->group(function (){
         Route::get('/departemen/office-expense/details/{id_departemen}', [OfficeController::class, 'detail_office'])->name('report.departemen.office.detail');
     });
     // Pengguna online & log aktivitas (khusus admin)
+    // Pengumuman Beranda & akses laporan keuangan per Business Unit (khusus admin; dicek di controller)
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/pengumuman', [\App\Http\Controllers\Admin\AnnouncementController::class, 'index'])->name('announcements.index');
+        Route::get('/pengumuman/tulis', [\App\Http\Controllers\Admin\AnnouncementController::class, 'create'])->name('announcements.create');
+        Route::post('/pengumuman', [\App\Http\Controllers\Admin\AnnouncementController::class, 'store'])->name('announcements.store');
+        Route::get('/pengumuman/{announcement}/ubah', [\App\Http\Controllers\Admin\AnnouncementController::class, 'edit'])->name('announcements.edit');
+        Route::put('/pengumuman/{announcement}', [\App\Http\Controllers\Admin\AnnouncementController::class, 'update'])->name('announcements.update');
+        Route::post('/pengumuman/{announcement}/tayang', [\App\Http\Controllers\Admin\AnnouncementController::class, 'toggle'])->name('announcements.toggle');
+        Route::delete('/pengumuman/{announcement}', [\App\Http\Controllers\Admin\AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+        Route::get('/akses-keuangan', [\App\Http\Controllers\Admin\FinanceAccessController::class, 'index'])->name('finance-access.index');
+        Route::post('/akses-keuangan/{wilayah}/tutup', [\App\Http\Controllers\Admin\FinanceAccessController::class, 'lock'])->name('finance-access.lock');
+        Route::post('/akses-keuangan/{wilayah}/buka', [\App\Http\Controllers\Admin\FinanceAccessController::class, 'unlock'])->name('finance-access.unlock');
+    });
+
+    // Halaman pemberitahuan saat laporan keuangan Business Unit pengguna sudah ditutup
+    Route::get('/keuangan-dipindahkan', function () {
+        return view('personal.finance-closed', ['announcement' => \App\Models\Announcement::activeFor(Auth::user())->first()]);
+    })->name('finance.closed');
+
     Route::get('/admin/log-aktivitas', [\App\Http\Controllers\ActivityController::class, 'index'])->name('admin.activity.index');
     Route::get('/admin/log-aktivitas/feed', [\App\Http\Controllers\ActivityController::class, 'feed'])->name('admin.activity.feed');
 

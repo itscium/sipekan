@@ -262,7 +262,7 @@ return [
                     'can' => ['ada_travel'],
                 ],
             ],
-            'can' => ['user'],
+            'can' => ['finance_open'],
         ],
         [
             'header' => 'Admin',
@@ -287,6 +287,20 @@ return [
             'url'  => '/admin/log-aktivitas',
             'active' => ['admin/log-aktivitas*'],
             'icon' => 'fas fa-fw fa-history',
+            'can' => ['administrator'],
+        ],
+        [
+            'text' => 'Pengumuman',
+            'url'  => '/admin/pengumuman',
+            'active' => ['admin/pengumuman*'],
+            'icon' => 'fas fa-fw fa-bullhorn',
+            'can' => ['administrator'],
+        ],
+        [
+            'text' => 'Akses keuangan',
+            'url'  => '/admin/akses-keuangan',
+            'active' => ['admin/akses-keuangan*'],
+            'icon' => 'fas fa-fw fa-user-lock',
             'can' => ['administrator'],
         ],
         [

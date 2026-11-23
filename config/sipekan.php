@@ -8,6 +8,15 @@ return [
     'default_wilayah_id' => 20003,
 
     /*
+    | Sistem pengganti untuk laporan keuangan. Dipakai di halaman pemberitahuan
+    | saat akses keuangan sebuah Business Unit ditutup.
+    */
+    'portal' => [
+        'name' => 'Portal Employee CIUM',
+        'url' => 'https://portal.ciumcloud.org',
+    ],
+
+    /*
     | Kode singkat wilayah (mis. di Log aktivitas). Jika tidak diisi di sini,
     | kode dibentuk dari huruf depan nama Inggris wilayah:
     | Central Indonesia Union Mission -> CIUM, West Indonesia Union Mission -> WIUM.

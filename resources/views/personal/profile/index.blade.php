@@ -8,7 +8,9 @@
     $departemen = $user->kepala_departemen->nama_departemen ?? null;
     $ttl = collect([$user->tempat_lahir, $user->tanggal_lahir ? \Illuminate\Support\Carbon::parse($user->tanggal_lahir)->translatedFormat('d F Y') : null])->filter()->implode(', ');
     $kosong = '<span class="sp-faint">Belum diisi</span>';
-    $showPay = $cek !== null || ($pay['available'] ?? false) || ($pay['error'] ?? false);
+    // Tab gaji disembunyikan jika laporan keuangan Business Unit ini sudah ditutup (Admin > Akses keuangan)
+    $showPay = !\App\Models\FinanceLock::lockedFor($user)
+        && ($cek !== null || ($pay['available'] ?? false) || ($pay['error'] ?? false));
 @endphp
 
 @section('content_header')

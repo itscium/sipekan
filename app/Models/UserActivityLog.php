@@ -20,7 +20,13 @@ class UserActivityLog extends Model
         'failed' => 'Gagal masuk',
         'page' => 'Halaman',
         'print' => 'Cetak',
+        'lock' => 'Tutup akses',
+        'unlock' => 'Buka akses',
+        'announce' => 'Pengumuman',
     ];
+
+    /** Tindakan admin yang selalu tampil di log, walaupun aktivitas admin lain disembunyikan. */
+    public const ADMIN_ACTIONS = ['lock', 'unlock', 'announce'];
 
     /**
      * Log yang boleh ditampilkan: aktivitas akun administrator disembunyikan.
@@ -30,6 +36,7 @@ class UserActivityLog extends Model
     {
         return $query->where(fn ($q) => $q->whereNull('user_id')
             ->orWhere('action', 'failed')
+            ->orWhereIn('action', self::ADMIN_ACTIONS)
             ->orWhereNotIn('user_id', User::select('id')->where('type', 'admin')));
     }
 
@@ -46,6 +53,7 @@ class UserActivityLog extends Model
             'logout' => 'keluar',
             'failed' => 'gagal masuk (password salah)',
             'print' => 'mencetak ' . lcfirst($this->label ?? 'dokumen'),
+            'lock', 'unlock', 'announce' => $this->label ?? '',
             default => 'membuka ' . ($this->label ?? 'halaman'),
         };
     }

@@ -111,6 +111,11 @@
 [data-theme="dark"] .swal2-title,
 [data-theme="dark"] .swal2-html-container { color: var(--sp-text) !important; }
 
+/* Pengumuman */
+[data-theme="dark"] .sp-ann.penting { border-color: #5c4614; }
+[data-theme="dark"] .sp-ann.info { border-color: #24406e; }
+[data-theme="dark"] .sp-ann-modal { box-shadow: 0 24px 60px rgba(0, 0, 0, .6); }
+
 /* ---------- Login ---------- */
 [data-theme="dark"] .sp-auth { background: var(--sp-surface); }
 [data-theme="dark"] .sp-auth-side-3d {
