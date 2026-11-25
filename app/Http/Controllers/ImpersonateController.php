@@ -11,7 +11,7 @@ class ImpersonateController extends Controller
     public function impersonate($id)
     {
         // Hanya admin asli (bukan yang sedang impersonate) yang boleh masuk sebagai user lain.
-        abort_unless(Gate::allows('administrator'), 403);
+        abort_unless(Gate::allows('super_admin'), 403);
         abort_if(session()->has('impersonate'), 403, 'Sedang dalam mode impersonate.');
 
         $target = User::findOrFail($id);

@@ -34,9 +34,11 @@
                                 <td>{{$item->account_on_wium}}</td>
                                 <td>{{ $item->users->count() }}</td>
                                 <td class="text-center">
+                                    @can('super_admin')
                                     <a href="{{route('wilayah.edit', $item->id)}}" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i>
                                         Edit
                                     </a>
+                                    @endcan
                                     <a href="{{route('wilayah.departemen', $item->id)}}" class="btn btn-primary btn-sm"><i class="fa fa-plus-square"></i>
                                         Departemen
                                     </a>

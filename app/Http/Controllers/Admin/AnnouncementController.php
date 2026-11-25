@@ -9,6 +9,7 @@ use App\Models\Wilayah;
 use App\Services\ActivityTracker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 /** Menu Admin > Pengumuman: pengumuman di Beranda pegawai per Business Unit. */
 class AnnouncementController extends Controller
@@ -21,7 +22,9 @@ class AnnouncementController extends Controller
     public function index()
     {
         return view('admin.announcements.index', [
-            'announcements' => Announcement::orderByDesc('starts_at')->orderByDesc('id')->get(),
+            // Admin wilayah hanya melihat pengumuman yang seluruh sasarannya ada di Business Unit yang ia kelola
+            'announcements' => Announcement::orderByDesc('starts_at')->orderByDesc('id')->get()
+                ->filter(fn ($a) => $this->canManage($a))->values(),
             'wilayah' => Wilayah::orderBy('id')->get(['id', 'nama', 'kode', 'english_name'])->keyBy('id'),
         ]);
     }
@@ -48,11 +51,13 @@ class AnnouncementController extends Controller
 
     public function edit(Announcement $announcement)
     {
+        $this->authorizeScope($announcement);
         return view('admin.announcements.form', $this->formData($announcement));
     }
 
     public function update(Request $request, Announcement $announcement)
     {
+        $this->authorizeScope($announcement);
         $wasPublished = $announcement->is_published;
         $announcement->update($this->validated($request));
         if (!$wasPublished) {
@@ -65,6 +70,7 @@ class AnnouncementController extends Controller
     /** Tayangkan atau tarik kembali tanpa membuka formulir. */
     public function toggle(Request $request, Announcement $announcement)
     {
+        $this->authorizeScope($announcement);
         $announcement->update(['is_published' => !$announcement->is_published]);
         $this->tracker->adminAction(Auth::user(), 'announce',
             ($announcement->is_published ? 'menayangkan' : 'menarik') . ' pengumuman "' . $announcement->title . '"', $request);
@@ -74,6 +80,7 @@ class AnnouncementController extends Controller
 
     public function destroy(Announcement $announcement)
     {
+        $this->authorizeScope($announcement);
         $announcement->delete();
         alert()->success('Terhapus', 'Pengumuman dihapus.');
         return redirect()->route('admin.announcements.index');
@@ -85,7 +92,8 @@ class AnnouncementController extends Controller
             ->selectRaw('wilayah_id, COUNT(*) AS n')->groupBy('wilayah_id')->pluck('n', 'wilayah_id');
         return [
             'a' => $a,
-            'wilayah' => Wilayah::orderBy('id')->get(['id', 'nama', 'kode', 'english_name']),
+            'wilayah' => Wilayah::when($this->managed() !== null, fn ($q) => $q->whereIn('id', $this->managed() ?: [0]))
+                ->orderBy('id')->get(['id', 'nama', 'kode', 'english_name']),
             'userCounts' => $counts,
         ];
     }
@@ -100,7 +108,8 @@ class AnnouncementController extends Controller
             'level' => ['required', 'in:penting,info'],
             'display' => ['required', 'in:both,banner'],
             'target_wilayah' => ['required', 'array', 'min:1'],
-            'target_wilayah.*' => ['integer', 'exists:wilayah,id'],
+            'target_wilayah.*' => array_merge(['integer', 'exists:wilayah,id'],
+                $this->managed() === null ? [] : [Rule::in($this->managed())]),
             'starts_at' => ['required', 'date'],
             'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
             'is_published' => ['nullable', 'boolean'],
@@ -113,12 +122,30 @@ class AnnouncementController extends Controller
             'button_text.required_with' => 'Isi teks tombol, atau kosongkan tautannya.',
             'target_wilayah.required' => 'Pilih minimal satu Business Unit.',
             'target_wilayah.min' => 'Pilih minimal satu Business Unit.',
+            'target_wilayah.*.in' => 'Ada Business Unit di luar wewenang Anda.',
             'starts_at.required' => 'Tanggal mulai tayang wajib diisi.',
             'ends_at.after_or_equal' => 'Tanggal selesai tidak boleh sebelum tanggal mulai.',
         ]);
         $data['target_wilayah'] = array_values(array_map('intval', $data['target_wilayah']));
         $data['is_published'] = $request->boolean('is_published');
         return $data;
+    }
+
+    /** Wilayah yang dikelola admin yang sedang masuk (null = semua). */
+    private function managed(): ?array
+    {
+        return Auth::user()->managedWilayahIds();
+    }
+
+    private function canManage(Announcement $a): bool
+    {
+        $ids = $this->managed();
+        return $ids === null || array_diff(array_map('intval', (array) $a->target_wilayah), $ids) === [];
+    }
+
+    private function authorizeScope(Announcement $a): void
+    {
+        abort_unless($this->canManage($a), 403, 'Pengumuman ini juga menyasar Business Unit di luar wewenang Anda.');
     }
 
     private function logIfPublished(Announcement $a, Request $request, string $verb): void

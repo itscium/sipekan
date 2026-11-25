@@ -30,8 +30,19 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         //
+        // Semua admin: admin utama dan admin wilayah (admin wilayah dibatasi lagi oleh middleware admin.scope)
         Gate::define('administrator', static function ($user){
             return $user->type == 'admin';
+        });
+
+        // Admin utama saja: tanpa batasan wilayah (menu Admin wilayah, SOP, impersonate, ubah data wilayah)
+        Gate::define('super_admin', static function ($user){
+            return $user->isSuperAdmin();
+        });
+
+        // Halaman SOP: semua pengguna kecuali admin wilayah
+        Gate::define('sop_view', static function ($user){
+            return !$user->isRegionalAdmin();
         });
 
         Gate::define('user', static function ($user){

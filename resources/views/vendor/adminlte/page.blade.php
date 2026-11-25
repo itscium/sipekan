@@ -4,7 +4,7 @@
     $spUser = Auth::user();
     $spWords = preg_split('/\s+/', trim($spUser->name ?? 'U'));
     $spInitials = strtoupper(mb_substr($spWords[0] ?? 'U', 0, 1) . (count($spWords) > 1 ? mb_substr(end($spWords), 0, 1) : ''));
-    $spRole = $spUser->type === 'admin' ? 'Administrator' : (optional($spUser->wilayah)->nama ?? 'Pegawai');
+    $spRole = $spUser->type === 'admin' ? ($spUser->isRegionalAdmin() ? 'Admin wilayah' : 'Administrator') : (optional($spUser->wilayah)->nama ?? 'Pegawai');
     $spPageTitle = trim(preg_replace('/^\s*sipekan\s*\|\s*/i', '', View::getSection('title') ?? ''));
 @endphp
 

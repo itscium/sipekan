@@ -64,7 +64,7 @@ class DashboardService
         ];
 
         if ($isAdmin) {
-            $data['admin'] = $this->safe($data, 'admin', fn () => $this->adminStats());
+            $data['admin'] = $this->safe($data, 'admin', fn () => $this->adminStats($user));
             return $data;
         }
 
@@ -285,16 +285,23 @@ class DashboardService
         ];
     }
 
-    private function adminStats(): array
+    /** Statistik Beranda admin. Admin wilayah hanya menghitung Business Unit yang ia kelola. */
+    private function adminStats(User $admin): array
     {
+        $ids = $admin->managedWilayahIds();
+        $users = fn () => User::where('type', 'user')->withinAdminScope($admin);
+        $wilayah = fn () => $ids === null ? Wilayah::query() : Wilayah::whereIn('id', $ids ?: [0]);
+
         return [
-            'users_active' => User::where('type', 'user')->where('status', 1)->count(),
-            'users_inactive' => User::where('type', 'user')->where('status', 0)->count(),
-            'wilayah' => Wilayah::count(),
-            'departemen' => Departemen::count(),
-            'users_no_account' => User::where('type', 'user')->where('status', 1)
+            'scoped' => $ids !== null,
+            'scope_codes' => $ids === null ? [] : $wilayah()->orderBy('id')->get(['id', 'nama', 'kode', 'english_name'])->map->short_code->all(),
+            'users_active' => $users()->where('status', 1)->count(),
+            'users_inactive' => $users()->where('status', 0)->count(),
+            'wilayah' => $wilayah()->count(),
+            'departemen' => Departemen::withinAdminScope($admin)->count(),
+            'users_no_account' => $users()->where('status', 1)
                 ->where(fn ($q) => $q->whereNull('ACCNT_CODE')->orWhere('ACCNT_CODE', ''))->count(),
-            'wilayah_list' => Wilayah::withCount(['users' => fn ($q) => $q->where('status', 1)])
+            'wilayah_list' => $wilayah()->withCount(['users' => fn ($q) => $q->where('status', 1)])
                 ->orderByDesc('users_count')->limit(6)->get(['id', 'nama']),
         ];
     }

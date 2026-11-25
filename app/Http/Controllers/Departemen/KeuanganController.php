@@ -186,7 +186,9 @@ class KeuanganController extends Controller
     {
         if (Gate::allows('administrator') && $request->filled('departemen')) {
             // Departemen dari wilayah yang disembunyikan tidak boleh dibuka admin
-            return Departemen::where('id', $request->query('departemen'))->budgetVisible()->first();
+            // Admin wilayah hanya departemen di Business Unit yang ia kelola
+            return Departemen::where('id', $request->query('departemen'))->budgetVisible()
+                ->withinAdminScope(Auth::user())->first();
         }
         // Kepala departemen di wilayah yang disembunyikan juga tidak melihat anggarannya
         return Departemen::where('kepala_departemen', Auth::id())->budgetVisible()->first();
@@ -220,12 +222,15 @@ class KeuanganController extends Controller
         $daftar_departemen = collect();
         $wilayah_id = null;
         if ($isAdmin) {
+            $managed = Auth::user()->managedWilayahIds();
             $daftar_wilayah = Wilayah::whereNotIn('id', $this->hiddenWilayah())
+                ->when($managed !== null, fn ($q) => $q->whereIn('id', $managed ?: [0]))
                 ->orderBy('id')->get(['id', 'nama', 'english_name']);
             $wilayah_id = $departemen->wilayah_id ?? $request->query('wilayah');
-            // Wilayah tersembunyi atau tidak dikenal -> kembali ke wilayah bawaan (WIUM)
+            // Wilayah tersembunyi, di luar wewenang, atau tidak dikenal -> wilayah bawaan (WIUM), atau wilayah pertama yang boleh
             if (!$daftar_wilayah->contains('id', $wilayah_id)) {
-                $wilayah_id = config('sipekan.default_wilayah_id');
+                $default = config('sipekan.default_wilayah_id');
+                $wilayah_id = $daftar_wilayah->contains('id', $default) ? $default : optional($daftar_wilayah->first())->id;
             }
             $daftar_departemen = Departemen::where('wilayah_id', $wilayah_id)
                 ->orderBy('nama_departemen')->get(['id', 'nama_departemen', 'wilayah_id']);

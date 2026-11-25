@@ -68,12 +68,12 @@ class ActivityTracker
 
     /**
      * Aktivitas yang tidak dicatat:
-     * - akun administrator (type = admin);
+     * - akun admin utama (admin wilayah TETAP dicatat, supaya tindakannya bisa diperiksa admin utama);
      * - admin yang sedang impersonate (masuk sebagai pengguna lain).
      */
     public function shouldIgnore(?User $user): bool
     {
-        return ($user && $user->type === 'admin') || session()->has('impersonate');
+        return ($user && $user->isSuperAdmin()) || session()->has('impersonate');
     }
 
     /** Catat halaman yang dibuka (dipanggil middleware). */

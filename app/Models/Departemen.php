@@ -27,6 +27,13 @@ class Departemen extends Model
         return $query->whereNotIn('wilayah_id', array_map('strval', config('sipekan.hidden_budget_wilayah_ids', [])));
     }
 
+    /** Batasi ke wilayah yang dikelola admin (admin wilayah); admin utama tanpa batas. */
+    public function scopeWithinAdminScope($query, User $admin)
+    {
+        $ids = $admin->managedWilayahIds();
+        return $ids === null ? $query : $query->whereIn('wilayah_id', $ids ?: [0]);
+    }
+
     public function isBudgetVisible(): bool
     {
         return !in_array((string) $this->wilayah_id, array_map('strval', config('sipekan.hidden_budget_wilayah_ids', [])), true);

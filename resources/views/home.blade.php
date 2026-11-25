@@ -32,6 +32,13 @@
         {{-- ================= Beranda admin ================= --}}
         @php($a = $d['admin'])
         @if($a)
+            @if($a['scoped'] ?? false)
+                {{-- Admin wilayah: semua angka di halaman ini hanya untuk Business Unit berikut --}}
+                <div class="sp-card mb-3 d-flex flex-wrap align-items-center" style="gap:8px;padding:12px 16px">
+                    <span class="sp-muted" style="font-size:13.5px">Anda mengelola:</span>
+                    @foreach($a['scope_codes'] as $code)<span class="sp-badge accent">{{ $code }}</span>@endforeach
+                </div>
+            @endif
             <div class="sp-grid sp-grid-stats mb-3">
                 <div class="sp-card">
                     <div class="sp-stat-label"><span class="sp-stat-icon"><i class="fas fa-users"></i></span>Pengguna aktif</div>
@@ -41,12 +48,12 @@
                 <div class="sp-card">
                     <div class="sp-stat-label"><span class="sp-stat-icon"><i class="fas fa-map"></i></span>Wilayah</div>
                     <div class="sp-stat-value sp-num">{{ $a['wilayah'] }}</div>
-                    <div class="sp-stat-foot">Konferens dan misi</div>
+                    <div class="sp-stat-foot">{{ ($a['scoped'] ?? false) ? 'Yang Anda kelola' : 'Konferens dan misi' }}</div>
                 </div>
                 <div class="sp-card">
                     <div class="sp-stat-label"><span class="sp-stat-icon"><i class="fas fa-building"></i></span>Departemen</div>
                     <div class="sp-stat-value sp-num">{{ $a['departemen'] }}</div>
-                    <div class="sp-stat-foot">Di semua wilayah</div>
+                    <div class="sp-stat-foot">{{ ($a['scoped'] ?? false) ? 'Di wilayah Anda' : 'Di semua wilayah' }}</div>
                 </div>
                 <div class="sp-card">
                     <div class="sp-stat-label"><span class="sp-stat-icon" style="background:var(--sp-warning-soft);color:var(--sp-warning)"><i class="fas fa-user-tag"></i></span>Tanpa kode akun</div>
@@ -60,7 +67,7 @@
                     <div class="sp-card-head">
                         <div>
                             <p class="sp-card-title">Pengguna aktif per wilayah</p>
-                            <p class="sp-card-sub">Enam wilayah dengan pengguna terbanyak</p>
+                            <p class="sp-card-sub">{{ ($a['scoped'] ?? false) ? 'Wilayah yang Anda kelola' : 'Enam wilayah dengan pengguna terbanyak' }}</p>
                         </div>
                         <a href="{{ route('wilayah.index') }}" class="small">Lihat semua</a>
                     </div>
@@ -86,7 +93,10 @@
                             <a href="{{ route('employee.allowance.index') }}" class="sp-shortcut"><i class="fas fa-users"></i>Tunjangan pegawai</a>
                             <a href="{{ route('departemen.keuangan.index') }}" class="sp-shortcut"><i class="fas fa-cubes"></i>Tunjangan departemen</a>
                             <a href="{{ route('admin.activity.index') }}" class="sp-shortcut"><i class="fas fa-history"></i>Log aktivitas</a>
-                            <a href="{{ route('sop.index') }}" class="sp-shortcut"><i class="fas fa-book"></i>SOP</a>
+                            @can('super_admin')
+                                <a href="{{ route('admin.regional-admins.index') }}" class="sp-shortcut"><i class="fas fa-user-shield"></i>Admin wilayah</a>
+                                <a href="{{ route('sop.index') }}" class="sp-shortcut"><i class="fas fa-book"></i>SOP</a>
+                            @endcan
                         </div>
                     </div>
                 </div>

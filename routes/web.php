@@ -41,7 +41,8 @@ Route::get('/unduh/android', function () {
 Route::middleware('auth')->group(function (){
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
     Route::resource('departemens', DepartemenController::class);
-    Route::prefix('wilayah')->middleware('can:administrator')->group( function (){
+    // admin.scope: admin wilayah hanya boleh membuka Business Unit yang ia kelola
+    Route::prefix('wilayah')->middleware(['can:administrator', 'admin.scope'])->group( function (){
         Route::get('/', [WilayahController::class, 'index'])->name('wilayah.index');
         Route::get('/edit/{id}', [WilayahController::class, 'edit'])->name('wilayah.edit');
         Route::post('/update', [WilayahController::class, 'update'])->name('wilayah.update');
@@ -136,6 +137,14 @@ Route::middleware('auth')->group(function (){
         Route::get('/akses-keuangan', [\App\Http\Controllers\Admin\FinanceAccessController::class, 'index'])->name('finance-access.index');
         Route::post('/akses-keuangan/{wilayah}/tutup', [\App\Http\Controllers\Admin\FinanceAccessController::class, 'lock'])->name('finance-access.lock');
         Route::post('/akses-keuangan/{wilayah}/buka', [\App\Http\Controllers\Admin\FinanceAccessController::class, 'unlock'])->name('finance-access.unlock');
+
+        // Admin wilayah: admin yang hanya mengelola Business Unit tertentu (khusus admin utama)
+        Route::get('/admin-wilayah', [\App\Http\Controllers\Admin\RegionalAdminController::class, 'index'])->name('regional-admins.index');
+        Route::get('/admin-wilayah/tambah', [\App\Http\Controllers\Admin\RegionalAdminController::class, 'create'])->name('regional-admins.create');
+        Route::post('/admin-wilayah', [\App\Http\Controllers\Admin\RegionalAdminController::class, 'store'])->name('regional-admins.store');
+        Route::get('/admin-wilayah/{user}/ubah', [\App\Http\Controllers\Admin\RegionalAdminController::class, 'edit'])->whereNumber('user')->name('regional-admins.edit');
+        Route::put('/admin-wilayah/{user}', [\App\Http\Controllers\Admin\RegionalAdminController::class, 'update'])->whereNumber('user')->name('regional-admins.update');
+        Route::delete('/admin-wilayah/{user}', [\App\Http\Controllers\Admin\RegionalAdminController::class, 'destroy'])->whereNumber('user')->name('regional-admins.destroy');
     });
 
     // Halaman pemberitahuan saat laporan keuangan Business Unit pengguna sudah ditutup
@@ -150,13 +159,13 @@ Route::middleware('auth')->group(function (){
         Route::get('employee-allowance', [\App\Http\Controllers\WIUM\Allowance\PersonalController::class, 'index'])->name('employee.allowance.index');
     });
 
-    Route::get('/sop', [SopController::class, 'index'])->name('sop.index');
-    Route::get('/sop/create', [SopController::class, 'create'])->name('sop.create');
-    Route::post('/sop/store', [SopController::class, 'store'])->name('sop.store');
+    Route::get('/sop', [SopController::class, 'index'])->middleware('can:sop_view')->name('sop.index');
+    Route::get('/sop/create', [SopController::class, 'create'])->middleware('can:super_admin')->name('sop.create');
+    Route::post('/sop/store', [SopController::class, 'store'])->middleware('can:super_admin')->name('sop.store');
 
     Route::get('/impersonate/{id}', [\App\Http\Controllers\ImpersonateController::class, 'impersonate'])->name('impersonate');
     Route::delete('/impersonate/destroy', [\App\Http\Controllers\ImpersonateController::class, 'destroy'])->name('impersonate.destroy');
-    Route::middleware('can:administrator')->group(function (){
+    Route::middleware(['can:administrator', 'admin.scope'])->group(function (){
         Route::get('users/non-aktif/{id}', function (string $id){
            \App\Models\User::where('id', $id)->update(['status' => 0]);
            return redirect()->back()->with('alert', 'User Non-aktif');

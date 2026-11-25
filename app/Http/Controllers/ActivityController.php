@@ -7,6 +7,7 @@ use App\Models\UserActivityLog;
 use App\Models\Wilayah;
 use App\Services\ActivityTracker;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 
 /** Pengguna yang sedang online dan log aktivitas (khusus admin). */
@@ -20,8 +21,10 @@ class ActivityController extends Controller
     /** Data untuk panel Beranda, dibaca ulang setiap 30 detik. */
     public function feed()
     {
+        $admin = Auth::user();
         $online = $this->tracker->online();
-        $users = User::with('wilayah:id,nama')->whereIn('id', array_keys($online))
+        // Admin wilayah hanya melihat pengguna dari Business Unit yang ia kelola
+        $users = User::with('wilayah:id,nama')->whereIn('id', array_keys($online))->withinAdminScope($admin)
             ->get(['id', 'name', 'foto', 'wilayah_id'])->keyBy('id');
 
         $onlineList = [];
@@ -43,9 +46,9 @@ class ActivityController extends Controller
 
         return response()->json([
             'online' => $onlineList,
-            'today_users' => UserActivityLog::visible()->whereDate('created_at', today())->whereNotNull('user_id')->where('action', '!=', 'failed')
+            'today_users' => $this->scoped(UserActivityLog::visible(), $admin)->whereDate('created_at', today())->whereNotNull('user_id')->where('action', '!=', 'failed')
                 ->distinct()->count('user_id'),
-            'failed_today' => UserActivityLog::whereDate('created_at', today())->where('action', 'failed')->count(),
+            'failed_today' => $this->scoped(UserActivityLog::query(), $admin)->whereDate('created_at', today())->where('action', 'failed')->count(),
             'server_time' => now()->format('H.i'),
         ])->header('Cache-Control', 'no-store');
     }
@@ -67,7 +70,8 @@ class ActivityController extends Controller
             ->filter(fn ($w) => strcasecmp($w->short_code, $term) === 0 || stripos($w->nama, $term) !== false)
             ->pluck('id')->all();
 
-        $logs = UserActivityLog::visible()->with(['user:id,name,wilayah_id', 'user.wilayah:id,nama,kode,english_name'])
+        $admin = Auth::user();
+        $logs = $this->scoped(UserActivityLog::visible(), $admin)->with(['user:id,name,wilayah_id', 'user.wilayah:id,nama,kode,english_name'])
             ->when($term !== '', function ($q) use ($term, $wilayahIds) {
                 $q->where(fn ($w) => $w->whereHas('user', fn ($u) => $u->where('name', 'like', "%{$term}%"))
                     ->orWhere('email', 'like', "%{$term}%")
@@ -82,7 +86,7 @@ class ActivityController extends Controller
             ->withQueryString();
 
         // Ringkasan hari ini
-        $today = UserActivityLog::visible()->whereDate('created_at', today())
+        $today = $this->scoped(UserActivityLog::visible(), $admin)->whereDate('created_at', today())
             ->selectRaw("COUNT(DISTINCT CASE WHEN action <> 'failed' THEN user_id END) AS users,
                 SUM(CASE WHEN action = 'login' THEN 1 ELSE 0 END) AS logins,
                 SUM(CASE WHEN action = 'failed' THEN 1 ELSE 0 END) AS failed,
@@ -94,8 +98,15 @@ class ActivityController extends Controller
             'filters' => $data,
             'actions' => UserActivityLog::ACTIONS,
             'today' => $today,
-            'onlineCount' => count($this->tracker->online()),
+            'onlineCount' => User::whereIn('id', array_keys($this->tracker->online()))->withinAdminScope($admin)->count(),
         ]);
+    }
+
+    /** Admin wilayah: hanya log milik pengguna di Business Unit yang ia kelola. */
+    private function scoped($query, User $admin)
+    {
+        $ids = $admin->managedWilayahIds();
+        return $ids === null ? $query : $query->whereHas('user', fn ($u) => $u->whereIn('wilayah_id', $ids ?: [0]));
     }
 
     private function ago(int $ts): string

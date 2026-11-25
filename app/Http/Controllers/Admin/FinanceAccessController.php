@@ -20,11 +20,15 @@ class FinanceAccessController extends Controller
 
     public function index()
     {
+        $admin = Auth::user();
+        $managed = $admin->managedWilayahIds();
         $counts = User::where('type', 'user')->where('status', 1)
             ->selectRaw('wilayah_id, COUNT(*) AS n')->groupBy('wilayah_id')->pluck('n', 'wilayah_id');
 
         return view('admin.finance-access.index', [
-            'wilayah' => Wilayah::orderBy('id')->get(['id', 'nama', 'kode', 'english_name']),
+            // Admin wilayah hanya melihat Business Unit yang ia kelola
+            'wilayah' => Wilayah::when($managed !== null, fn ($q) => $q->whereIn('id', $managed ?: [0]))
+                ->orderBy('id')->get(['id', 'nama', 'kode', 'english_name']),
             'locks' => FinanceLock::with('locker:id,name')->get()->keyBy('wilayah_id'),
             'userCounts' => $counts,
         ]);
@@ -32,6 +36,7 @@ class FinanceAccessController extends Controller
 
     public function lock(Request $request, Wilayah $wilayah)
     {
+        abort_unless(Auth::user()->managesWilayah($wilayah->id), 403, 'Wilayah ini di luar wewenang Anda.');
         $request->validate(['konfirmasi' => ['accepted']], ['konfirmasi.accepted' => 'Centang konfirmasi terlebih dahulu.']);
         FinanceLock::firstOrCreate(['wilayah_id' => $wilayah->id], ['locked_by' => Auth::id()]);
         FinanceLock::forgetCache();
@@ -42,6 +47,7 @@ class FinanceAccessController extends Controller
 
     public function unlock(Request $request, Wilayah $wilayah)
     {
+        abort_unless(Auth::user()->managesWilayah($wilayah->id), 403, 'Wilayah ini di luar wewenang Anda.');
         FinanceLock::where('wilayah_id', $wilayah->id)->delete();
         FinanceLock::forgetCache();
         $this->tracker->adminAction(Auth::user(), 'unlock', 'membuka kembali laporan keuangan ' . $wilayah->nama . ' (' . $wilayah->short_code . ')', $request);

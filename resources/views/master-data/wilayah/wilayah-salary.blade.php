@@ -20,6 +20,7 @@
                                 Tambah Salary & Allowances
                             </a>
                         </div>
+                        @can('super_admin')
                         <div class="col-md-4">
                             <form action="{{ route('wilayah.salary.import') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
@@ -32,6 +33,7 @@
                                 <button type="submit" class="btn btn-primary text-right">Import data</button>
                             </form>
                         </div>
+                        @endcan
                     </div>
                     <table class="table table-hover table-bordered table-stripped" id="example2">
                         <thead>

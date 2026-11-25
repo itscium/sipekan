@@ -20,6 +20,8 @@
                                 Tambah Users
                             </a>
                         </div>
+                        {{-- Impor Excel hanya untuk admin utama: isi file bisa berisi wilayah mana pun --}}
+                        @can('super_admin')
                         <div class="col-md-4">
                             <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#user_salary_import">
                                 Import User Salary
@@ -28,6 +30,7 @@
                                 Import User
                             </button>
                         </div>
+                        @endcan
                     </div>
                     <table class="table table-hover table-bordered table-stripped" id="example2">
                         <thead>

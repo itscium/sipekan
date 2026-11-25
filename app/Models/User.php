@@ -54,7 +54,65 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        // Sengaja tidak ada di $fillable: hanya diisi lewat menu Admin wilayah (admin utama)
+        'admin_wilayah' => 'array',
     ];
+
+    /* ---------------- Admin utama vs admin wilayah ---------------- */
+
+    /** Admin utama: tipe admin tanpa batasan wilayah (semua akun admin lama). */
+    public function isSuperAdmin(): bool
+    {
+        return $this->type === 'admin' && empty($this->admin_wilayah);
+    }
+
+    /** Admin wilayah: tipe admin yang hanya mengelola Business Unit tertentu. */
+    public function isRegionalAdmin(): bool
+    {
+        return $this->type === 'admin' && !empty($this->admin_wilayah);
+    }
+
+    /**
+     * Wilayah yang boleh dikelola: null = semua (admin utama), [] = tidak ada (bukan admin).
+     *
+     * @return int[]|null
+     */
+    public function managedWilayahIds(): ?array
+    {
+        if ($this->type !== 'admin') {
+            return [];
+        }
+        return $this->isRegionalAdmin() ? array_values(array_map('intval', (array) $this->admin_wilayah)) : null;
+    }
+
+    public function managesWilayah($wilayahId): bool
+    {
+        $ids = $this->managedWilayahIds();
+        return $ids === null || ($wilayahId !== null && $wilayahId !== '' && in_array((int) $wilayahId, $ids, true));
+    }
+
+    /** Batasi kueri ke wilayah yang dikelola admin ini (admin utama: tanpa batas). */
+    public function scopeWithinAdminScope($query, User $admin, string $column = 'wilayah_id')
+    {
+        $ids = $admin->managedWilayahIds();
+        return $ids === null ? $query : $query->whereIn($column, $ids ?: [0]);
+    }
+
+    /**
+     * Id akun admin utama. Kolom admin_wilayah mungkin belum ada (migrasi belum dijalankan):
+     * dalam keadaan itu semua admin dianggap admin utama, seperti sebelumnya.
+     */
+    public static function superAdminIdsQuery()
+    {
+        $q = static::select('id')->where('type', 'admin');
+        return static::hasAdminScopeColumn() ? $q->whereNull('admin_wilayah') : $q;
+    }
+
+    public static function hasAdminScopeColumn(): bool
+    {
+        static $has = null;
+        return $has ??= \Illuminate\Support\Facades\Schema::hasColumn('users', 'admin_wilayah');
+    }
 
     public function adminlte_image()
     {

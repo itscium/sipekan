@@ -24,7 +24,9 @@ class WilayahController extends Controller
 
     public function index()
     {
-        $wilayah = Wilayah::all();
+        // Admin wilayah hanya melihat Business Unit yang ia kelola
+        $managed = auth()->user()->managedWilayahIds();
+        $wilayah = $managed === null ? Wilayah::all() : Wilayah::whereIn('id', $managed ?: [0])->get();
         return view('master-data.wilayah.index', compact('wilayah'));
     }
 

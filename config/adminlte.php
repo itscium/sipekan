@@ -304,6 +304,13 @@ return [
             'can' => ['administrator'],
         ],
         [
+            'text' => 'Admin wilayah',
+            'url'  => '/admin/admin-wilayah',
+            'active' => ['admin/admin-wilayah*'],
+            'icon' => 'fas fa-fw fa-user-shield',
+            'can' => ['super_admin'],
+        ],
+        [
             'header' => 'Departemen',
             'can' => ['head_dept'],
         ],
@@ -355,7 +362,7 @@ return [
             'text' => 'SOP',
             'route'  => 'sop.index',
             'icon' => 'fas fa-fw fa-book',
-            'can' => ['administrator'],
+            'can' => ['super_admin'],
         ],
         [
             'text' => 'Ganti password',
